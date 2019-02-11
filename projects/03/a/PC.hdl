@@ -16,5 +16,10 @@ CHIP PC {
     OUT out[16];
 
     PARTS:
-    // Put your code here:
+    // If elif etc. implemented by checking last condition first and overwriting if an earlier is found
+    Inc16(in=regOut, out=regOutInc); // Creates incremented value if needed
+    Mux16(a=regOut, b=regOutInc, sel=inc, out=inced); // Switches to incremented value if needed
+    Mux16(a=inced, b=in, sel=load, out=loaded); // Switches to loaded value if needed
+    Mux16(a=loaded, b[0..15]=false, sel=reset, out=resetted); // Resets if needed
+    Register(in=resetted, load=true, out=regOut, out=out); // Puts final value in register
 }
