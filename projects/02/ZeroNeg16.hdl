@@ -1,0 +1,27 @@
+/**
+ * 16-bit zeroer/negater:
+ * given a 16-bit input, and 2 boolean inputs, potentially zero and/or negate the input
+ */
+
+CHIP ZeroNeg16 {
+    IN in[16], z, n;
+    OUT out[16];
+
+    PARTS:
+    ZeroNeg(in=in[0], z=z, n=n, out=out[0]);
+    ZeroNeg(in=in[1], z=z, n=n, out=out[1]);
+    ZeroNeg(in=in[2], z=z, n=n, out=out[2]);
+    ZeroNeg(in=in[3], z=z, n=n, out=out[3]);
+    ZeroNeg(in=in[4], z=z, n=n, out=out[4]);
+    ZeroNeg(in=in[5], z=z, n=n, out=out[5]);
+    ZeroNeg(in=in[6], z=z, n=n, out=out[6]);
+    ZeroNeg(in=in[7], z=z, n=n, out=out[7]);
+    ZeroNeg(in=in[8], z=z, n=n, out=out[8]);
+    ZeroNeg(in=in[9], z=z, n=n, out=out[9]);
+    ZeroNeg(in=in[10], z=z, n=n, out=out[10]);
+    ZeroNeg(in=in[11], z=z, n=n, out=out[11]);
+    ZeroNeg(in=in[12], z=z, n=n, out=out[12]);
+    ZeroNeg(in=in[13], z=z, n=n, out=out[13]);
+    ZeroNeg(in=in[14], z=z, n=n, out=out[14]);
+    ZeroNeg(in=in[15], z=z, n=n, out=out[15]);
+}

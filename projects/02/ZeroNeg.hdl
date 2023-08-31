@@ -1,0 +1,14 @@
+/**
+ * Zeroer/negater:
+ * given an input bit, and 2 boolean inputs, potentially zero and/or negate the input
+ */
+
+CHIP ZeroNeg {
+    IN in, z, n;
+    OUT out;
+
+    PARTS:
+    Mux(a=in, b=false, sel=z, out=inz);
+    Not(in=inz, out=notinz);
+    Mux(a=inz, b=notinz, sel=n, out=out);
+}
