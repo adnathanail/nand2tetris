@@ -24,15 +24,8 @@ D=A
 @pointer
 M=D
 
-// i = 256
-@256
-D=A
-@i
-M=D
-
-(OUTER)
 // j = 512 / 16
-@32
+@8192
 D=A
 @j
 M=D
@@ -52,23 +45,10 @@ M=D
 // @j -= 1
 @j
 M=M-1
-// if j == 0 goto OUTERCHECK
+// if j > 0 goto LOOP
 D=M
-@OUTERCHECK
-D;JEQ
 @LOOP
-0;JMP
-
-(OUTERCHECK)
-// i -= 1
-@i
-M=M-1
-// if i == 0 goto END
-D=M
-@END
-D;JEQ
-@OUTER
-0;JMP
+D;JGT
 
 (END)
 @END
