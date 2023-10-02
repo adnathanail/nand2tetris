@@ -24,12 +24,6 @@ D=A
 @pointer
 M=D
 
-// j = 512 / 16
-@8192
-D=A
-@j
-M=D
-
 (LOOP)
 // Set @pointer pixel to @black
 @black
@@ -42,11 +36,11 @@ A=A+1
 D=A
 @pointer
 M=D
-// @j -= 1
-@j
-M=M-1
-// if j > 0 goto LOOP
-D=M
+// if pointer < 24576 goto LOOP
+@24576
+D=A
+@pointer
+D=D-M
 @LOOP
 D;JGT
 
