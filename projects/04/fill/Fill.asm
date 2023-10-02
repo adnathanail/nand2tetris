@@ -28,14 +28,28 @@ D;JGT
 0;JMP
 
 (BLACK)
+@black
+D=M
+@fill
+M=D
+@FILL
+0;JMP
+
+(WHITE)
+@fill
+M=0
+@FILL
+0;JMP
+
+(FILL)
 // pointer = SCREEN
 @SCREEN
 D=A
 @pointer
 M=D
-(BLACKLOOP)
-// Set @pointer pixel to @black
-@black
+(FILLLOOP)
+// Set @pointer pixel to @fill
+@fill
 D=M
 @pointer
 A=M
@@ -50,33 +64,7 @@ M=D
 D=A
 @pointer
 D=D-M
-@BLACKLOOP
-D;JGT
-@LOOP
-0;JMP
-
-(WHITE)
-// pointer = SCREEN
-@SCREEN
-D=A
-@pointer
-M=D
-(WHITELOOP)
-// Set @pointer pixel to white
-@pointer
-A=M
-M=0
-// @pointer += 1
-A=A+1
-D=A
-@pointer
-M=D
-// if pointer < 24576 goto LOOP
-@24576
-D=A
-@pointer
-D=D-M
-@WHITELOOP
+@FILLLOOP
 D;JGT
 @LOOP
 0;JMP
