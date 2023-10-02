@@ -18,13 +18,22 @@ D=A+D
 @black
 M=D
 
+(LOOP)
+// if keyboard == 0 goto WHITE
+@KBD
+D=M
+@BLACK
+D;JGT
+@WHITE
+0;JMP
+
+(BLACK)
 // pointer = SCREEN
 @SCREEN
 D=A
 @pointer
 M=D
-
-(LOOP)
+(BLACKLOOP)
 // Set @pointer pixel to @black
 @black
 D=M
@@ -41,9 +50,33 @@ M=D
 D=A
 @pointer
 D=D-M
-@LOOP
+@BLACKLOOP
 D;JGT
+@LOOP
+0;JMP
 
-(END)
-@END
+(WHITE)
+// pointer = SCREEN
+@SCREEN
+D=A
+@pointer
+M=D
+(WHITELOOP)
+// Set @pointer pixel to white
+@pointer
+A=M
+M=0
+// @pointer += 1
+A=A+1
+D=A
+@pointer
+M=D
+// if pointer < 24576 goto LOOP
+@24576
+D=A
+@pointer
+D=D-M
+@WHITELOOP
+D;JGT
+@LOOP
 0;JMP
