@@ -11,4 +11,65 @@
 // "white" in every pixel;
 // the screen should remain fully clear as long as no key is pressed.
 
-// Put your code here.
+// black = 1111111111111111
+@32767
+D=A+1
+D=A+D
+@black
+M=D
+
+// pointer = SCREEN
+@SCREEN
+D=A
+@pointer
+M=D
+
+// i = 256
+@256
+D=A
+@i
+M=D
+
+(OUTER)
+// j = 512 / 16
+@32
+D=A
+@j
+M=D
+
+(LOOP)
+// Set @pointer pixel to @black
+@black
+D=M
+@pointer
+A=M
+M=D
+// @pointer += 1
+A=A+1
+D=A
+@pointer
+M=D
+// @j -= 1
+@j
+M=M-1
+// if j == 0 goto OUTERCHECK
+D=M
+@OUTERCHECK
+D;JEQ
+@LOOP
+0;JMP
+
+(OUTERCHECK)
+// i -= 1
+@i
+M=M-1
+// if i == 0 goto END
+D=M
+@END
+D;JEQ
+@OUTER
+0;JMP
+
+(END)
+@END
+0;JMP
