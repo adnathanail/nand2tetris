@@ -50,7 +50,7 @@ CHIP CPU {
     Or(a=isAInstruction, b=destA, out=loadA);
     Register(in=inA, load=loadA, out=outA, out[0..14]=addressM);
     // D
-    Register(in=aluOut, load=destM, out=outD);
+    DRegister(in=aluOut, load=destM, out=outD);
     Mux(a=false, b=true, sel=destD, out=writeM);
 
     // Jumping 1
