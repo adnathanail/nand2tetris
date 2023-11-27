@@ -1,2 +1,6 @@
 .DS_Store
 *.out
+
+Assembler.dat
+CPU Emulator.dat
+Hardware Simulator.dat
