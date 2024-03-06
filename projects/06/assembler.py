@@ -77,6 +77,9 @@ def assemble(source_assembly, outpath):
 
     compiled_hack_code = []
     for command in cleaned_assembly:
+        # Ignore labels
+        if command[0] == "(":
+            continue
         # A instruction
         if command[0] == "@":
             val = command[1:]
@@ -94,6 +97,7 @@ def assemble(source_assembly, outpath):
             out = "0" + padding + val_binstr
         # C instruction
         else:
+            print(command)
             # Split out jump
             if ";" in command:
                 assignment, jump = command.split(";")
