@@ -34,9 +34,9 @@ JUMP_OPERATION_LOOKUP = {
 }
 
 
-def assemble(source_assembly, outpath):
-    cleaned_assembly = []
-    for row in source_assembly:
+def clean_assembly(dirty_assembly):
+    out = []
+    for row in dirty_assembly:
         # Remove comments
         if "//" in row:
             row_no_comments = row[:row.find("//")]
@@ -47,10 +47,14 @@ def assemble(source_assembly, outpath):
         command = row_no_comments.strip()
 
         # Ignore empty rows
-        if command == "":
-            continue
+        if command != "":
+            out.append(command)
 
-        cleaned_assembly.append(command)
+    return out
+
+
+def assemble(source_assembly, outpath):
+    cleaned_assembly = clean_assembly(source_assembly)
 
     symbol_table = {
         "SP": 0,
