@@ -103,7 +103,7 @@ def assemble(source_assembly, outpath):
                 destination, comparison = assignment.split("=")
             else:
                 destination = ""
-                comparison = command
+                comparison = assignment
 
             # a and c bits
             if (clu := comparison.replace("A", "X")) in COMPARISON_OPERATION_LOOKUP:
