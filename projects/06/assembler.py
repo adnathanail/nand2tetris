@@ -37,15 +37,17 @@ JUMP_OPERATION_LOOKUP = {
 def assemble(source_assembly, outpath):
     compiled_hack_code = []
     for row in source_assembly:
+        # Remove comments
+        if "//" in row:
+            row_no_comments = row[:row.find("//")]
+        else:
+            row_no_comments = row
+
         # Remove whitespace
-        command = row.strip()
+        command = row_no_comments.strip()
 
         # Ignore empty rows
         if command == "":
-            continue
-
-        # Ignore comments
-        if command[:2] == "//":
             continue
 
         # A instruction
