@@ -68,6 +68,10 @@ def assemble(source_assembly, outpath):
     for i in range(16):
         symbol_table[f"R{i}"] = i
 
+    for i, row in enumerate(cleaned_assembly):
+        if row[0] == "(" and row[-1] == ")":
+            symbol_table[row[1:-1]] = i
+
     compiled_hack_code = []
     for command in cleaned_assembly:
         # A instruction
