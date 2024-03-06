@@ -1,22 +1,23 @@
+# X represents either A (a = 0) or M (a = 1)
 COMPARISON_OPERATION_LOOKUP = {
     "0": "101010",
     "1": "111111",
     "-1": "111010",
     "D": "001100",
-    "A": "110000",
+    "X": "110000",
     "!D": "001101",
-    "!A": "110001",
+    "!X": "110001",
     "-D": "001111",
-    "-A": "110011",
+    "-X": "110011",
     "D+1": "011111",
-    "A+1": "110111",
+    "X+1": "110111",
     "D-1": "001110",
-    "A-1": "110010",
-    "D+A": "000010",
-    "D-A": "010011",
-    "A-D": "000111",
-    "D&A": "000000",
-    "D|A": "010101",
+    "X-1": "110010",
+    "D+X": "000010",
+    "D-X": "010011",
+    "X-D": "000111",
+    "D&X": "000000",
+    "D|X": "010101",
 }
 
 JUMP_OPERATION_LOOKUP = {
@@ -53,16 +54,22 @@ for row in source_assembly.split("\n"):
     # C instruction
     else:
         out = "111"  # C starts with 1, next 2 bits aren't used
-        out += "0"  # a
+
         if ";" in command:
             assignment, jump = command.split(";")
         else:
             assignment = command
             jump = ""
+
         destination, comparison = assignment.split("=")
-    
-        compbits = COMPARISON_OPERATION_LOOKUP[comparison]
-        
+
+        if (clu := comparison.replace("A", "X")) in COMPARISON_OPERATION_LOOKUP:
+            compbits = COMPARISON_OPERATION_LOOKUP[clu]
+            abits = "0"
+        elif (clu := comparison.replace("M", "X")) in COMPARISON_OPERATION_LOOKUP:
+            compbits = COMPARISON_OPERATION_LOOKUP[clu]
+            abits = "1"
+
         destbits = ""
         if "A" in destination:
             destbits += "1"
@@ -79,7 +86,7 @@ for row in source_assembly.split("\n"):
 
         jumpbits = JUMP_OPERATION_LOOKUP[jump]
 
-        out += compbits + destbits + jumpbits
+        out += abits + compbits + destbits + jumpbits
     print(out)
     compiled_hack_code.append(out + "\n")
 
