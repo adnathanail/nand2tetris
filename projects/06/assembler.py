@@ -33,6 +33,7 @@ JUMP_OPERATION_LOOKUP = {
     "JMP": "111",
 }
 
+
 def assemble(source_assembly, outpath):
     compiled_hack_code = []
     for row in source_assembly:
@@ -51,7 +52,8 @@ def assemble(source_assembly, outpath):
         if command[0] == "@":
             val_dec = int(command[1:])  # Value to be loaded into A-register in base 10
             val_binstr = bin(val_dec)[2:]  # Value in base 2
-            padding = (15 - len(val_binstr))*"0"  # To make the resulting binary 15-bits (16 inc first 0)
+            # To make the resulting binary 15-bits (16 inc first 0)
+            padding = (15 - len(val_binstr)) * "0"
             # A starts with 0
             out = "0" + padding + val_binstr
         # C instruction
@@ -98,12 +100,11 @@ def assemble(source_assembly, outpath):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('assembly_file', type=argparse.FileType('r'))
+    parser.add_argument("assembly_file", type=argparse.FileType("r"))
     args = parser.parse_args()
     assembly_file_contents = args.assembly_file.readlines()
 
     input_file_path = args.assembly_file.name
-    output_file_path = input_file_path[:input_file_path.rfind(".")] + ".hack"
-    print(output_file_path)
+    output_file_path = input_file_path[: input_file_path.rfind(".")] + ".hack"
 
     assemble(assembly_file_contents, output_file_path)
