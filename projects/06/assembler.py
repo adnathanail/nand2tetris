@@ -34,7 +34,7 @@ JUMP_OPERATION_LOOKUP = {
 }
 
 
-def clean_assembly(dirty_assembly):
+def _assemble_first_pass(raw_asembly):
     symbol_table = {
         "SP": 0,
         "LCL": 1,
@@ -49,7 +49,7 @@ def clean_assembly(dirty_assembly):
 
     cleaned_assembly = []
     current_command_index = 0
-    for row in dirty_assembly:
+    for row in raw_asembly:
         # Remove comments
         if "//" in row:
             row_no_comments = row[:row.find("//")]
@@ -75,8 +75,8 @@ def clean_assembly(dirty_assembly):
     return cleaned_assembly, symbol_table
 
 
-def assemble(source_assembly, outpath):
-    cleaned_assembly, symbol_table = clean_assembly(source_assembly)
+def assemble(raw_assembly, output_file_path):
+    cleaned_assembly, symbol_table = _assemble_first_pass(raw_assembly)
 
     compiled_hack_code = []
     for command in cleaned_assembly:
@@ -133,7 +133,7 @@ def assemble(source_assembly, outpath):
 
         compiled_hack_code.append(out + "\n")
 
-    with open(outpath, "w") as f:
+    with open(output_file_path, "w") as f:
         f.writelines(compiled_hack_code)
 
 
