@@ -1,3 +1,5 @@
+import argparse
+
 # X represents either A (a = 0) or M (a = 1)
 COMPARISON_OPERATION_LOOKUP = {
     "0": "101010",
@@ -31,67 +33,77 @@ JUMP_OPERATION_LOOKUP = {
     "JMP": "111",
 }
 
-with open("projects/06/add/Add.asm") as f:
-    source_assembly = f.read()
+def assemble(source_assembly, outpath):
+    compiled_hack_code = []
+    for row in source_assembly:
+        # Remove whitespace
+        command = row.strip()
 
+        # Ignore empty rows
+        if command == "":
+            continue
 
-compiled_hack_code = []
-for row in source_assembly.split("\n"):
-    # Remove whitespace
-    command = row.strip()
+        # Ignore comments
+        if command[:2] == "//":
+            continue
 
-    # Ignore empty rows
-    if command == "":
-        continue
-
-    # Ignore comments
-    if command[:2] == "//":
-        continue
-
-    # A instruction
-    if command[0] == "@":
-        val_dec = int(command[1:])  # Value to be loaded into A-register in base 10
-        val_binstr = bin(val_dec)[2:]  # Value in base 2
-        padding = (15 - len(val_binstr))*"0"  # To make the resulting binary 15-bits (16 inc first 0)
-        # A starts with 0
-        out = "0" + val_binstr
-    # C instruction
-    else:
-        # Split out jump
-        if ";" in command:
-            assignment, jump = command.split(";")
+        # A instruction
+        if command[0] == "@":
+            val_dec = int(command[1:])  # Value to be loaded into A-register in base 10
+            val_binstr = bin(val_dec)[2:]  # Value in base 2
+            padding = (15 - len(val_binstr))*"0"  # To make the resulting binary 15-bits (16 inc first 0)
+            # A starts with 0
+            out = "0" + padding + val_binstr
+        # C instruction
         else:
-            assignment = command
-            jump = ""
+            # Split out jump
+            if ";" in command:
+                assignment, jump = command.split(";")
+            else:
+                assignment = command
+                jump = ""
 
-        # Split out assignment
-        if "=" in assignment:
-            destination, comparison = assignment.split("=")
-        else:
-            destination = ""
-            comparison = command
+            # Split out assignment
+            if "=" in assignment:
+                destination, comparison = assignment.split("=")
+            else:
+                destination = ""
+                comparison = command
 
-        # a and c bits
-        if (clu := comparison.replace("A", "X")) in COMPARISON_OPERATION_LOOKUP:
-            compbits = COMPARISON_OPERATION_LOOKUP[clu]
-            abit = "0"
-        elif (clu := comparison.replace("M", "X")) in COMPARISON_OPERATION_LOOKUP:
-            compbits = COMPARISON_OPERATION_LOOKUP[clu]
-            abit = "1"
+            # a and c bits
+            if (clu := comparison.replace("A", "X")) in COMPARISON_OPERATION_LOOKUP:
+                compbits = COMPARISON_OPERATION_LOOKUP[clu]
+                abit = "0"
+            elif (clu := comparison.replace("M", "X")) in COMPARISON_OPERATION_LOOKUP:
+                compbits = COMPARISON_OPERATION_LOOKUP[clu]
+                abit = "1"
 
-        # d bits
-        destbits = ""
-        destbits += "1" if "A" in destination else "0"
-        destbits += "1" if "D" in destination else "0"
-        destbits += "1" if "M" in destination else "0"
+            # d bits
+            destbits = ""
+            destbits += "1" if "A" in destination else "0"
+            destbits += "1" if "D" in destination else "0"
+            destbits += "1" if "M" in destination else "0"
 
-        # j bit
-        jumpbits = JUMP_OPERATION_LOOKUP[jump]
+            # j bit
+            jumpbits = JUMP_OPERATION_LOOKUP[jump]
 
-        # C starts with 1, next 2 bits aren't used
-        out = "111" + abit + compbits + destbits + jumpbits
-    print(out)
-    compiled_hack_code.append(out + "\n")
+            # C starts with 1, next 2 bits aren't used
+            out = "111" + abit + compbits + destbits + jumpbits
+        print(out)
+        compiled_hack_code.append(out + "\n")
 
-with open("projects/06/add/Add.hack", "w") as f:
-    f.writelines(compiled_hack_code)
+    with open(outpath, "w") as f:
+        f.writelines(compiled_hack_code)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('assembly_file', type=argparse.FileType('r'))
+    args = parser.parse_args()
+    assembly_file_contents = args.assembly_file.readlines()
+
+    input_file_path = args.assembly_file.name
+    output_file_path = input_file_path[:input_file_path.rfind(".")] + ".hack"
+    print(output_file_path)
+
+    assemble(assembly_file_contents, output_file_path)
