@@ -35,6 +35,18 @@ JUMP_OPERATION_LOOKUP = {
 
 
 def assemble(source_assembly, outpath):
+    symbol_table = {
+        "SP": 0,
+        "LCL": 1,
+        "ARG": 2,
+        "THIS": 3,
+        "THAT": 4,
+        "SCREEN": 16384,
+        "KBD": 24576,
+    }
+    for i in range(16):
+        symbol_table[f"R{i}"] = i
+
     compiled_hack_code = []
     for row in source_assembly:
         # Remove comments
@@ -52,10 +64,17 @@ def assemble(source_assembly, outpath):
 
         # A instruction
         if command[0] == "@":
-            val_dec = int(command[1:])  # Value to be loaded into A-register in base 10
-            val_binstr = bin(val_dec)[2:]  # Value in base 2
+            val = command[1:]
+
+            if val in symbol_table:  # Try to look up a symbol
+                val_dec = symbol_table[val]
+            else:
+                val_dec = int(val)
+
+            val_binstr = bin(val_dec)[2:]
             # To make the resulting binary 15-bits (16 inc first 0)
             padding = (15 - len(val_binstr)) * "0"
+
             # A starts with 0
             out = "0" + padding + val_binstr
         # C instruction
