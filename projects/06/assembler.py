@@ -36,16 +36,17 @@ with open("projects/06/add/Add.asm") as f:
 
 compiled_hack_code = []
 for row in source_assembly.split("\n"):
+    command = row.strip()
     # Ignore empty rows
-    if row == "":
+    if command == "":
         continue
     # Ignore comments
-    if row[:2] == "//":
+    if command[:2] == "//":
         continue
     # A instruction
-    if row[0] == "@":
+    if command[0] == "@":
         out = "0"  # A starts with 0
-        val_dec = int(row[1:])  # Value to be loaded into A-register in base 10
+        val_dec = int(command[1:])  # Value to be loaded into A-register in base 10
         val_binstr = bin(val_dec)[2:]  # Value in base 2
         padding = (15 - len(val_binstr))*"0"  # To make the resulting binary 15-bits (16 inc first 0)
         out += padding + val_binstr
@@ -53,13 +54,13 @@ for row in source_assembly.split("\n"):
     else:
         out = "111"  # C starts with 1, next 2 bits aren't used
         out += "0"  # a
-        if ";" in row:
-            assignment, jump = row.split(";")
+        if ";" in command:
+            assignment, jump = command.split(";")
         else:
-            assignment = row
+            assignment = command
             jump = ""
         destination, comparison = assignment.split("=")
-        
+    
         compbits = COMPARISON_OPERATION_LOOKUP[comparison]
         
         destbits = ""
