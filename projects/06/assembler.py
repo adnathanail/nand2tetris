@@ -37,56 +37,59 @@ with open("projects/06/add/Add.asm") as f:
 
 compiled_hack_code = []
 for row in source_assembly.split("\n"):
+    # Remove whitespace
     command = row.strip()
+
     # Ignore empty rows
     if command == "":
         continue
+
     # Ignore comments
     if command[:2] == "//":
         continue
+
     # A instruction
     if command[0] == "@":
-        out = "0"  # A starts with 0
         val_dec = int(command[1:])  # Value to be loaded into A-register in base 10
         val_binstr = bin(val_dec)[2:]  # Value in base 2
         padding = (15 - len(val_binstr))*"0"  # To make the resulting binary 15-bits (16 inc first 0)
-        out += padding + val_binstr
+        # A starts with 0
+        out = "0" + val_binstr
     # C instruction
     else:
-        out = "111"  # C starts with 1, next 2 bits aren't used
-
+        # Split out jump
         if ";" in command:
             assignment, jump = command.split(";")
         else:
             assignment = command
             jump = ""
 
-        destination, comparison = assignment.split("=")
+        # Split out assignment
+        if "=" in assignment:
+            destination, comparison = assignment.split("=")
+        else:
+            destination = ""
+            comparison = command
 
+        # a and c bits
         if (clu := comparison.replace("A", "X")) in COMPARISON_OPERATION_LOOKUP:
             compbits = COMPARISON_OPERATION_LOOKUP[clu]
-            abits = "0"
+            abit = "0"
         elif (clu := comparison.replace("M", "X")) in COMPARISON_OPERATION_LOOKUP:
             compbits = COMPARISON_OPERATION_LOOKUP[clu]
-            abits = "1"
+            abit = "1"
 
+        # d bits
         destbits = ""
-        if "A" in destination:
-            destbits += "1"
-        else:
-            destbits += "0"
-        if "D" in destination:
-            destbits += "1"
-        else:
-            destbits += "0"
-        if "M" in destination:
-            destbits += "1"
-        else:
-            destbits += "0"
+        destbits += "1" if "A" in destination else "0"
+        destbits += "1" if "D" in destination else "0"
+        destbits += "1" if "M" in destination else "0"
 
+        # j bit
         jumpbits = JUMP_OPERATION_LOOKUP[jump]
 
-        out += abits + compbits + destbits + jumpbits
+        # C starts with 1, next 2 bits aren't used
+        out = "111" + abit + compbits + destbits + jumpbits
     print(out)
     compiled_hack_code.append(out + "\n")
 
