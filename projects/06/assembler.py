@@ -35,19 +35,7 @@ JUMP_OPERATION_LOOKUP = {
 
 
 def assemble(source_assembly, outpath):
-    symbol_table = {
-        "SP": 0,
-        "LCL": 1,
-        "ARG": 2,
-        "THIS": 3,
-        "THAT": 4,
-        "SCREEN": 16384,
-        "KBD": 24576,
-    }
-    for i in range(16):
-        symbol_table[f"R{i}"] = i
-
-    compiled_hack_code = []
+    cleaned_assembly = []
     for row in source_assembly:
         # Remove comments
         if "//" in row:
@@ -62,6 +50,22 @@ def assemble(source_assembly, outpath):
         if command == "":
             continue
 
+        cleaned_assembly.append(command)
+
+    symbol_table = {
+        "SP": 0,
+        "LCL": 1,
+        "ARG": 2,
+        "THIS": 3,
+        "THAT": 4,
+        "SCREEN": 16384,
+        "KBD": 24576,
+    }
+    for i in range(16):
+        symbol_table[f"R{i}"] = i
+
+    compiled_hack_code = []
+    for command in cleaned_assembly:
         # A instruction
         if command[0] == "@":
             val = command[1:]
