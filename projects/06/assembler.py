@@ -47,7 +47,6 @@ def clean_assembly(dirty_assembly):
     for i in range(16):
         symbol_table[f"R{i}"] = i
 
-    # The (LABEL) bits will be removed from the final code, so we need to account for that in the addresses we produce
     cleaned_assembly = []
     current_command_index = 0
     for row in dirty_assembly:
@@ -64,10 +63,13 @@ def clean_assembly(dirty_assembly):
         if command == "":
             continue
 
+        # Deal with adding labels to the symbol table
         if command[0] == "(" and command[-1] == ")":
             symbol_table[command[1:-1]] = current_command_index
+        # Regular commands
         else:
             cleaned_assembly.append(command)
+            # We need to keep track of this so we know where the labels should point to
             current_command_index += 1
 
     return cleaned_assembly, symbol_table
@@ -78,9 +80,6 @@ def assemble(source_assembly, outpath):
 
     compiled_hack_code = []
     for command in cleaned_assembly:
-        # Ignore labels
-        if command[0] == "(":
-            continue
         # A instruction
         if command[0] == "@":
             val = command[1:]
@@ -131,7 +130,7 @@ def assemble(source_assembly, outpath):
 
             # C starts with 1, next 2 bits aren't used
             out = "111" + abit + compbits + destbits + jumpbits
-        print(out)
+
         compiled_hack_code.append(out + "\n")
 
     with open(outpath, "w") as f:
