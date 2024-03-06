@@ -35,27 +35,6 @@ JUMP_OPERATION_LOOKUP = {
 
 
 def clean_assembly(dirty_assembly):
-    out = []
-    for row in dirty_assembly:
-        # Remove comments
-        if "//" in row:
-            row_no_comments = row[:row.find("//")]
-        else:
-            row_no_comments = row
-
-        # Remove whitespace
-        command = row_no_comments.strip()
-
-        # Ignore empty rows
-        if command != "":
-            out.append(command)
-
-    return out
-
-
-def assemble(source_assembly, outpath):
-    cleaned_assembly = clean_assembly(source_assembly)
-
     symbol_table = {
         "SP": 0,
         "LCL": 1,
@@ -69,11 +48,33 @@ def assemble(source_assembly, outpath):
         symbol_table[f"R{i}"] = i
 
     # The (LABEL) bits will be removed from the final code, so we need to account for that in the addresses we produce
-    offset = 0
-    for i, row in enumerate(cleaned_assembly):
-        if row[0] == "(" and row[-1] == ")":
-            symbol_table[row[1:-1]] = i - offset
-            offset += 1
+    cleaned_assembly = []
+    current_command_index = 0
+    for row in dirty_assembly:
+        # Remove comments
+        if "//" in row:
+            row_no_comments = row[:row.find("//")]
+        else:
+            row_no_comments = row
+
+        # Remove whitespace
+        command = row_no_comments.strip()
+
+        # Ignore empty rows
+        if command == "":
+            continue
+
+        if command[0] == "(" and command[-1] == ")":
+            symbol_table[command[1:-1]] = current_command_index
+        else:
+            cleaned_assembly.append(command)
+            current_command_index += 1
+
+    return cleaned_assembly, symbol_table
+
+
+def assemble(source_assembly, outpath):
+    cleaned_assembly, symbol_table = clean_assembly(source_assembly)
 
     compiled_hack_code = []
     for command in cleaned_assembly:
@@ -97,7 +98,6 @@ def assemble(source_assembly, outpath):
             out = "0" + padding + val_binstr
         # C instruction
         else:
-            print(command)
             # Split out jump
             if ";" in command:
                 assignment, jump = command.split(";")
