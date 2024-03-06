@@ -72,6 +72,16 @@ def _assemble_first_pass(raw_asembly):
             # We need to keep track of this so we know where the labels should point to
             current_command_index += 1
 
+    # Declare custom variables
+    # This must be done in a separate loop, so we don't accidentally assign something
+    #  as a variable that is really a label coming later on
+    current_variable_memory_location = 16
+    for command in cleaned_assembly:
+        if command[0] == "@" and not (val := command[1:]).isnumeric():
+            if val not in symbol_table:
+                symbol_table[val] = current_variable_memory_location
+                current_variable_memory_location += 1
+
     return cleaned_assembly, symbol_table
 
 
