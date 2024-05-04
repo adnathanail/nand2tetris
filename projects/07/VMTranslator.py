@@ -1,5 +1,34 @@
 import sys
 
+
+def translate_cmd(cmd, out):
+    cmd_parts = cmd.split(" ")
+
+    if cmd_parts[0] == "push":
+        if cmd_parts[1] == "constant":
+            out.append(f"// {cmd}")
+            out.append(f"@{cmd_parts[2]}")
+            out.append("D=A")
+            out.append(f"@SP")
+            out.append("A=M")
+            out.append("M=D")
+            out.append("@SP")
+            out.append("M=M+1")
+    elif cmd_parts[0] == "add":
+        out.append("@SP")
+        out.append("M=M-1")
+        out.append("A=M")
+        out.append("D=M")
+        out.append("@SP")
+        out.append("M=M-1")
+        out.append("A=M")
+        out.append("M=M+D")
+        out.append("@SP")
+        out.append("M=M+1")
+    
+    return out
+
+
 def translate(vm_code):
     out = []
 
@@ -24,30 +53,10 @@ def translate(vm_code):
         if command == "":
             continue
 
-        command_parts = command.split(" ")
-        if command_parts[0] == "push":
-            if command_parts[1] == "constant":
-                out.append(f"// {command}")
-                out.append(f"@{command_parts[2]}")
-                out.append("D=A")
-                out.append(f"@SP")
-                out.append("A=M")
-                out.append("M=D")
-                out.append("@SP")
-                out.append("M=M+1")
-        elif command_parts[0] == "add":
-            out.append("@SP")
-            out.append("M=M-1")
-            out.append("A=M")
-            out.append("D=M")
-            out.append("@SP")
-            out.append("M=M-1")
-            out.append("A=M")
-            out.append("M=M+D")
-            out.append("@SP")
-            out.append("M=M+1")
+        translate_cmd(command, out)
 
     return out
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
