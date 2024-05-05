@@ -23,6 +23,12 @@ def translate_cmd(cmd, out):
             if cmd_parts[1] == "temp":
                 out.append(f"@{5 + int(cmd_parts[2])}")
                 out.append("D=M")
+            elif cmd_parts[1] == "pointer":
+                if cmd_parts[2] == "0":
+                    out.append(f"@THIS")
+                else:
+                    out.append(f"@THAT")
+                out.append("D=M")
             else:
                 if cmd_parts[1] == "local":
                     out.append("@LCL")
@@ -51,6 +57,14 @@ def translate_cmd(cmd, out):
     elif cmd_parts[0] == "pop":
         if cmd_parts[1] == "temp":
             out.append(f"@{5 + int(cmd_parts[2])}")
+            out.append("D=A")
+            out.append("@13")
+            out.append("M=D")
+        elif cmd_parts[1] == "pointer":
+            if cmd_parts[2] == "0":
+                out.append(f"@THIS")
+            else:
+                out.append(f"@THAT")
             out.append("D=A")
             out.append("@13")
             out.append("M=D")
