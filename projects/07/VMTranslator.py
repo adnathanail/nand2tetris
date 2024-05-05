@@ -23,7 +23,7 @@ def translate_cmd(cmd, out):
             if cmd_parts[1] == "temp":
                 out.append(f"@{5 + int(cmd_parts[2])}")
                 out.append("D=M")
-            if cmd_parts[1] == "static":
+            elif cmd_parts[1] == "static":
                 out.append(f"@{16 + int(cmd_parts[2])}")
                 out.append("D=M")
             elif cmd_parts[1] == "pointer":
@@ -63,7 +63,7 @@ def translate_cmd(cmd, out):
             out.append("D=A")
             out.append("@13")
             out.append("M=D")
-        if cmd_parts[1] == "static":
+        elif cmd_parts[1] == "static":
             out.append(f"@{16 + int(cmd_parts[2])}")
             out.append("D=A")
             out.append("@13")
