@@ -23,35 +23,51 @@ def translate_cmd(cmd, out):
         out.append("@SP")
         out.append("M=M-1")
         out.append("A=M")
-        out.append("D=M")
-        out.append("@SP")
-        out.append("M=M-1")
-        out.append("A=M")
 
-        if cmd_parts[0] == "add":
-            out.append("M=M+D")
-        elif cmd_parts[0] == "eq":
-            # subtract values on stack from each other
-            out.append("D=D-M")
-            # go to EQT if diff was 0 (i.e. they are equal)
-            out.append(f"@EQT{eq_n}")
-            out.append("D;JEQ")
-            # still here? not equal, append 0 to stack and jump to EQC
+        if cmd_parts[0] == "neg":
+            out.append("M=-M")
+        elif cmd_parts[0] == "not":
+            out.append("M=!M")
+        else:
+            out.append("D=M")
             out.append("@SP")
+            out.append("M=M-1")
             out.append("A=M")
-            out.append("M=0")
-            out.append(f"@EQC{eq_n}")
-            out.append("0;JMP")
-            # they were equal? append 1 to stack
-            out.append(f"(EQT{eq_n})")
-            out.append("@SP")
-            out.append("A=M")
-            out.append("M=1")
-            out.append(f"(EQC{eq_n})")
-            eq_n += 1
+
+            if cmd_parts[0] == "add":
+                out.append("M=M+D")
+            elif cmd_parts[0] == "sub":
+                out.append("M=M-D")
+            elif cmd_parts[0] == "and":
+                out.append("M=M&D")
+            elif cmd_parts[0] == "or":
+                out.append("M=M|D")
+            elif cmd_parts[0] in ["eq", "lt", "gt"]:
+                # subtract values on stack from each other
+                out.append("D=M-D")
+                # go to EQT if diff was 0 (i.e. they are equal)
+                out.append(f"@EQT{eq_n}")
+                out.append(f"D;J{cmd_parts[0].upper()}")
+                # still here? not equal, append 0 to stack and jump to EQC
+                out.append("@SP")
+                out.append("A=M")
+                out.append("M=0")
+                out.append(f"@EQC{eq_n}")
+                out.append("0;JMP")
+                # they were equal? append 1 to stack
+                out.append(f"(EQT{eq_n})")
+                out.append("@SP")
+                out.append("A=M")
+                out.append("M=-1")
+                out.append(f"(EQC{eq_n})")
+                eq_n += 1
+            else:
+                print(cmd)
 
         out.append("@SP")
         out.append("M=M+1")
+    else:
+        print(cmd)
 
     return out
 
