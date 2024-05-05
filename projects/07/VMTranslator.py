@@ -19,6 +19,67 @@ def translate_cmd(cmd, out):
             out.append("M=D")
             out.append("@SP")
             out.append("M=M+1")
+        else:
+            if cmd_parts[1] == "temp":
+                out.append(f"@{5 + int(cmd_parts[2])}")
+                out.append("D=M")
+            else:
+                if cmd_parts[1] == "local":
+                    out.append("@LCL")
+                elif cmd_parts[1] == "argument":
+                    out.append("@ARG")
+                elif cmd_parts[1] == "this":
+                    out.append("@THIS")
+                elif cmd_parts[1] == "that":
+                    out.append("@THAT")
+                else:
+                    print(cmd)
+
+                out.append("D=M")
+                out.append(f"@{cmd_parts[2]}")
+                out.append("D=D+A")
+
+                out.append("A=D")
+                out.append("D=M")
+
+            out.append("@SP")
+            out.append("A=M")
+            out.append("M=D")
+
+            out.append("@SP")
+            out.append("M=M+1")
+    elif cmd_parts[0] == "pop":
+        if cmd_parts[1] == "temp":
+            out.append(f"@{5 + int(cmd_parts[2])}")
+            out.append("D=A")
+            out.append("@13")
+            out.append("M=D")
+        else:
+            if cmd_parts[1] == "local":
+                out.append("@LCL")
+            elif cmd_parts[1] == "argument":
+                out.append("@ARG")
+            elif cmd_parts[1] == "this":
+                out.append("@THIS")
+            elif cmd_parts[1] == "that":
+                out.append("@THAT")
+            else:
+                print(cmd)
+
+            out.append("D=M")
+            out.append(f"@{cmd_parts[2]}")
+            out.append("D=D+A")
+            out.append("@13")
+            out.append("M=D")
+
+        out.append("@SP")
+        out.append("M=M-1")
+        out.append("A=M")
+        out.append("D=M")
+
+        out.append("@13")
+        out.append("A=M")
+        out.append("M=D")
     elif len(cmd_parts) == 1:
         out.append("@SP")
         out.append("M=M-1")
@@ -80,6 +141,26 @@ def translate(vm_code):
     out.append("@256")
     out.append("D=A")
     out.append("@SP")
+    out.append("M=D")
+    out.append("// LCL = 300")
+    out.append("@300")
+    out.append("D=A")
+    out.append("@LCL")
+    out.append("M=D")
+    out.append("// ARG = 400")
+    out.append("@400")
+    out.append("D=A")
+    out.append("@ARG")
+    out.append("M=D")
+    out.append("// THIS = 3000")
+    out.append("@3000")
+    out.append("D=A")
+    out.append("@THIS")
+    out.append("M=D")
+    out.append("// THAT = 3010")
+    out.append("@3010")
+    out.append("D=A")
+    out.append("@THAT")
     out.append("M=D")
 
     for row in vm_code:
