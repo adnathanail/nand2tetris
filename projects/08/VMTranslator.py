@@ -102,6 +102,19 @@ def translate_cmd(cmd, out):
         out.append("@13")
         out.append("A=M")
         out.append("M=D")
+    elif cmd_parts[0] == "label":
+        out.append(f"({cmd_parts[1]})")
+    elif cmd_parts[0] == "goto":
+        out.append(f"@{cmd_parts[1]}")
+        out.append("0;JMP")
+    elif cmd_parts[0] == "if-goto":
+        out.append("@SP")
+        out.append("M=M-1")
+        out.append("A=M")
+        out.append("D=M")
+
+        out.append(f"@{cmd_parts[1]}")
+        out.append("D;JNE")
     elif len(cmd_parts) == 1:
         out.append("@SP")
         out.append("M=M-1")
