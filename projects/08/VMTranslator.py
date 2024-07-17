@@ -94,6 +94,7 @@ def translate_cmd(cmd, out):
             out.append("@13")
             out.append("M=D")
 
+        # Pop stack to D
         out.append("@SP")
         out.append("M=M-1")
         out.append("A=M")
@@ -108,7 +109,7 @@ def translate_cmd(cmd, out):
         out.append(f"@{cmd_parts[1]}")
         out.append("0;JMP")
     elif cmd_parts[0] == "if-goto":
-        # Pop the top value from the stack
+        # Pop stack to D
         out.append("@SP")
         out.append("M=M-1")
         out.append("A=M")
@@ -133,7 +134,7 @@ def translate_cmd(cmd, out):
         out.append("@R13")  # endFrame
         out.append("M=D")
 
-        # Pop the top value from the stack
+        # Pop stack to D
         out.append("@SP")
         out.append("M=M-1")
         out.append("A=M")
