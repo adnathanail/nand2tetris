@@ -1,3 +1,6 @@
+# Seem to be constantly setting LCL ARG THIS THAT to -1 -2 -3 -4 instead of their real values
+
+
 import sys
 
 
@@ -199,7 +202,7 @@ def translate_cmd(cmd, out):
         out.append("M=M+1")
         # Push LCL onto stack
         out.append(f"@LCL")
-        out.append("D=A")
+        out.append("D=M")
         out.append(f"@SP")
         out.append("A=M")
         out.append("M=D")
@@ -207,7 +210,7 @@ def translate_cmd(cmd, out):
         out.append("M=M+1")
         # Push ARG onto stack
         out.append(f"@ARG")
-        out.append("D=A")
+        out.append("D=M")
         out.append(f"@SP")
         out.append("A=M")
         out.append("M=D")
@@ -215,7 +218,7 @@ def translate_cmd(cmd, out):
         out.append("M=M+1")
         # Push THIS onto stack
         out.append(f"@THIS")
-        out.append("D=A")
+        out.append("D=M")
         out.append(f"@SP")
         out.append("A=M")
         out.append("M=D")
@@ -223,7 +226,7 @@ def translate_cmd(cmd, out):
         out.append("M=M+1")
         # Push THAT onto stack
         out.append(f"@THAT")
-        out.append("D=A")
+        out.append("D=M")
         out.append(f"@SP")
         out.append("A=M")
         out.append("M=D")
@@ -303,11 +306,31 @@ def translate_cmd(cmd, out):
 def translate(vm_code):
     out = []
 
-    # Initialise SP
+    # Initialise SP, LCL, ARG, THIS, THAT
     out.append("// SP = 256")
     out.append("@256")
     out.append("D=A")
     out.append("@SP")
+    out.append("M=D")
+    out.append("// LCL = -1")
+    out.append("@1")
+    out.append("D=-A")
+    out.append("@LCL")
+    out.append("M=D")
+    out.append("// ARG = -2")
+    out.append("@2")
+    out.append("D=-A")
+    out.append("@ARG")
+    out.append("M=D")
+    out.append("// THIS = -3")
+    out.append("@3")
+    out.append("D=-A")
+    out.append("@THIS")
+    out.append("M=D")
+    out.append("// THAT = -4")
+    out.append("@4")
+    out.append("D=-A")
+    out.append("@THAT")
     out.append("M=D")
 
     vm_code.insert(0, "call Sys.init 0")
