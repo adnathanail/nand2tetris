@@ -108,13 +108,85 @@ def translate_cmd(cmd, out):
         out.append(f"@{cmd_parts[1]}")
         out.append("0;JMP")
     elif cmd_parts[0] == "if-goto":
+        # Pop the top value from the stack
         out.append("@SP")
         out.append("M=M-1")
         out.append("A=M")
         out.append("D=M")
-
+        # Jump to the specified label if the top stack value wasn't zero (i.e. was not false, i.e. was true)
         out.append(f"@{cmd_parts[1]}")
         out.append("D;JNE")
+    elif cmd_parts[0] == "function":
+        out.append(f"({cmd_parts[1]})")
+
+        # Add nArgs zeroes to the LCL segment for the function to use
+        nArgs = int(cmd_parts[2])
+        for _ in range(nArgs):
+            out.append(f"@SP")
+            out.append("A=M")
+            out.append("M=0")
+            out.append("@SP")
+            out.append("M=M+1")
+    elif cmd_parts[0] == "return":
+        out.append("@LCL")
+        out.append("D=M")
+        out.append("@R13")  # endFrame
+        out.append("M=D")
+
+        # Pop the top value from the stack
+        out.append("@SP")
+        out.append("M=M-1")
+        out.append("A=M")
+        out.append("D=M")
+        # Put this value in @ARG
+        out.append("@ARG")
+        out.append("A=M")
+        out.append("M=D")
+
+        # Put the stack pointer just above the new ARG
+        out.append("@ARG")
+        out.append("D=M+1")
+        out.append("@SP")
+        out.append("M=D")
+
+        # THAT = *(endFrame - 1)
+        out.append("@R13")
+        out.append("M=M-1")
+        out.append("A=M")
+        out.append("D=M")
+        out.append("@THAT")
+        out.append("M=D")
+
+        # THIS = *(endFrame - 2)
+        out.append("@R13")
+        out.append("M=M-1")
+        out.append("A=M")
+        out.append("D=M")
+        out.append("@THIS")
+        out.append("M=D")
+
+        # ARG = *(endFrame - 3)
+        out.append("@R13")
+        out.append("M=M-1")
+        out.append("A=M")
+        out.append("D=M")
+        out.append("@ARG")
+        out.append("M=D")
+
+        # LCL = *(endFrame - 4)
+        out.append("@R13")
+        out.append("M=M-1")
+        out.append("A=M")
+        out.append("D=M")
+        out.append("@LCL")
+        out.append("M=D")
+
+        # goto endFrame - 5
+        out.append("@R13")
+        out.append("M=M-1")
+        out.append("A=M")
+        out.append("D=M")
+        out.append("0;JMP")
     elif len(cmd_parts) == 1:
         out.append("@SP")
         out.append("M=M-1")
@@ -170,33 +242,6 @@ def translate_cmd(cmd, out):
 
 def translate(vm_code):
     out = []
-
-    # Initialise SP
-    out.append("// SP = 256")
-    out.append("@256")
-    out.append("D=A")
-    out.append("@SP")
-    out.append("M=D")
-    out.append("// LCL = 300")
-    out.append("@300")
-    out.append("D=A")
-    out.append("@LCL")
-    out.append("M=D")
-    out.append("// ARG = 400")
-    out.append("@400")
-    out.append("D=A")
-    out.append("@ARG")
-    out.append("M=D")
-    out.append("// THIS = 3000")
-    out.append("@3000")
-    out.append("D=A")
-    out.append("@THIS")
-    out.append("M=D")
-    out.append("// THAT = 3010")
-    out.append("@3010")
-    out.append("D=A")
-    out.append("@THAT")
-    out.append("M=D")
 
     for row in vm_code:
         # Remove comments

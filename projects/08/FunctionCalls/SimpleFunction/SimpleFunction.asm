@@ -1,29 +1,15 @@
-// SP = 256
-@256
-D=A
-@SP
-M=D
-// LCL = 300
-@300
-D=A
-@LCL
-M=D
-// ARG = 400
-@400
-D=A
-@ARG
-M=D
-// THIS = 3000
-@3000
-D=A
-@THIS
-M=D
-// THAT = 3010
-@3010
-D=A
-@THAT
-M=D
 // function SimpleFunction.test 2
+(SimpleFunction.test)
+@SP
+A=M
+M=0
+@SP
+M=M+1
+@SP
+A=M
+M=0
+@SP
+M=M+1
 // push local 0
 @LCL
 D=M
@@ -113,12 +99,47 @@ M=M-D
 @SP
 M=M+1
 // return
+@LCL
+D=M
+@R13
+M=D
 @SP
 M=M-1
 A=M
 D=M
+@ARG
+A=M
+M=D
+@ARG
+D=M+1
 @SP
+M=D
+@R13
 M=M-1
 A=M
-@SP
-M=M+1
+D=M
+@THAT
+M=D
+@R13
+M=M-1
+A=M
+D=M
+@THIS
+M=D
+@R13
+M=M-1
+A=M
+D=M
+@ARG
+M=D
+@R13
+M=M-1
+A=M
+D=M
+@LCL
+M=D
+@R13
+M=M-1
+A=M
+D=M
+0;JMP
