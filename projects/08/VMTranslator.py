@@ -188,6 +188,65 @@ def translate_cmd(cmd, out):
         out.append("A=M")
         out.append("D=M")
         out.append("0;JMP")
+    elif cmd_parts[0] == "call":  #  call XX.YY n
+        # Push XX.YY.return label onto stack
+        out.append(f"@{cmd_parts[1]}.return")
+        out.append("D=A")
+        out.append(f"@SP")
+        out.append("A=M")
+        out.append("M=D")
+        out.append("@SP")
+        out.append("M=M+1")
+        # Push LCL onto stack
+        out.append(f"@LCL")
+        out.append("D=A")
+        out.append(f"@SP")
+        out.append("A=M")
+        out.append("M=D")
+        out.append("@SP")
+        out.append("M=M+1")
+        # Push ARG onto stack
+        out.append(f"@ARG")
+        out.append("D=A")
+        out.append(f"@SP")
+        out.append("A=M")
+        out.append("M=D")
+        out.append("@SP")
+        out.append("M=M+1")
+        # Push THIS onto stack
+        out.append(f"@THIS")
+        out.append("D=A")
+        out.append(f"@SP")
+        out.append("A=M")
+        out.append("M=D")
+        out.append("@SP")
+        out.append("M=M+1")
+        # Push THAT onto stack
+        out.append(f"@THAT")
+        out.append("D=A")
+        out.append(f"@SP")
+        out.append("A=M")
+        out.append("M=D")
+        out.append("@SP")
+        out.append("M=M+1")
+        # ARG = SP – 5 – nArgs
+        out.append("@SP")
+        out.append("D=M")
+        nArgs = int(cmd_parts[2])
+        out.append(f"@{5 + nArgs}")
+        out.append("D=D-A")
+        out.append("@ARG")
+        out.append("M=D")
+        # LCL = SP
+        out.append("@SP")
+        out.append("D=M")
+        out.append("@LCL")
+        out.append("M=D")
+        # goto XX.YY
+        out.append(f"@{cmd_parts[1]}")
+        out.append("0;JMP")
+        # Add return label
+        out.append(f"({cmd_parts[1]}.return)")
     elif len(cmd_parts) == 1:
         out.append("@SP")
         out.append("M=M-1")
@@ -243,6 +302,15 @@ def translate_cmd(cmd, out):
 
 def translate(vm_code):
     out = []
+
+    # Initialise SP
+    out.append("// SP = 256")
+    out.append("@256")
+    out.append("D=A")
+    out.append("@SP")
+    out.append("M=D")
+
+    vm_code.insert(0, "call Sys.init 0")
 
     for row in vm_code:
         # Remove comments
