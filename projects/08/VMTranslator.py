@@ -1,5 +1,6 @@
 import os
 import sys
+from pathlib import Path
 
 
 eq_n = 0
@@ -362,28 +363,29 @@ if __name__ == "__main__":
         print("Usage: python3 VMTranslator.py <path>")
         sys.exit(1)
 
-    input_path = sys.argv[1]
-
+    input_path = Path(sys.argv[1])
     file_paths = []
 
-    if os.path.isfile(input_path):
+    # Single file translation
+    if input_path.is_file():
         file_paths.append(input_path)
-        asm_file = input_path.replace(".vm", ".asm")
-    else:
-        asm_file = input_path + "/" + input_path.split("/")[-1] + ".asm"
+        asm_file = input_path.parent / input_path.name.replace(".vm", ".asm")
+    # Multiple file translation
+    elif input_path.is_dir():
+        asm_file = input_path / (input_path.name + ".asm")
         for fp in os.listdir(input_path):
             if fp.split(".")[-1] == "vm":
-                file_paths.append(input_path + "/" + fp)
+                file_paths.append(input_path / fp)
 
-    print(asm_file)
-    print(file_paths)
-
+    # Read files
     lines = []
     for path in file_paths:
         with open(path) as f:
             lines += f.read().split("\n")
 
+    # Translate VM code
     vm_code = translate(lines)
 
+    # Write VM code
     with open(asm_file, "w") as f:
         f.write("\n".join(vm_code))
