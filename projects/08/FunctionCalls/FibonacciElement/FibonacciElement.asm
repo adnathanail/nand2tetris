@@ -1,478 +1,488 @@
 // SP = 256
-@256
-D=A
-@SP
-M=D
+@256                             // line 0
+D=A                              // line 1
+@SP                              // line 2
+M=D                              // line 3
 // LCL = -1
-@1
-D=-A
-@LCL
-M=D
+@1                               // line 4
+D=-A                             // line 5
+@LCL                             // line 6
+M=D                              // line 7
 // ARG = -2
-@2
-D=-A
-@ARG
-M=D
+@2                               // line 8
+D=-A                             // line 9
+@ARG                             // line 10
+M=D                              // line 11
 // THIS = -3
-@3
-D=-A
-@THIS
-M=D
+@3                               // line 12
+D=-A                             // line 13
+@THIS                            // line 14
+M=D                              // line 15
 // THAT = -4
-@4
-D=-A
-@THAT
-M=D
+@4                               // line 16
+D=-A                             // line 17
+@THAT                            // line 18
+M=D                              // line 19
 // call Sys.init 0
-@Sys.init.return
-D=A
-@SP
-A=M
-M=D
-@SP
-M=M+1
-@LCL
-D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
-@ARG
-D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
-@THIS
-D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
-@THAT
-D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
-@SP
-D=M
-@5
-D=D-A
-@ARG
-M=D
-@SP
-D=M
-@LCL
-M=D
-@Sys.init
-0;JMP
+@Sys.init.return                 // line 20
+D=A                              // line 21
+@SP                              // line 22
+A=M                              // line 23
+M=D                              // line 24
+@SP                              // line 25
+M=M+1                            // line 26
+@LCL                             // line 27
+D=M                              // line 28
+@SP                              // line 29
+A=M                              // line 30
+M=D                              // line 31
+@SP                              // line 32
+M=M+1                            // line 33
+@ARG                             // line 34
+D=M                              // line 35
+@SP                              // line 36
+A=M                              // line 37
+M=D                              // line 38
+@SP                              // line 39
+M=M+1                            // line 40
+@THIS                            // line 41
+D=M                              // line 42
+@SP                              // line 43
+A=M                              // line 44
+M=D                              // line 45
+@SP                              // line 46
+M=M+1                            // line 47
+@THAT                            // line 48
+D=M                              // line 49
+@SP                              // line 50
+A=M                              // line 51
+M=D                              // line 52
+@SP                              // line 53
+M=M+1                            // line 54
+@SP                              // line 55
+D=M                              // line 56
+@5                               // line 57
+D=D-A                            // line 58
+@ARG                             // line 59
+M=D                              // line 60
+@SP                              // line 61
+D=M                              // line 62
+@LCL                             // line 63
+M=D                              // line 64
+@Sys.init                        // line 65
+0;JMP                            // line 66
 (Sys.init.return)
+
+// --------
+// Main.vm
+// --------
+
 // function Main.fibonacci 0
 (Main.fibonacci)
 // push argument 0
-@ARG
-D=M
-@0
-D=D+A
-A=D
-D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
+@ARG                             // line 67
+D=M                              // line 68
+@0                               // line 69
+D=D+A                            // line 70
+A=D                              // line 71
+D=M                              // line 72
+@SP                              // line 73
+A=M                              // line 74
+M=D                              // line 75
+@SP                              // line 76
+M=M+1                            // line 77
 // push constant 2
-@2
-D=A
-@SP
-A=M
-M=D
-@SP
-M=M+1
+@2                               // line 78
+D=A                              // line 79
+@SP                              // line 80
+A=M                              // line 81
+M=D                              // line 82
+@SP                              // line 83
+M=M+1                            // line 84
 // lt
-@SP
-M=M-1
-A=M
-D=M
-@SP
-M=M-1
-A=M
-D=M-D
-@EQT0
-D;JLT
-@SP
-A=M
-M=0
-@EQC0
-0;JMP
+@SP                              // line 85
+M=M-1                            // line 86
+A=M                              // line 87
+D=M                              // line 88
+@SP                              // line 89
+M=M-1                            // line 90
+A=M                              // line 91
+D=M-D                            // line 92
+@EQT0                            // line 93
+D;JLT                            // line 94
+@SP                              // line 95
+A=M                              // line 96
+M=0                              // line 97
+@EQC0                            // line 98
+0;JMP                            // line 99
 (EQT0)
-@SP
-A=M
-M=-1
+@SP                              // line 100
+A=M                              // line 101
+M=-1                             // line 102
 (EQC0)
-@SP
-M=M+1
+@SP                              // line 103
+M=M+1                            // line 104
 // if-goto IF_TRUE
-@SP
-M=M-1
-A=M
-D=M
-@IF_TRUE
-D;JNE
+@SP                              // line 105
+M=M-1                            // line 106
+A=M                              // line 107
+D=M                              // line 108
+@IF_TRUE                         // line 109
+D;JNE                            // line 110
 // goto IF_FALSE
-@IF_FALSE
-0;JMP
+@IF_FALSE                        // line 111
+0;JMP                            // line 112
 // label IF_TRUE
 (IF_TRUE)
 // push argument 0
-@ARG
-D=M
-@0
-D=D+A
-A=D
-D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
+@ARG                             // line 113
+D=M                              // line 114
+@0                               // line 115
+D=D+A                            // line 116
+A=D                              // line 117
+D=M                              // line 118
+@SP                              // line 119
+A=M                              // line 120
+M=D                              // line 121
+@SP                              // line 122
+M=M+1                            // line 123
 // return
-@LCL
-D=M
-@endFrame
-M=D
-@5
-D=D-A
-A=D
-D=M
-@retAddr
-M=D
-@SP
-M=M-1
-A=M
-D=M
-@ARG
-A=M
-M=D
-@ARG
-D=M+1
-@SP
-M=D
-@endFrame
-M=M-1
-A=M
-D=M
-@THAT
-M=D
-@endFrame
-M=M-1
-A=M
-D=M
-@THIS
-M=D
-@endFrame
-M=M-1
-A=M
-D=M
-@ARG
-M=D
-@endFrame
-M=M-1
-A=M
-D=M
-@LCL
-M=D
-@retAddr
-A=M
-0;JMP
+@LCL                             // line 124
+D=M                              // line 125
+@endFrame                        // line 126
+M=D                              // line 127
+@5                               // line 128
+D=D-A                            // line 129
+A=D                              // line 130
+D=M                              // line 131
+@retAddr                         // line 132
+M=D                              // line 133
+@SP                              // line 134
+M=M-1                            // line 135
+A=M                              // line 136
+D=M                              // line 137
+@ARG                             // line 138
+A=M                              // line 139
+M=D                              // line 140
+@ARG                             // line 141
+D=M+1                            // line 142
+@SP                              // line 143
+M=D                              // line 144
+@endFrame                        // line 145
+M=M-1                            // line 146
+A=M                              // line 147
+D=M                              // line 148
+@THAT                            // line 149
+M=D                              // line 150
+@endFrame                        // line 151
+M=M-1                            // line 152
+A=M                              // line 153
+D=M                              // line 154
+@THIS                            // line 155
+M=D                              // line 156
+@endFrame                        // line 157
+M=M-1                            // line 158
+A=M                              // line 159
+D=M                              // line 160
+@ARG                             // line 161
+M=D                              // line 162
+@endFrame                        // line 163
+M=M-1                            // line 164
+A=M                              // line 165
+D=M                              // line 166
+@LCL                             // line 167
+M=D                              // line 168
+@retAddr                         // line 169
+A=M                              // line 170
+0;JMP                            // line 171
 // label IF_FALSE
 (IF_FALSE)
 // push argument 0
-@ARG
-D=M
-@0
-D=D+A
-A=D
-D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
+@ARG                             // line 172
+D=M                              // line 173
+@0                               // line 174
+D=D+A                            // line 175
+A=D                              // line 176
+D=M                              // line 177
+@SP                              // line 178
+A=M                              // line 179
+M=D                              // line 180
+@SP                              // line 181
+M=M+1                            // line 182
 // push constant 2
-@2
-D=A
-@SP
-A=M
-M=D
-@SP
-M=M+1
+@2                               // line 183
+D=A                              // line 184
+@SP                              // line 185
+A=M                              // line 186
+M=D                              // line 187
+@SP                              // line 188
+M=M+1                            // line 189
 // sub
-@SP
-M=M-1
-A=M
-D=M
-@SP
-M=M-1
-A=M
-M=M-D
-@SP
-M=M+1
+@SP                              // line 190
+M=M-1                            // line 191
+A=M                              // line 192
+D=M                              // line 193
+@SP                              // line 194
+M=M-1                            // line 195
+A=M                              // line 196
+M=M-D                            // line 197
+@SP                              // line 198
+M=M+1                            // line 199
 // call Main.fibonacci 1
-@Main.fibonacci.return
-D=A
-@SP
-A=M
-M=D
-@SP
-M=M+1
-@LCL
-D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
-@ARG
-D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
-@THIS
-D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
-@THAT
-D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
-@SP
-D=M
-@6
-D=D-A
-@ARG
-M=D
-@SP
-D=M
-@LCL
-M=D
-@Main.fibonacci
-0;JMP
+@Main.fibonacci.return           // line 200
+D=A                              // line 201
+@SP                              // line 202
+A=M                              // line 203
+M=D                              // line 204
+@SP                              // line 205
+M=M+1                            // line 206
+@LCL                             // line 207
+D=M                              // line 208
+@SP                              // line 209
+A=M                              // line 210
+M=D                              // line 211
+@SP                              // line 212
+M=M+1                            // line 213
+@ARG                             // line 214
+D=M                              // line 215
+@SP                              // line 216
+A=M                              // line 217
+M=D                              // line 218
+@SP                              // line 219
+M=M+1                            // line 220
+@THIS                            // line 221
+D=M                              // line 222
+@SP                              // line 223
+A=M                              // line 224
+M=D                              // line 225
+@SP                              // line 226
+M=M+1                            // line 227
+@THAT                            // line 228
+D=M                              // line 229
+@SP                              // line 230
+A=M                              // line 231
+M=D                              // line 232
+@SP                              // line 233
+M=M+1                            // line 234
+@SP                              // line 235
+D=M                              // line 236
+@6                               // line 237
+D=D-A                            // line 238
+@ARG                             // line 239
+M=D                              // line 240
+@SP                              // line 241
+D=M                              // line 242
+@LCL                             // line 243
+M=D                              // line 244
+@Main.fibonacci                  // line 245
+0;JMP                            // line 246
 (Main.fibonacci.return)
 // push argument 0
-@ARG
-D=M
-@0
-D=D+A
-A=D
-D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
+@ARG                             // line 247
+D=M                              // line 248
+@0                               // line 249
+D=D+A                            // line 250
+A=D                              // line 251
+D=M                              // line 252
+@SP                              // line 253
+A=M                              // line 254
+M=D                              // line 255
+@SP                              // line 256
+M=M+1                            // line 257
 // push constant 1
-@1
-D=A
-@SP
-A=M
-M=D
-@SP
-M=M+1
+@1                               // line 258
+D=A                              // line 259
+@SP                              // line 260
+A=M                              // line 261
+M=D                              // line 262
+@SP                              // line 263
+M=M+1                            // line 264
 // sub
-@SP
-M=M-1
-A=M
-D=M
-@SP
-M=M-1
-A=M
-M=M-D
-@SP
-M=M+1
+@SP                              // line 265
+M=M-1                            // line 266
+A=M                              // line 267
+D=M                              // line 268
+@SP                              // line 269
+M=M-1                            // line 270
+A=M                              // line 271
+M=M-D                            // line 272
+@SP                              // line 273
+M=M+1                            // line 274
 // call Main.fibonacci 1
-@Main.fibonacci.return
-D=A
-@SP
-A=M
-M=D
-@SP
-M=M+1
-@LCL
-D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
-@ARG
-D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
-@THIS
-D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
-@THAT
-D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
-@SP
-D=M
-@6
-D=D-A
-@ARG
-M=D
-@SP
-D=M
-@LCL
-M=D
-@Main.fibonacci
-0;JMP
+@Main.fibonacci.return           // line 275
+D=A                              // line 276
+@SP                              // line 277
+A=M                              // line 278
+M=D                              // line 279
+@SP                              // line 280
+M=M+1                            // line 281
+@LCL                             // line 282
+D=M                              // line 283
+@SP                              // line 284
+A=M                              // line 285
+M=D                              // line 286
+@SP                              // line 287
+M=M+1                            // line 288
+@ARG                             // line 289
+D=M                              // line 290
+@SP                              // line 291
+A=M                              // line 292
+M=D                              // line 293
+@SP                              // line 294
+M=M+1                            // line 295
+@THIS                            // line 296
+D=M                              // line 297
+@SP                              // line 298
+A=M                              // line 299
+M=D                              // line 300
+@SP                              // line 301
+M=M+1                            // line 302
+@THAT                            // line 303
+D=M                              // line 304
+@SP                              // line 305
+A=M                              // line 306
+M=D                              // line 307
+@SP                              // line 308
+M=M+1                            // line 309
+@SP                              // line 310
+D=M                              // line 311
+@6                               // line 312
+D=D-A                            // line 313
+@ARG                             // line 314
+M=D                              // line 315
+@SP                              // line 316
+D=M                              // line 317
+@LCL                             // line 318
+M=D                              // line 319
+@Main.fibonacci                  // line 320
+0;JMP                            // line 321
 (Main.fibonacci.return)
 // add
-@SP
-M=M-1
-A=M
-D=M
-@SP
-M=M-1
-A=M
-M=M+D
-@SP
-M=M+1
+@SP                              // line 322
+M=M-1                            // line 323
+A=M                              // line 324
+D=M                              // line 325
+@SP                              // line 326
+M=M-1                            // line 327
+A=M                              // line 328
+M=M+D                            // line 329
+@SP                              // line 330
+M=M+1                            // line 331
 // return
-@LCL
-D=M
-@endFrame
-M=D
-@5
-D=D-A
-A=D
-D=M
-@retAddr
-M=D
-@SP
-M=M-1
-A=M
-D=M
-@ARG
-A=M
-M=D
-@ARG
-D=M+1
-@SP
-M=D
-@endFrame
-M=M-1
-A=M
-D=M
-@THAT
-M=D
-@endFrame
-M=M-1
-A=M
-D=M
-@THIS
-M=D
-@endFrame
-M=M-1
-A=M
-D=M
-@ARG
-M=D
-@endFrame
-M=M-1
-A=M
-D=M
-@LCL
-M=D
-@retAddr
-A=M
-0;JMP
+@LCL                             // line 332
+D=M                              // line 333
+@endFrame                        // line 334
+M=D                              // line 335
+@5                               // line 336
+D=D-A                            // line 337
+A=D                              // line 338
+D=M                              // line 339
+@retAddr                         // line 340
+M=D                              // line 341
+@SP                              // line 342
+M=M-1                            // line 343
+A=M                              // line 344
+D=M                              // line 345
+@ARG                             // line 346
+A=M                              // line 347
+M=D                              // line 348
+@ARG                             // line 349
+D=M+1                            // line 350
+@SP                              // line 351
+M=D                              // line 352
+@endFrame                        // line 353
+M=M-1                            // line 354
+A=M                              // line 355
+D=M                              // line 356
+@THAT                            // line 357
+M=D                              // line 358
+@endFrame                        // line 359
+M=M-1                            // line 360
+A=M                              // line 361
+D=M                              // line 362
+@THIS                            // line 363
+M=D                              // line 364
+@endFrame                        // line 365
+M=M-1                            // line 366
+A=M                              // line 367
+D=M                              // line 368
+@ARG                             // line 369
+M=D                              // line 370
+@endFrame                        // line 371
+M=M-1                            // line 372
+A=M                              // line 373
+D=M                              // line 374
+@LCL                             // line 375
+M=D                              // line 376
+@retAddr                         // line 377
+A=M                              // line 378
+0;JMP                            // line 379
+
+// -------
+// Sys.vm
+// -------
+
 // function Sys.init 0
 (Sys.init)
-// push constant 4
-@4
-D=A
-@SP
-A=M
-M=D
-@SP
-M=M+1
+// push constant 2
+@2                               // line 380
+D=A                              // line 381
+@SP                              // line 382
+A=M                              // line 383
+M=D                              // line 384
+@SP                              // line 385
+M=M+1                            // line 386
 // call Main.fibonacci 1
-@Main.fibonacci.return
-D=A
-@SP
-A=M
-M=D
-@SP
-M=M+1
-@LCL
-D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
-@ARG
-D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
-@THIS
-D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
-@THAT
-D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
-@SP
-D=M
-@6
-D=D-A
-@ARG
-M=D
-@SP
-D=M
-@LCL
-M=D
-@Main.fibonacci
-0;JMP
+@Main.fibonacci.return           // line 387
+D=A                              // line 388
+@SP                              // line 389
+A=M                              // line 390
+M=D                              // line 391
+@SP                              // line 392
+M=M+1                            // line 393
+@LCL                             // line 394
+D=M                              // line 395
+@SP                              // line 396
+A=M                              // line 397
+M=D                              // line 398
+@SP                              // line 399
+M=M+1                            // line 400
+@ARG                             // line 401
+D=M                              // line 402
+@SP                              // line 403
+A=M                              // line 404
+M=D                              // line 405
+@SP                              // line 406
+M=M+1                            // line 407
+@THIS                            // line 408
+D=M                              // line 409
+@SP                              // line 410
+A=M                              // line 411
+M=D                              // line 412
+@SP                              // line 413
+M=M+1                            // line 414
+@THAT                            // line 415
+D=M                              // line 416
+@SP                              // line 417
+A=M                              // line 418
+M=D                              // line 419
+@SP                              // line 420
+M=M+1                            // line 421
+@SP                              // line 422
+D=M                              // line 423
+@6                               // line 424
+D=D-A                            // line 425
+@ARG                             // line 426
+M=D                              // line 427
+@SP                              // line 428
+D=M                              // line 429
+@LCL                             // line 430
+M=D                              // line 431
+@Main.fibonacci                  // line 432
+0;JMP                            // line 433
 (Main.fibonacci.return)
 // label WHILE
 (WHILE)
 // goto WHILE
-@WHILE
-0;JMP
+@WHILE                           // line 434
+0;JMP                            // line 435

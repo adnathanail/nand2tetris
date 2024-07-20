@@ -340,6 +340,13 @@ def translate(vm_code):
     vm_code.insert(0, "call Sys.init 0")
 
     for row in vm_code:
+        if row and row[0] == "#":
+            out.append("")
+            out.append("// " + "-" * (len(row) - 1))
+            out.append(row.replace("#", "//"))
+            out.append("// " + "-" * (len(row) - 1))
+            out.append("")
+            continue
         # Remove comments
         if "//" in row:
             row_no_comments = row[:row.find("//")]
@@ -355,6 +362,19 @@ def translate(vm_code):
 
         translate_cmd(command, out)
 
+    return out
+
+
+def add_line_numbers(vm_code):
+    max_line_length = max(len(l) for l in vm_code)
+    out = []
+    i = 0
+    for row in vm_code:
+        if not row or row[0] == "(" or row[:2] == "//":  # leave empty lines, labels, and comments
+            out.append(row)
+        else:
+            out.append(f"{row}{' ' * (max_line_length - len(row) + 5)}// line {i}")
+            i += 1
     return out
 
 
@@ -380,11 +400,14 @@ if __name__ == "__main__":
     # Read files
     lines = []
     for path in file_paths:
+        lines.append(f"# {path.name}")
         with open(path) as f:
             lines += f.read().split("\n")
 
     # Translate VM code
     vm_code = translate(lines)
+
+    vm_code = add_line_numbers(vm_code)
 
     # Write VM code
     with open(asm_file, "w") as f:
