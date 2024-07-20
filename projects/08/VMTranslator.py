@@ -1,3 +1,4 @@
+import os
 import sys
 
 
@@ -361,11 +362,28 @@ if __name__ == "__main__":
         print("Usage: python3 VMTranslator.py <path>")
         sys.exit(1)
 
-    path = sys.argv[1]
-    with open(path) as f:
-        lines = f.read().split("\n")
-    
+    input_path = sys.argv[1]
+
+    file_paths = []
+
+    if os.path.isfile(input_path):
+        file_paths.append(input_path)
+        asm_file = input_path.replace(".vm", ".asm")
+    else:
+        asm_file = input_path + "/" + input_path.split("/")[-1] + ".asm"
+        for fp in os.listdir(input_path):
+            if fp.split(".")[-1] == "vm":
+                file_paths.append(input_path + "/" + fp)
+
+    print(asm_file)
+    print(file_paths)
+
+    lines = []
+    for path in file_paths:
+        with open(path) as f:
+            lines += f.read().split("\n")
+
     vm_code = translate(lines)
-    asm_file = path.replace(".vm", ".asm")
+
     with open(asm_file, "w") as f:
         f.write("\n".join(vm_code))
