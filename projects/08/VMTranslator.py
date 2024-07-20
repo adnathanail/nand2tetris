@@ -1,6 +1,3 @@
-# Seem to be constantly setting LCL ARG THIS THAT to -1 -2 -3 -4 instead of their real values
-
-
 import sys
 
 
@@ -134,7 +131,14 @@ def translate_cmd(cmd, out):
     elif cmd_parts[0] == "return":
         out.append("@LCL")
         out.append("D=M")
-        out.append("@R13")  # endFrame
+        out.append("@endFrame")
+        out.append("M=D")
+        
+        out.append("@5")
+        out.append("D=D-A")
+        out.append("A=D")
+        out.append("D=M")
+        out.append("@retAddr")
         out.append("M=D")
 
         # Pop stack to D
@@ -154,7 +158,7 @@ def translate_cmd(cmd, out):
         out.append("M=D")
 
         # THAT = *(endFrame - 1)
-        out.append("@R13")
+        out.append("@endFrame")
         out.append("M=M-1")
         out.append("A=M")
         out.append("D=M")
@@ -162,7 +166,7 @@ def translate_cmd(cmd, out):
         out.append("M=D")
 
         # THIS = *(endFrame - 2)
-        out.append("@R13")
+        out.append("@endFrame")
         out.append("M=M-1")
         out.append("A=M")
         out.append("D=M")
@@ -170,7 +174,7 @@ def translate_cmd(cmd, out):
         out.append("M=D")
 
         # ARG = *(endFrame - 3)
-        out.append("@R13")
+        out.append("@endFrame")
         out.append("M=M-1")
         out.append("A=M")
         out.append("D=M")
@@ -178,7 +182,7 @@ def translate_cmd(cmd, out):
         out.append("M=D")
 
         # LCL = *(endFrame - 4)
-        out.append("@R13")
+        out.append("@endFrame")
         out.append("M=M-1")
         out.append("A=M")
         out.append("D=M")
@@ -186,10 +190,8 @@ def translate_cmd(cmd, out):
         out.append("M=D")
 
         # goto endFrame - 5
-        out.append("@R13")
-        out.append("M=M-1")
+        out.append("@retAddr")
         out.append("A=M")
-        out.append("D=M")
         out.append("0;JMP")
     elif cmd_parts[0] == "call":  #  call XX.YY n
         # Push XX.YY.return label onto stack

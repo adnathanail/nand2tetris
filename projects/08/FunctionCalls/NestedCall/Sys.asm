@@ -489,7 +489,13 @@ M=M+1
 // return
 @LCL
 D=M
-@R13
+@endFrame
+M=D
+@5
+D=D-A
+A=D
+D=M
+@retAddr
 M=D
 @SP
 M=M-1
@@ -502,34 +508,32 @@ M=D
 D=M+1
 @SP
 M=D
-@R13
+@endFrame
 M=M-1
 A=M
 D=M
 @THAT
 M=D
-@R13
+@endFrame
 M=M-1
 A=M
 D=M
 @THIS
 M=D
-@R13
+@endFrame
 M=M-1
 A=M
 D=M
 @ARG
 M=D
-@R13
+@endFrame
 M=M-1
 A=M
 D=M
 @LCL
 M=D
-@R13
-M=M-1
+@retAddr
 A=M
-D=M
 0;JMP
 // function Sys.add12 0
 (Sys.add12)
@@ -607,7 +611,13 @@ M=M+1
 // return
 @LCL
 D=M
-@R13
+@endFrame
+M=D
+@5
+D=D-A
+A=D
+D=M
+@retAddr
 M=D
 @SP
 M=M-1
@@ -620,32 +630,45 @@ M=D
 D=M+1
 @SP
 M=D
-@R13
+@endFrame
 M=M-1
 A=M
 D=M
 @THAT
 M=D
-@R13
+@endFrame
 M=M-1
 A=M
 D=M
 @THIS
 M=D
-@R13
+@endFrame
 M=M-1
 A=M
 D=M
 @ARG
 M=D
-@R13
+@endFrame
 M=M-1
 A=M
 D=M
 @LCL
 M=D
-@R13
-M=M-1
+@retAddr
 A=M
-D=M
 0;JMP
+
+// XXX denotes line numbers from previous versions (the true numbers will be near these numbers)
+// 20  Bootstrap init
+// 66  Entry to Sys.init()
+// 149 Entry to Sys.main()
+// 188 After Sys.main() prologue
+// XXX488 Entry to Sys.add12(123)
+// XXX552 Before Sys.add12() return
+// 603 After Sys.add12() return
+// XXX444 Before Sys.main() return
+// XXX487 After Sys.main() return
+
+// Sys.init.return 67
+// Sys.main.return 150
+// Sys.add12.return 338
