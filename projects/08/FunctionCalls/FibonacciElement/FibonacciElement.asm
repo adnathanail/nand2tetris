@@ -404,8 +404,8 @@ A=M                              // line 362
 
 // function Sys.init 0
 (Sys.init)
-// push constant 2
-@2                               // line 364
+// push constant 4
+@4                               // line 364
 D=A                              // line 365
 @SP                              // line 366
 A=M                              // line 367
