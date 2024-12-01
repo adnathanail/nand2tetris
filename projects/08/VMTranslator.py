@@ -307,37 +307,38 @@ def translate_cmd(cmd, out):
     return out
 
 
-def translate(vm_code):
+def translate(vm_code, add_bootstrap=False):
     out = []
 
-    # Initialise SP, LCL, ARG, THIS, THAT
-    out.append("// SP = 256")
-    out.append("@256")
-    out.append("D=A")
-    out.append("@SP")
-    out.append("M=D")
-    out.append("// LCL = -1")
-    out.append("@1")
-    out.append("D=-A")
-    out.append("@LCL")
-    out.append("M=D")
-    out.append("// ARG = -2")
-    out.append("@2")
-    out.append("D=-A")
-    out.append("@ARG")
-    out.append("M=D")
-    out.append("// THIS = -3")
-    out.append("@3")
-    out.append("D=-A")
-    out.append("@THIS")
-    out.append("M=D")
-    out.append("// THAT = -4")
-    out.append("@4")
-    out.append("D=-A")
-    out.append("@THAT")
-    out.append("M=D")
-
-    vm_code.insert(0, "call Sys.init 0")
+    if add_bootstrap:
+        # Initialise SP, LCL, ARG, THIS, THAT
+        out.append("// SP = 256")
+        out.append("@256")
+        out.append("D=A")
+        out.append("@SP")
+        out.append("M=D")
+        out.append("// LCL = -1")
+        out.append("@1")
+        out.append("D=-A")
+        out.append("@LCL")
+        out.append("M=D")
+        out.append("// ARG = -2")
+        out.append("@2")
+        out.append("D=-A")
+        out.append("@ARG")
+        out.append("M=D")
+        out.append("// THIS = -3")
+        out.append("@3")
+        out.append("D=-A")
+        out.append("@THIS")
+        out.append("M=D")
+        out.append("// THAT = -4")
+        out.append("@4")
+        out.append("D=-A")
+        out.append("@THAT")
+        out.append("M=D")
+        # Call Sys.init
+        translate_cmd("call Sys.init 0", out)
 
     for row in vm_code:
         if row and row[0] == "#":
@@ -385,6 +386,7 @@ if __name__ == "__main__":
 
     input_path = Path(sys.argv[1])
     file_paths = []
+    add_startup_code = False
 
     # Single file translation
     if input_path.is_file():
@@ -392,23 +394,24 @@ if __name__ == "__main__":
         asm_file = input_path.parent / input_path.name.replace(".vm", ".asm")
     # Multiple file translation
     elif input_path.is_dir():
+        add_startup_code = True
         asm_file = input_path / (input_path.name + ".asm")
         for fp in os.listdir(input_path):
             if fp.split(".")[-1] == "vm":
                 file_paths.append(input_path / fp)
 
     # Read files
-    lines = []
+    vm_code = []
     for path in file_paths:
-        lines.append(f"# {path.name}")
+        vm_code.append(f"# {path.name}")
         with open(path) as f:
-            lines += f.read().split("\n")
+            vm_code += f.read().split("\n")
 
     # Translate VM code
-    vm_code = translate(lines)
+    asm_code = translate(vm_code, add_startup_code)
 
-    vm_code = add_line_numbers(vm_code)
+    asm_code = add_line_numbers(asm_code)
 
     # Write VM code
     with open(asm_file, "w") as f:
-        f.write("\n".join(vm_code))
+        f.write("\n".join(asm_code))

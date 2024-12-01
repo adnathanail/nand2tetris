@@ -72,6 +72,11 @@ M=D
 @Sys.init
 0;JMP
 (Sys.init.return)
+
+// -------
+// Sys.vm
+// -------
+
 // function Sys.init 0
 (Sys.init)
 // push constant 4000
