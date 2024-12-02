@@ -3,14 +3,21 @@ import sys
 from pathlib import Path
 
 
+# Variable used to keep track of the number of times an eq/lt/gt or call was used
+#   so that the return address labels can be disambiguated
 eq_n = 0
 calls_n = {}
 
 
 def translate_cmd(filename, cmd, out):
+    """
+    Translate an individual VM command
+    Needs filename to correctly label static variables
+    Mutates the out variable, which should be a list where assembly commands are being accumulated
+    """
     global eq_n, calls_n
 
-    out.append(f"// {cmd}")
+    out.append(f"// {cmd}")  # Output the VM command as a comment for debugging purposes
     cmd_parts = cmd.split(" ")
 
     if cmd_parts[0] == "push":
@@ -311,10 +318,15 @@ def translate_cmd(filename, cmd, out):
     return out
 
 
-def translate(vm_codes, add_bootstrap=False):
+def translate(vm_codes):
+    """
+    Takes a list of tuples containing a VM filename, and file contents (as a list of strings)
+    """
     out = []
 
-    if add_bootstrap:
+    # If we have multiple files, we need bootstrap code so that the correct function is called first
+    #   Sys.init by convention
+    if len(vm_codes) > 1:
         # Initialise SP, LCL, ARG, THIS, THAT
         out.append("// SP = 256")
         out.append("@256")
@@ -326,14 +338,14 @@ def translate(vm_codes, add_bootstrap=False):
         translate_cmd("", "call Sys.init 0", out)
 
     for (filename, vm_code) in vm_codes:
+        # Add a big comment to clearly delineate VM files within the final assembly
+        out.append("")
+        out.append("// " + "-" * len(filename))
+        out.append(f"// {filename}")
+        out.append("// " + "-" * len(filename))
+        out.append("")
+
         for row in vm_code:
-            if row and row[0] == "#":
-                out.append("")
-                out.append("// " + "-" * (len(row) - 1))
-                out.append(row.replace("#", "//"))
-                out.append("// " + "-" * (len(row) - 1))
-                out.append("")
-                continue
             # Remove comments
             if "//" in row:
                 row_no_comments = row[:row.find("//")]
@@ -353,6 +365,11 @@ def translate(vm_codes, add_bootstrap=False):
 
 
 def add_line_numbers(vm_code):
+    """
+    Adds comments with line numbers to each actual line of assembly
+    This is because the CPUEmulator removes comments, so the line numbers
+      in my text editor don't align with the line numbers in the emulator
+    """
     max_line_length = max(len(l) for l in vm_code)
     out = []
     i = 0
@@ -372,7 +389,6 @@ if __name__ == "__main__":
 
     input_path = Path(sys.argv[1])
     file_paths = []
-    add_startup_code = False
 
     # Single file translation
     if input_path.is_file():
@@ -380,7 +396,6 @@ if __name__ == "__main__":
         asm_file = input_path.parent / input_path.name.replace(".vm", ".asm")
     # Multiple file translation
     elif input_path.is_dir():
-        add_startup_code = True
         asm_file = input_path / (input_path.name + ".asm")
         for fp in os.listdir(input_path):
             if fp.split(".")[-1] == "vm":
@@ -390,15 +405,14 @@ if __name__ == "__main__":
     vm_codes = []  # List of tuples of filename and file contents e.g. [("Class1.vm", ["push 1", "return"])]
     for path in file_paths:
         with open(path) as f:
-            vm_code = f.read().split("\n")
-        vm_code.insert(0, f"# {path.name}")
-        vm_codes.append((path.name, vm_code))
+            vm_codes.append((path.name, f.read().split("\n")))
 
     # Translate VM code
-    asm_code = translate(vm_codes, add_startup_code)
+    asm_code = translate(vm_codes)
 
-    asm_code = add_line_numbers(asm_code)
+    # Add line numbers
+    asm_code_with_line_numbers = add_line_numbers(asm_code)
 
     # Write VM code
     with open(asm_file, "w") as f:
-        f.write("\n".join(asm_code))
+        f.write("\n".join(asm_code_with_line_numbers))

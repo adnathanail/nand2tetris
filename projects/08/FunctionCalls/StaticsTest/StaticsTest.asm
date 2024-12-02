@@ -53,9 +53,9 @@ M=D                          // line 48
 0;JMP                        // line 50
 (Sys.init.1.return)
 
-// ----------
+// ---------
 // Class1.vm
-// ----------
+// ---------
 
 // function Class1.set 0
 (Class1.set)
@@ -243,9 +243,9 @@ M=D                          // line 218
 A=M                          // line 220
 0;JMP                        // line 221
 
-// -------
+// ------
 // Sys.vm
-// -------
+// ------
 
 // function Sys.init 0
 (Sys.init)
@@ -507,9 +507,9 @@ M=D                          // line 457
 @WHILE                       // line 460
 0;JMP                        // line 461
 
-// ----------
+// ---------
 // Class2.vm
-// ----------
+// ---------
 
 // function Class2.set 0
 (Class2.set)
