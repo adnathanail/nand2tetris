@@ -72,7 +72,7 @@ M=D                          // line 59
 @SP                          // line 60
 M=M+1                        // line 61
 // pop static 0
-@16                          // line 62
+@Class1.vm.16                // line 62
 D=A                          // line 63
 @13                          // line 64
 M=D                          // line 65
@@ -96,7 +96,7 @@ M=D                          // line 81
 @SP                          // line 82
 M=M+1                        // line 83
 // pop static 1
-@17                          // line 84
+@Class1.vm.17                // line 84
 D=A                          // line 85
 @13                          // line 86
 M=D                          // line 87
@@ -167,7 +167,7 @@ A=M                          // line 148
 // function Class1.get 0
 (Class1.get)
 // push static 0
-@16                          // line 150
+@Class1.vm.16                // line 150
 D=M                          // line 151
 @SP                          // line 152
 A=M                          // line 153
@@ -175,7 +175,7 @@ M=D                          // line 154
 @SP                          // line 155
 M=M+1                        // line 156
 // push static 1
-@17                          // line 157
+@Class1.vm.17                // line 157
 D=M                          // line 158
 @SP                          // line 159
 A=M                          // line 160
@@ -526,7 +526,7 @@ M=D                          // line 470
 @SP                          // line 471
 M=M+1                        // line 472
 // pop static 0
-@16                          // line 473
+@Class2.vm.16                // line 473
 D=A                          // line 474
 @13                          // line 475
 M=D                          // line 476
@@ -550,7 +550,7 @@ M=D                          // line 492
 @SP                          // line 493
 M=M+1                        // line 494
 // pop static 1
-@17                          // line 495
+@Class2.vm.17                // line 495
 D=A                          // line 496
 @13                          // line 497
 M=D                          // line 498
@@ -621,7 +621,7 @@ A=M                          // line 559
 // function Class2.get 0
 (Class2.get)
 // push static 0
-@16                          // line 561
+@Class2.vm.16                // line 561
 D=M                          // line 562
 @SP                          // line 563
 A=M                          // line 564
@@ -629,7 +629,7 @@ M=D                          // line 565
 @SP                          // line 566
 M=M+1                        // line 567
 // push static 1
-@17                          // line 568
+@Class2.vm.17                // line 568
 D=M                          // line 569
 @SP                          // line 570
 A=M                          // line 571

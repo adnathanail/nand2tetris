@@ -7,7 +7,7 @@ eq_n = 0
 calls_n = {}
 
 
-def translate_cmd(cmd, out):
+def translate_cmd(filename, cmd, out):
     global eq_n, calls_n
 
     out.append(f"// {cmd}")
@@ -27,7 +27,7 @@ def translate_cmd(cmd, out):
                 out.append(f"@{5 + int(cmd_parts[2])}")
                 out.append("D=M")
             elif cmd_parts[1] == "static":
-                out.append(f"@{16 + int(cmd_parts[2])}")
+                out.append(f"@{filename}.{16 + int(cmd_parts[2])}")
                 out.append("D=M")
             elif cmd_parts[1] == "pointer":
                 if cmd_parts[2] == "0":
@@ -67,7 +67,7 @@ def translate_cmd(cmd, out):
             out.append("@13")
             out.append("M=D")
         elif cmd_parts[1] == "static":
-            out.append(f"@{16 + int(cmd_parts[2])}")
+            out.append(f"@{filename}.{16 + int(cmd_parts[2])}")
             out.append("D=A")
             out.append("@13")
             out.append("M=D")
@@ -311,7 +311,7 @@ def translate_cmd(cmd, out):
     return out
 
 
-def translate(vm_code, add_bootstrap=False):
+def translate(vm_codes, add_bootstrap=False):
     out = []
 
     if add_bootstrap:
@@ -323,30 +323,31 @@ def translate(vm_code, add_bootstrap=False):
         out.append("M=D")
 
         # Call Sys.init
-        translate_cmd("call Sys.init 0", out)
+        translate_cmd("", "call Sys.init 0", out)
 
-    for row in vm_code:
-        if row and row[0] == "#":
-            out.append("")
-            out.append("// " + "-" * (len(row) - 1))
-            out.append(row.replace("#", "//"))
-            out.append("// " + "-" * (len(row) - 1))
-            out.append("")
-            continue
-        # Remove comments
-        if "//" in row:
-            row_no_comments = row[:row.find("//")]
-        else:
-            row_no_comments = row
+    for (filename, vm_code) in vm_codes:
+        for row in vm_code:
+            if row and row[0] == "#":
+                out.append("")
+                out.append("// " + "-" * (len(row) - 1))
+                out.append(row.replace("#", "//"))
+                out.append("// " + "-" * (len(row) - 1))
+                out.append("")
+                continue
+            # Remove comments
+            if "//" in row:
+                row_no_comments = row[:row.find("//")]
+            else:
+                row_no_comments = row
 
-        # Remove whitespace
-        command = row_no_comments.strip()
+            # Remove whitespace
+            command = row_no_comments.strip()
 
-        # Ignore empty rows
-        if command == "":
-            continue
+            # Ignore empty rows
+            if command == "":
+                continue
 
-        translate_cmd(command, out)
+            translate_cmd(filename, command, out)
 
     return out
 
@@ -386,14 +387,15 @@ if __name__ == "__main__":
                 file_paths.append(input_path / fp)
 
     # Read files
-    vm_code = []
+    vm_codes = []  # List of tuples of filename and file contents e.g. [("Class1.vm", ["push 1", "return"])]
     for path in file_paths:
-        vm_code.append(f"# {path.name}")
         with open(path) as f:
-            vm_code += f.read().split("\n")
+            vm_code = f.read().split("\n")
+        vm_code.insert(0, f"# {path.name}")
+        vm_codes.append((path.name, vm_code))
 
     # Translate VM code
-    asm_code = translate(vm_code, add_startup_code)
+    asm_code = translate(vm_codes, add_startup_code)
 
     asm_code = add_line_numbers(asm_code)
 
