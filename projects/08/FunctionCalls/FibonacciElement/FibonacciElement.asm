@@ -4,7 +4,7 @@ D=A                              // line 1
 @SP                              // line 2
 M=D                              // line 3
 // call Sys.init 0
-@Sys.init.return                 // line 4
+@Sys.init.1.return               // line 4
 D=A                              // line 5
 @SP                              // line 6
 A=M                              // line 7
@@ -51,7 +51,7 @@ D=M                              // line 46
 M=D                              // line 48
 @Sys.init                        // line 49
 0;JMP                            // line 50
-(Sys.init.return)
+(Sys.init.1.return)
 
 // --------
 // Main.vm
@@ -209,7 +209,7 @@ M=M-D                            // line 181
 @SP                              // line 182
 M=M+1                            // line 183
 // call Main.fibonacci 1
-@Main.fibonacci.return           // line 184
+@Main.fibonacci.1.return         // line 184
 D=A                              // line 185
 @SP                              // line 186
 A=M                              // line 187
@@ -256,7 +256,7 @@ D=M                              // line 226
 M=D                              // line 228
 @Main.fibonacci                  // line 229
 0;JMP                            // line 230
-(Main.fibonacci.return)
+(Main.fibonacci.1.return)
 // push argument 0
 @ARG                             // line 231
 D=M                              // line 232
@@ -289,7 +289,7 @@ M=M-D                            // line 256
 @SP                              // line 257
 M=M+1                            // line 258
 // call Main.fibonacci 1
-@Main.fibonacci.return           // line 259
+@Main.fibonacci.2.return         // line 259
 D=A                              // line 260
 @SP                              // line 261
 A=M                              // line 262
@@ -336,7 +336,7 @@ D=M                              // line 301
 M=D                              // line 303
 @Main.fibonacci                  // line 304
 0;JMP                            // line 305
-(Main.fibonacci.return)
+(Main.fibonacci.2.return)
 // add
 @SP                              // line 306
 M=M-1                            // line 307
@@ -404,8 +404,8 @@ A=M                              // line 362
 
 // function Sys.init 0
 (Sys.init)
-// push constant 4
-@4                               // line 364
+// push constant 8
+@8                               // line 364
 D=A                              // line 365
 @SP                              // line 366
 A=M                              // line 367
@@ -413,7 +413,7 @@ M=D                              // line 368
 @SP                              // line 369
 M=M+1                            // line 370
 // call Main.fibonacci 1
-@Main.fibonacci.return           // line 371
+@Main.fibonacci.3.return         // line 371
 D=A                              // line 372
 @SP                              // line 373
 A=M                              // line 374
@@ -460,7 +460,7 @@ D=M                              // line 413
 M=D                              // line 415
 @Main.fibonacci                  // line 416
 0;JMP                            // line 417
-(Main.fibonacci.return)
+(Main.fibonacci.3.return)
 // label WHILE
 (WHILE)
 // goto WHILE

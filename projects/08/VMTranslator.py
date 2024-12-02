@@ -4,10 +4,11 @@ from pathlib import Path
 
 
 eq_n = 0
+calls_n = {}
 
 
 def translate_cmd(cmd, out):
-    global eq_n
+    global eq_n, calls_n
 
     out.append(f"// {cmd}")
     cmd_parts = cmd.split(" ")
@@ -196,8 +197,11 @@ def translate_cmd(cmd, out):
         out.append("A=M")
         out.append("0;JMP")
     elif cmd_parts[0] == "call":  #  call XX.YY n
+        if cmd_parts[1] not in calls_n:
+            calls_n[cmd_parts[1]] = 0
+        calls_n[cmd_parts[1]] += 1
         # Push XX.YY.return label onto stack
-        out.append(f"@{cmd_parts[1]}.return")
+        out.append(f"@{cmd_parts[1]}.{calls_n[cmd_parts[1]]}.return")
         out.append("D=A")
         out.append(f"@SP")
         out.append("A=M")
@@ -253,7 +257,7 @@ def translate_cmd(cmd, out):
         out.append(f"@{cmd_parts[1]}")
         out.append("0;JMP")
         # Add return label
-        out.append(f"({cmd_parts[1]}.return)")
+        out.append(f"({cmd_parts[1]}.{calls_n[cmd_parts[1]]}.return)")
     elif len(cmd_parts) == 1:
         out.append("@SP")
         out.append("M=M-1")
