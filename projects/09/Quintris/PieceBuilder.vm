@@ -40,6 +40,8 @@ add
 push argument 1
 add
 push argument 4
+push constant 6
+add
 pop temp 0
 pop pointer 1
 push temp 0
