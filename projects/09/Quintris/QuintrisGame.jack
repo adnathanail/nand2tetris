@@ -20,6 +20,8 @@ class QuintrisGame {
     field Piece piece;
     // Grid of placed squares
     field Grid grid;
+    // Whether the game is over
+    field boolean game_over;
 
     /** Constructs a new Square Game. */
     constructor QuintrisGame new() {
@@ -53,7 +55,9 @@ class QuintrisGame {
         var Array pieceSquares;
         var int i;
 
-        while (true) {
+        let game_over = false;
+
+        while (~game_over) {
             while (grid.canMove(piece.tryToDrop(), piece.getNumSquares())) {
                 // Move the piece down (as attempted in the tryToDrop in the while condition)
                 do piece.acceptMove();
@@ -79,7 +83,14 @@ class QuintrisGame {
             do piece.dispose();
             do grid.draw();
             let piece = piece_builder.getRandomPiece(this);
+            if (~grid.canMove(piece.getCurrentSquares(), piece.getNumSquares())) {
+                let game_over = true;
+            }
         }
+
+        // Show game over message
+        do Output.moveCursor(12, 27);
+        do Output.printString("Game over!");
 
         return;
     }
