@@ -56,7 +56,11 @@ class QuintrisGame {
         var int rand_seed;
         var int key_in_counter;  // how many times we've run the input loop (so we can check for inputs multiple times per piece movement)
 
-        do _showMessage("Press enter to start");
+        // do _showMessage("Press enter to start", 0);
+        do _showMessage("Move: Up/Down arrows", 0);
+        do _showMessage("Zoom: Right arrow", 1);
+        do _showMessage("Rotate: Space", 2);
+        do _showMessage("Start: Enter", 4);
 
         // Use time user takes to start game as a seed for the RNG
         let key = 0;
@@ -121,7 +125,9 @@ class QuintrisGame {
         }
 
         // Show game over message
-        do _showMessage("Game over!");
+        do _showMessage("            ", 0);
+        do _showMessage(" Game over! ", 1);
+        do _showMessage("            ", 2);
 
         return;
     }
@@ -132,8 +138,8 @@ class QuintrisGame {
         return;
     }
 
-    method void _showMessage(String message) {
-        do Output.moveCursor(12, 10 + (message.length() / 2));
+    method void _showMessage(String message, int line) {
+        do Output.moveCursor(10 + line, 15);
         do Output.printString(message);
         return;
     }
