@@ -3,29 +3,87 @@
 
 /** A single Quintris piece */
 class Piece {
+   // Side length of squares making up the piece in pixels (16)
+   static int size;
+   // Number of squares per piece (5)
+   static int num_squares;
 
-   field int x, y; // screen location of the square's top-left corner
-   field int size; // length of this square, in pixels
+   // Location of the square's top-left corner, in grid units relative to size
+   //   (e.g. x = 3, is 16 * 3 = 48 in pixels)
+   field int x, y;
+   // Array of 2D arrays of relative offsets to create a multi-square shape
+   //   (e.g. ((0, 0), (0, 1), (0, 2), (0, 3) (1, 3)) is an L shape
+   field Array squares;
 
    /** Constructs a new square with a given location and size. */
-   constructor Piece new(int Ax, int Ay, int Asize) {
-      let x = Ax;
-      let y = Ay;
-      let size = Asize;
+   constructor Piece new() {
+      // Used to temporarily store an inner array in a 2D array to allow indexing
+      //   as an_array[0][0] is invalid syntax
+      var Array two_d_helper;
+
+      // Initialise classes static variables
+      let size = 16;
+      let num_squares = 15;
+
+      // Initialise pieces starting position
+      let x = 0;
+      let y = 0;
+
+      // Initialise array of square offsets
+      let squares = Array.new(num_squares);
+
+      let squares[0] = Array.new(2);
+      let two_d_helper = squares[0];
+      let two_d_helper[0] = 0;
+      let two_d_helper[1] = 0;
+
+      let squares[1] = Array.new(2);
+      let two_d_helper = squares[1];
+      let two_d_helper[0] = 1;
+      let two_d_helper[1] = 0;
+
+      let squares[2] = Array.new(2);
+      let two_d_helper = squares[2];
+      let two_d_helper[0] = 0;
+      let two_d_helper[1] = 1;
+
+      let squares[3] = Array.new(2);
+      let two_d_helper = squares[3];
+      let two_d_helper[0] = 1;
+      let two_d_helper[1] = 1;
+
+      let squares[4] = Array.new(2);
+      let two_d_helper = squares[4];
+      let two_d_helper[0] = 2;
+      let two_d_helper[1] = 0;
+
+      // Draw piece on the screen
       do draw();
       return this;
    }
 
-   /** Disposes this square. */
+   /** Disposes this piece. */
    method void dispose() {
       do Memory.deAlloc(this);
       return;
    }
 
-   /** Draws the square on the screen. */
+   /** Draws the piece on the screen. */
    method void draw() {
+      var int i;
+      var Array two_d_helper;
       do Screen.setColor(true);
-      do Screen.drawRectangle(x, y, x + size, y + size);
+      let i = 0;
+      while (i < 5) {
+         let two_d_helper = squares[i];
+         do Screen.drawRectangle(
+            x + (two_d_helper[0]*size) + 1,
+            y + (two_d_helper[1]*size) + 1,
+            x +(two_d_helper[0]*size) + size - 1,
+            y + (two_d_helper[1]*size) + size - 1
+         );
+         let i = i + 1;
+      }
       return;
    }
 }

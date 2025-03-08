@@ -10,7 +10,7 @@ class QuintrisGame {
 
    /** Constructs a new Square Game. */
    constructor QuintrisGame new() {
-      let piece = Piece.new(0, 0, 30);
+      let piece = Piece.new();
       return this;
    }
 
