@@ -1,4 +1,4 @@
-function Piece.init_static 0
+function Piece.initStatic 0
 push constant 16
 pop static 0
 push constant 5
@@ -53,7 +53,7 @@ call Math.max 2
 pop this 3
 push constant 0
 return
-function Piece.new 1
+function Piece.new 0
 push constant 4
 call Memory.alloc 1
 pop pointer 0
@@ -179,7 +179,7 @@ goto WHILE_EXP0
 label WHILE_END0
 push constant 0
 return
-function Piece.canMove 0
+function Piece.canDrop 0
 push argument 0
 pop pointer 0
 push this 0
@@ -188,7 +188,7 @@ add
 push static 3
 lt
 return
-function Piece.move 0
+function Piece.drop 0
 push argument 0
 pop pointer 0
 push pointer 0

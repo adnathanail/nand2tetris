@@ -13,9 +13,9 @@ class QuintrisGame {
       do Piece.initStatic();
 
       let piece = Piece.new();
-      while (piece.canMove()) {
+      while (piece.canDrop()) {
          do Sys.wait(200);
-         do piece.move();
+         do piece.drop();
       }
       return this;
    }

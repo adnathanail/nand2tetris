@@ -30,7 +30,10 @@ class Piece {
    }
 
    method void _setSquare(int square_index, int x, int y) {
+      // Used to temporarily store an inner array in a 2D array to allow indexing
+      //   as an_array[0][0] is invalid syntax
       var Array two_d_helper;
+
 
       let squares[square_index] = Array.new(2);
       let two_d_helper = squares[square_index];
@@ -44,10 +47,6 @@ class Piece {
 
    /** Constructs a new square with a given location and size. */
    constructor Piece new() {
-      // Used to temporarily store an inner array in a 2D array to allow indexing
-      //   as an_array[0][0] is invalid syntax
-      var Array two_d_helper;
-
       // Initialise pieces starting position
       let x = 0;
       let y = 0;
@@ -92,11 +91,13 @@ class Piece {
       return;
    }
 
-   method boolean canMove() {
+   /** Checks whether the piece can "drop" any further */
+   method boolean canDrop() {
       return (x + width) < screen_width;
    }
 
-   method void move() {
+   /** "Drop" the piece 1 space to the right */
+   method void drop() {
       do draw(false);
       let x = x + 1;
       do draw(true);
