@@ -125,9 +125,6 @@ add
 pop local 2
 goto WHILE_EXP2
 label WHILE_END2
-push local 1
-call Array.dispose 1
-pop temp 0
 push this 0
 call Piece.dispose 1
 pop temp 0
