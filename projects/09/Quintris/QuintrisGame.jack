@@ -54,14 +54,14 @@ class QuintrisGame {
     method void run() {
         var char key;  // the key currently pressed by the user
         var int rand_seed;
-        var int key_in_counter;  // how many times we've run the right arrow input loop
+        var int key_in_counter;  // how many times we've run the input loop (so we can check for inputs multiple times per piece movement)
 
-        do _showMessage("Press space to start");
+        do _showMessage("Press enter to start");
 
         // Use time user takes to start game as a seed for the RNG
         let key = 0;
         let rand_seed = 0;
-        while (~(key = 32)) {
+        while (~(key = 128)) {
             let key = Keyboard.keyPressed();
             let rand_seed = rand_seed + 1;
             do Sys.wait(1);
