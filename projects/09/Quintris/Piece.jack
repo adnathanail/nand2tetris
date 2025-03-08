@@ -82,6 +82,26 @@ class Piece {
         return _tryToMove(0, 1);
     }
 
+    /** Rotates the piece 90 degrees clockwise */
+    method Array tryToRotate() {
+        var int i;
+        var int centerX;
+        var int centerY;
+
+        // Calculate the center of the piece
+        let centerX = current_squares[0];
+        let centerY = current_squares[1];
+
+        let i = 0;
+        while (i < num_squares) {
+            let desired_squares[i * 2] = centerX - (current_squares[(i * 2) + 1] - centerY);
+            let desired_squares[(i * 2) + 1] = centerY + (current_squares[i * 2] - centerX);
+            let i = i + 1;
+        }
+
+        return desired_squares;
+    }
+
     method void acceptMove() {
         var int i;
 

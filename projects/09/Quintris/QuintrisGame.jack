@@ -103,6 +103,10 @@ class QuintrisGame {
                 if ((key = 133) & grid.canMove(piece.tryToMoveDown(), piece.getNumSquares())) {
                     do piece.acceptMove();
                 }
+                // Space
+                if ((key = 32) & grid.canMove(piece.tryToRotate(), piece.getNumSquares())) {
+                    do piece.acceptMove();
+                }
             }
 
             // Copy pieces final position to the grid

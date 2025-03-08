@@ -188,6 +188,81 @@ push constant 0
 push constant 1
 call Piece._tryToMove 3
 return
+function Piece.tryToRotate 3
+push argument 0
+pop pointer 0
+push constant 0
+push this 2
+add
+pop pointer 1
+push that 0
+pop local 1
+push constant 1
+push this 2
+add
+pop pointer 1
+push that 0
+pop local 2
+push constant 0
+pop local 0
+label WHILE_EXP0
+push local 0
+push this 1
+lt
+not
+if-goto WHILE_END0
+push local 0
+push constant 2
+call Math.multiply 2
+push this 3
+add
+push local 1
+push local 0
+push constant 2
+call Math.multiply 2
+push constant 1
+add
+push this 2
+add
+pop pointer 1
+push that 0
+push local 2
+sub
+sub
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push local 0
+push constant 2
+call Math.multiply 2
+push constant 1
+add
+push this 3
+add
+push local 2
+push local 0
+push constant 2
+call Math.multiply 2
+push this 2
+add
+pop pointer 1
+push that 0
+push local 1
+sub
+add
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push this 3
+return
 function Piece.acceptMove 1
 push argument 0
 pop pointer 0
