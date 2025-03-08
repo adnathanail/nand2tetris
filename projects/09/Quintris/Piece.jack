@@ -1,0 +1,31 @@
+// Copyright (c) 2025-03-08 Alex Nathanail
+// All rights reserved
+
+/** A single Quintris piece */
+class Piece {
+
+   field int x, y; // screen location of the square's top-left corner
+   field int size; // length of this square, in pixels
+
+   /** Constructs a new square with a given location and size. */
+   constructor Piece new(int Ax, int Ay, int Asize) {
+      let x = Ax;
+      let y = Ay;
+      let size = Asize;
+      do draw();
+      return this;
+   }
+
+   /** Disposes this square. */
+   method void dispose() {
+      do Memory.deAlloc(this);
+      return;
+   }
+
+   /** Draws the square on the screen. */
+   method void draw() {
+      do Screen.setColor(true);
+      do Screen.drawRectangle(x, y, x + size, y + size);
+      return;
+   }
+}

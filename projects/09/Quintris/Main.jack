@@ -1,0 +1,13 @@
+// Copyright (c) 2025-03-08 Alex Nathanail
+// All rights reserved
+
+/** Tetris game with 5 block pieces */
+class Main {
+   function void main() {
+      var QuintrisGame game;
+      let game = QuintrisGame.new();
+      // do game.run();
+      do game.dispose();
+      return;
+   }
+}
