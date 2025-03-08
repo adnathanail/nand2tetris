@@ -44,7 +44,7 @@ call Memory.deAlloc 1
 pop temp 0
 push constant 0
 return
-function QuintrisGame.run 3
+function QuintrisGame.run 1
 push argument 0
 pop pointer 0
 push constant 0
@@ -107,48 +107,15 @@ pop temp 0
 label IF_FALSE1
 goto WHILE_EXP1
 label WHILE_END1
+push this 2
 push this 1
 call Piece.getCurrentSquares 1
-pop local 1
-push constant 0
-pop local 2
-label WHILE_EXP2
-push local 2
 push this 1
 call Piece.getNumSquares 1
-lt
-not
-if-goto WHILE_END2
-push this 2
-push local 2
-push constant 2
-call Math.multiply 2
-push local 1
-add
-pop pointer 1
-push that 0
-push local 2
-push constant 2
-call Math.multiply 2
-push constant 1
-add
-push local 1
-add
-pop pointer 1
-push that 0
-call Grid.setGridSquare 3
+call Grid.copyPieceSquares 3
 pop temp 0
-push local 2
-push constant 1
-add
-pop local 2
-goto WHILE_EXP2
-label WHILE_END2
 push this 1
 call Piece.dispose 1
-pop temp 0
-push this 2
-call Grid.draw 1
 pop temp 0
 push this 0
 push pointer 0

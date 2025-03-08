@@ -52,8 +52,6 @@ class QuintrisGame {
 
     method void run() {
         var char key;  // the key currently pressed by the user
-        var Array pieceSquares;
-        var int i;
 
         let game_over = false;
 
@@ -74,14 +72,8 @@ class QuintrisGame {
                 }
             }
 
-            let pieceSquares = piece.getCurrentSquares();
-            let i = 0;
-            while (i < piece.getNumSquares()) {
-                do grid.setGridSquare(pieceSquares[i * 2], pieceSquares[(i * 2) + 1]);
-                let i = i + 1;
-            }
+            do grid.copyPieceSquares(piece.getCurrentSquares(), piece.getNumSquares());
             do piece.dispose();
-            do grid.draw();
             let piece = piece_builder.getRandomPiece(this);
             if (~grid.canMove(piece.getCurrentSquares(), piece.getNumSquares())) {
                 let game_over = true;

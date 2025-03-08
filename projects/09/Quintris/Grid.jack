@@ -90,4 +90,15 @@ class Grid {
         }
         return true;
     }
+
+    method void copyPieceSquares(Array squares, int num_squares) {
+        var int i;
+        let i = 0;
+        while (i < num_squares) {
+            do setGridSquare(squares[i * 2], squares[(i * 2) + 1]);
+            let i = i + 1;
+        }
+        do draw();
+        return;
+    }
 }
