@@ -2,14 +2,14 @@ function Piece.new 1
 push constant 3
 call Memory.alloc 1
 pop pointer 0
-push constant 0
-pop this 0
-push constant 0
-pop this 1
 push constant 16
 pop static 0
 push constant 15
 pop static 1
+push constant 0
+pop this 0
+push constant 0
+pop this 1
 push static 1
 call Array.new 1
 pop this 2
@@ -36,8 +36,14 @@ pop temp 0
 pop pointer 1
 push temp 0
 pop that 0
+push constant 1
+push local 0
+add
 push constant 0
-pop local 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
 push constant 1
 push this 2
 add
