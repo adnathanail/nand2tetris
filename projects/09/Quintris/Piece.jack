@@ -84,16 +84,17 @@ class Piece {
    method void draw(boolean color) {
       var int i;
       var Array two_d_helper;
+
+      var int square_x;
+      var int square_y;
+
       do Screen.setColor(color);
       let i = 0;
       while (i < num_squares) {
          let two_d_helper = squares[i];
-         do Screen.drawRectangle(
-            (x * size) + (two_d_helper[0] * size) + 1,
-            (y * size) + (two_d_helper[1] * size) + 1,
-            (x * size) + (two_d_helper[0] * size) + size - 1,
-            (y * size) + (two_d_helper[1] * size) + size - 1
-         );
+         let square_x = x + two_d_helper[0];
+         let square_y = y + two_d_helper[1];
+         do Screen.drawRectangle(square_x * size + 1, square_y * size + 1, (square_x + 1) * size - 1, (square_y + 1) * size - 1);
          let i = i + 1;
       }
       return;
