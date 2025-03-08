@@ -1,4 +1,4 @@
-function QuintrisGame.new 1
+function QuintrisGame.new 0
 push constant 1
 call Memory.alloc 1
 pop pointer 0
@@ -7,21 +7,16 @@ pop temp 0
 call Piece.new 0
 pop this 0
 label WHILE_EXP0
-push local 0
-push constant 10
-lt
+push this 0
+call Piece.canMove 1
 not
 if-goto WHILE_END0
-push constant 1000
+push constant 200
 call Sys.wait 1
 pop temp 0
 push this 0
 call Piece.move 1
 pop temp 0
-push local 0
-push constant 1
-add
-pop local 0
 goto WHILE_EXP0
 label WHILE_END0
 push pointer 0
