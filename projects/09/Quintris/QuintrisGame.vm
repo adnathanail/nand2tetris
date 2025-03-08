@@ -40,7 +40,7 @@ call Memory.deAlloc 1
 pop temp 0
 push constant 0
 return
-function QuintrisGame.run 2
+function QuintrisGame.run 3
 push argument 0
 pop pointer 0
 push pointer 0
@@ -143,17 +143,22 @@ if-goto WHILE_END2
 push this 1
 call Piece.acceptMove 1
 pop temp 0
-push constant 200
-call Sys.wait 1
-pop temp 0
+push constant 0
+pop local 2
+label WHILE_EXP3
+push local 2
+push constant 4
+lt
+not
+if-goto WHILE_END3
 call Keyboard.keyPressed 0
 pop local 0
 push local 0
-push constant 131
+push constant 132
 eq
 push this 2
 push this 1
-call Piece.tryToMoveUp 1
+call Piece.tryToDrop 1
 push this 1
 call Piece.getNumSquares 1
 call Grid.canMove 3
@@ -165,12 +170,21 @@ push this 1
 call Piece.acceptMove 1
 pop temp 0
 label IF_FALSE0
+push local 2
+push constant 1
+add
+pop local 2
+push constant 50
+call Sys.wait 1
+pop temp 0
+goto WHILE_EXP3
+label WHILE_END3
 push local 0
-push constant 133
+push constant 131
 eq
 push this 2
 push this 1
-call Piece.tryToMoveDown 1
+call Piece.tryToMoveUp 1
 push this 1
 call Piece.getNumSquares 1
 call Grid.canMove 3
@@ -182,6 +196,23 @@ push this 1
 call Piece.acceptMove 1
 pop temp 0
 label IF_FALSE1
+push local 0
+push constant 133
+eq
+push this 2
+push this 1
+call Piece.tryToMoveDown 1
+push this 1
+call Piece.getNumSquares 1
+call Grid.canMove 3
+and
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push this 1
+call Piece.acceptMove 1
+pop temp 0
+label IF_FALSE2
 goto WHILE_EXP2
 label WHILE_END2
 push this 2
@@ -205,13 +236,13 @@ push this 1
 call Piece.getNumSquares 1
 call Grid.canMove 3
 not
-if-goto IF_TRUE2
-goto IF_FALSE2
-label IF_TRUE2
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
 push constant 0
 not
 pop this 3
-label IF_FALSE2
+label IF_FALSE3
 goto WHILE_EXP1
 label WHILE_END1
 push pointer 0

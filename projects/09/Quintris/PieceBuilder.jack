@@ -4,10 +4,6 @@
 // Pieces reference
 // https://www.reddit.com/r/Tetris/comments/18zyfyu/would_it_be_more_difficult_or_easy_if_its_a_5/
 
-// TODO randomise rotation
-// TODO randomise y position
-// TODO randomise reflection
-
 /** Utility class to generate random pieces */
 class PieceBuilder {
     field Random rnd;

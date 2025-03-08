@@ -54,6 +54,7 @@ class QuintrisGame {
     method void run() {
         var char key;  // the key currently pressed by the user
         var int rand_seed;
+        var int key_in_counter;  // how many times we've run the right arrow input loop
 
         do _showMessage("Press space to start");
 
@@ -82,9 +83,18 @@ class QuintrisGame {
             while (grid.canMove(piece.tryToDrop(), piece.getNumSquares())) {
                 // Move the piece down (as attempted in the tryToDrop in the while condition)
                 do piece.acceptMove();
-                do Sys.wait(200);
-                // Check keyboard input
-                let key = Keyboard.keyPressed();
+                // Check the right arrow 4 times, to allow speedy dropping
+                let key_in_counter = 0;
+                while (key_in_counter < 4) {
+                    // Check keyboard input
+                    let key = Keyboard.keyPressed();
+                    // Right arrow
+                    if ((key = 132) & grid.canMove(piece.tryToDrop(), piece.getNumSquares())) {
+                        do piece.acceptMove();
+                    }
+                    let key_in_counter = key_in_counter + 1;
+                    do Sys.wait(50);
+                }
                 // Up arrow
                 if ((key = 131) & grid.canMove(piece.tryToMoveUp(), piece.getNumSquares())) {
                     do piece.acceptMove();
@@ -95,9 +105,12 @@ class QuintrisGame {
                 }
             }
 
+            // Copy pieces final position to the grid
             do grid.copyPieceSquares(piece.getCurrentSquares(), piece.getNumSquares());
+            // Get a new piece
             do piece.dispose();
             let piece = piece_builder.getRandomPiece(this);
+            // Check if the new piece can't be added to the screen
             if (~grid.canMove(piece.getCurrentSquares(), piece.getNumSquares())) {
                 let game_over = true;
             }
