@@ -15,6 +15,7 @@ class QuintrisGame {
    static int screen_width;
    static int screen_height;
 
+   field PieceBuilder piece_builder;
    // Current active game piece
    field Piece piece;
    // Grid of placed squares
@@ -31,10 +32,20 @@ class QuintrisGame {
       let screen_width = screen_width_px / size;
       let screen_height = screen_height_px / size;
 
+      // Initialise piece builder
+      let piece_builder = PieceBuilder.new();
       // Create a piece and a grid
-      let piece = PieceBuilder.getRandomPiece(this);
+      let piece = piece_builder.getRandomPiece(this);
       let grid = Grid.new(this);
       return this;
+   }
+
+   method void dispose() {
+      do piece.dispose();
+      do grid.dispose();
+      do piece_builder.dispose();
+      do Memory.deAlloc(this);
+      return;
    }
 
    method void run() {
@@ -67,17 +78,9 @@ class QuintrisGame {
          }
          do piece.dispose();
          do grid.draw();
-         let piece = PieceBuilder.getRandomPiece(this);
+         let piece = piece_builder.getRandomPiece(this);
       }
 
-      return;
-   }
-
-   /** Disposes this game. */
-   method void dispose() {
-      do piece.dispose();
-      do grid.dispose();
-      do Memory.deAlloc(this);
       return;
    }
 

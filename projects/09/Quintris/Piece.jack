@@ -29,7 +29,6 @@ class Piece {
       return this;
    }
 
-   /** Disposes this piece. */
    method void dispose() {
       do current_squares.dispose();
       do desired_squares.dispose();

@@ -274,8 +274,7 @@ class Random {
         return this;
     }
 
-    /** Disposes this random number generator. */
-   method void dispose() {
+    method void dispose() {
       do Memory.deAlloc(this);
       return;
    }

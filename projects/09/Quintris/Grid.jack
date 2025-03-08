@@ -30,7 +30,6 @@ class Grid {
       return this;
    }
 
-   /** Disposes this piece. */
    method void dispose() {
       do grid.dispose();
       do Memory.deAlloc(this);
