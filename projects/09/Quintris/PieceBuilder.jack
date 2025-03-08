@@ -1,6 +1,13 @@
 // Copyright (c) 2025-03-08 Alex Nathanail
 // All rights reserved
 
+// Pieces reference
+// https://www.reddit.com/r/Tetris/comments/18zyfyu/would_it_be_more_difficult_or_easy_if_its_a_5/
+
+// TODO randomise rotation
+// TODO randomise y position
+// TODO randomise reflection
+
 /** Utility class to generate random pieces */
 class PieceBuilder {
    function void _setSquare(Array squares, int square_index, int x, int y) {
@@ -17,12 +24,168 @@ class PieceBuilder {
         let num_squares = 5;
 
         let squares = Array.new(num_squares * 2);
+        do PieceBuilder._setSquares12(squares);
+
+        return Piece.new(game, num_squares, squares);
+    }
+
+    function void _setSquares1(Array squares) {
+        // X
+        // X
+        // X
+        // X
+        // X
+        do PieceBuilder._setSquare(squares, 0, 0, 0);
+        do PieceBuilder._setSquare(squares, 1, 0, 1);
+        do PieceBuilder._setSquare(squares, 2, 0, 2);
+        do PieceBuilder._setSquare(squares, 3, 0, 3);
+        do PieceBuilder._setSquare(squares, 4, 0, 4);
+
+        return;
+    }
+
+    function void _setSquares2(Array squares) {
+        // X
+        // X
+        // X
+        // X X
+        do PieceBuilder._setSquare(squares, 0, 0, 0);
+        do PieceBuilder._setSquare(squares, 1, 0, 1);
+        do PieceBuilder._setSquare(squares, 2, 0, 2);
+        do PieceBuilder._setSquare(squares, 3, 0, 3);
+        do PieceBuilder._setSquare(squares, 4, 1, 3);
+
+        return;
+    }
+
+    function void _setSquares3(Array squares) {
+        // X
+        // X
+        // X X
+        //   X
+        do PieceBuilder._setSquare(squares, 0, 0, 0);
+        do PieceBuilder._setSquare(squares, 1, 0, 1);
+        do PieceBuilder._setSquare(squares, 2, 0, 2);
+        do PieceBuilder._setSquare(squares, 3, 1, 2);
+        do PieceBuilder._setSquare(squares, 4, 1, 3);
+
+        return;
+    }
+
+    function void _setSquares4(Array squares) {
+        // X X
+        // X X
+        // X
         do PieceBuilder._setSquare(squares, 0, 0, 0);
         do PieceBuilder._setSquare(squares, 1, 1, 0);
         do PieceBuilder._setSquare(squares, 2, 0, 1);
         do PieceBuilder._setSquare(squares, 3, 1, 1);
+        do PieceBuilder._setSquare(squares, 4, 0, 2);
+
+        return;
+    }
+
+    function void _setSquares5(Array squares) {
+        // X X X
+        //   X
+        //   X
+        do PieceBuilder._setSquare(squares, 0, 0, 0);
+        do PieceBuilder._setSquare(squares, 1, 1, 0);
+        do PieceBuilder._setSquare(squares, 2, 2, 0);
+        do PieceBuilder._setSquare(squares, 3, 1, 1);
         do PieceBuilder._setSquare(squares, 4, 1, 2);
 
-        return Piece.new(game, num_squares, squares);
+        return;
+    }
+
+    function void _setSquares6(Array squares) {
+        // X   X
+        // X X X
+        do PieceBuilder._setSquare(squares, 0, 0, 0);
+        do PieceBuilder._setSquare(squares, 1, 2, 0);
+        do PieceBuilder._setSquare(squares, 2, 0, 1);
+        do PieceBuilder._setSquare(squares, 3, 1, 1);
+        do PieceBuilder._setSquare(squares, 4, 2, 1);
+
+        return;
+    }
+
+    function void _setSquares7(Array squares) {
+        //   X X
+        // X X
+        //   X
+        do PieceBuilder._setSquare(squares, 0, 1, 0);
+        do PieceBuilder._setSquare(squares, 1, 2, 0);
+        do PieceBuilder._setSquare(squares, 2, 0, 1);
+        do PieceBuilder._setSquare(squares, 3, 1, 1);
+        do PieceBuilder._setSquare(squares, 4, 1, 2);
+
+        return;
+    }
+
+    function void _setSquares8(Array squares) {
+        // X
+        // X
+        // X X X
+        do PieceBuilder._setSquare(squares, 0, 0, 0);
+        do PieceBuilder._setSquare(squares, 1, 0, 1);
+        do PieceBuilder._setSquare(squares, 2, 0, 2);
+        do PieceBuilder._setSquare(squares, 3, 1, 2);
+        do PieceBuilder._setSquare(squares, 4, 2, 2);
+
+        return;
+    }
+
+    function void _setSquares9(Array squares) {
+        // X
+        // X X
+        //   X X
+        do PieceBuilder._setSquare(squares, 0, 0, 0);
+        do PieceBuilder._setSquare(squares, 1, 0, 1);
+        do PieceBuilder._setSquare(squares, 2, 1, 1);
+        do PieceBuilder._setSquare(squares, 3, 1, 2);
+        do PieceBuilder._setSquare(squares, 4, 2, 2);
+
+        return;
+    }
+
+    function void _setSquares10(Array squares) {
+        //   X
+        // X X X
+        //   X
+        do PieceBuilder._setSquare(squares, 0, 1, 0);
+        do PieceBuilder._setSquare(squares, 1, 0, 1);
+        do PieceBuilder._setSquare(squares, 2, 1, 1);
+        do PieceBuilder._setSquare(squares, 3, 2, 1);
+        do PieceBuilder._setSquare(squares, 4, 1, 2);
+
+        return;
+    }
+
+    function void _setSquares11(Array squares) {
+        //   X
+        // X X
+        //   X
+        //   X
+        do PieceBuilder._setSquare(squares, 0, 1, 0);
+        do PieceBuilder._setSquare(squares, 1, 0, 1);
+        do PieceBuilder._setSquare(squares, 2, 1, 1);
+        do PieceBuilder._setSquare(squares, 3, 1, 2);
+        do PieceBuilder._setSquare(squares, 4, 1, 3);
+
+        return;
+    }
+
+    function void _setSquares12(Array squares) {
+        // X X
+        //   X
+        //   X X
+        do PieceBuilder._setSquare(squares, 0, 0, 0);
+        do PieceBuilder._setSquare(squares, 1, 1, 0);
+        do PieceBuilder._setSquare(squares, 2, 1, 1);
+        do PieceBuilder._setSquare(squares, 3, 1, 2);
+        do PieceBuilder._setSquare(squares, 4, 2, 2);
+
+        return;
     }
 }
