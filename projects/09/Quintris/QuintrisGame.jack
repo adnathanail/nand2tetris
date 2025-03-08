@@ -10,12 +10,17 @@ class QuintrisGame {
 
    /** Constructs a new Square Game. */
    constructor QuintrisGame new() {
+      var char key;  // the key currently pressed by the user
+
       do Piece.initStatic();
 
       let piece = Piece.new();
       while (piece.canDrop()) {
          do Sys.wait(200);
          do piece.drop();
+         let key = Keyboard.keyPressed();
+         if ((key = 131) & piece.canMoveUp()) { do piece.moveUp(); }   // up arrow
+         if ((key = 133) & piece.canMoveDown()) { do piece.moveDown(); }   // down arrow
       }
       return this;
    }

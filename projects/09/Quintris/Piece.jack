@@ -7,24 +7,33 @@ class Piece {
    static int size;
    // Number of squares per piece (5)
    static int num_squares;
+   // Width and height of screen in px
    static int screen_width_px;
+   static int screen_height_px;
+   // Width and height of screen in grid blocks
    static int screen_width;
+   static int screen_height;
 
-   // Location of the square's top-left corner, in grid units relative to size
+   // Location of the square's top-left corner, in grid blocks relative to size
    //   (e.g. x = 3, is 16 * 3 = 48 in pixels)
    field int x, y;
    // Array of 2D arrays of relative offsets to create a multi-square shape
    //   (e.g. ((0, 0), (0, 1), (0, 2), (0, 3) (1, 3)) is an L shape
    field Array squares;
+   // Width and height of piece (in grid blocks)
    field int width;
+   field int height;
 
    function void initStatic() {
       // Initialise classes static variables (should be called only once)
       let size = 16;
       let num_squares = 5;
       let screen_width_px = 512;
+      let screen_height_px = 256;
 
+      // Calculate some static variables
       let screen_width = screen_width_px / size;
+      let screen_height = screen_height_px / size;
 
       return;
    }
@@ -41,6 +50,7 @@ class Piece {
       let two_d_helper[1] = y;
 
       let width = Math.max(width, x + 1);
+      let height = Math.max(height, y + 1);
 
       return;
    }
@@ -96,10 +106,36 @@ class Piece {
       return (x + width) < screen_width;
    }
 
-   /** "Drop" the piece 1 space to the right */
+   /** Checks whether the piece can move up */
+   method boolean canMoveUp() {
+      return y > 0;
+   }
+
+   /** Checks whether the piece can move down */
+   method boolean canMoveDown() {
+      return (y + height) < screen_height;
+   }
+
+   /** "Drop"s the piece 1 space to the right */
    method void drop() {
       do draw(false);
       let x = x + 1;
+      do draw(true);
+      return;
+   }
+
+   /** Move the piece 1 space up */
+   method void moveUp() {
+      do draw(false);
+      let y = y - 1;
+      do draw(true);
+      return;
+   }
+
+   /** Move the piece 1 space down */
+   method void moveDown() {
+      do draw(false);
+      let y = y + 1;
       do draw(true);
       return;
    }
