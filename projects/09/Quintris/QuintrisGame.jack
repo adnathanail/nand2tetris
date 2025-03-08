@@ -22,6 +22,8 @@ class QuintrisGame {
     field Grid grid;
     // Whether the game is over
     field boolean game_over;
+    // Game score
+    field int score;
 
     /** Constructs a new Square Game. */
     constructor QuintrisGame new() {
@@ -36,6 +38,8 @@ class QuintrisGame {
 
         // Create a grid
         let grid = Grid.new(this);
+        // Initialise game score
+        let score = 0;
         return this;
     }
 
@@ -74,6 +78,8 @@ class QuintrisGame {
         let game_over = false;
 
         while (~game_over) {
+            // Give a point for each new piece
+            do updateScore(1);
             while (grid.canMove(piece.tryToDrop(), piece.getNumSquares())) {
                 // Move the piece down (as attempted in the tryToDrop in the while condition)
                 do piece.acceptMove();
@@ -120,5 +126,13 @@ class QuintrisGame {
 
     method int getScreenWidth() {
         return screen_width;
+    }
+
+    method void updateScore(int points) {
+        let score = score + points;
+        do Output.moveCursor(22, 1);
+        do Output.printString("Score: ");
+        do Output.printInt(score);
+        return;
     }
 }
