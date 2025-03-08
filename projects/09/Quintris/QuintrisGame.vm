@@ -2,9 +2,22 @@ function QuintrisGame.new 1
 push constant 1
 call Memory.alloc 1
 pop pointer 0
-call Piece.initStatic 0
-pop temp 0
-call Piece.new 0
+push constant 16
+pop static 0
+push constant 512
+pop static 1
+push constant 256
+pop static 2
+push static 1
+push static 0
+call Math.divide 2
+pop static 3
+push static 2
+push static 0
+call Math.divide 2
+pop static 4
+push pointer 0
+call Piece.new 1
 pop this 0
 label WHILE_EXP0
 push this 0
@@ -59,4 +72,19 @@ push pointer 0
 call Memory.deAlloc 1
 pop temp 0
 push constant 0
+return
+function QuintrisGame.getSize 0
+push argument 0
+pop pointer 0
+push static 0
+return
+function QuintrisGame.getScreenHeight 0
+push argument 0
+pop pointer 0
+push static 4
+return
+function QuintrisGame.getScreenWidth 0
+push argument 0
+pop pointer 0
+push static 3
 return

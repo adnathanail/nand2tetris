@@ -6,15 +6,31 @@
  */
 
 class QuintrisGame {
+   // Side length of squares making up the piece in pixels (16)
+   static int size;
+   // Width and height of screen in px
+   static int screen_width_px;
+   static int screen_height_px;
+   // Width and height of screen in grid blocks
+   static int screen_width;
+   static int screen_height;
+
    field Piece piece; // the square of this game
 
    /** Constructs a new Square Game. */
    constructor QuintrisGame new() {
       var char key;  // the key currently pressed by the user
 
-      do Piece.initStatic();
+      // Initialise classes static variables (should be called only once)
+      let size = 16;
+      let screen_width_px = 512;
+      let screen_height_px = 256;
 
-      let piece = Piece.new();
+      // Calculate some static variables
+      let screen_width = screen_width_px / size;
+      let screen_height = screen_height_px / size;
+
+      let piece = Piece.new(this);
       while (piece.canDrop()) {
          do Sys.wait(200);
          do piece.drop();
@@ -30,5 +46,17 @@ class QuintrisGame {
       do piece.dispose();
       do Memory.deAlloc(this);
       return;
+   }
+
+   method int getSize() {
+      return size;
+   }
+
+   method int getScreenHeight() {
+      return screen_height;
+   }
+
+   method int getScreenWidth() {
+      return screen_width;
    }
 }

@@ -1,29 +1,10 @@
-function Piece.initStatic 0
-push constant 16
-pop static 0
-push constant 5
-pop static 1
-push constant 512
-pop static 2
-push constant 256
-pop static 3
-push static 2
-push static 0
-call Math.divide 2
-pop static 4
-push static 3
-push static 0
-call Math.divide 2
-pop static 5
-push constant 0
-return
 function Piece._setSquare 0
 push argument 0
 pop pointer 0
 push argument 1
 push constant 2
 call Math.multiply 2
-push this 2
+push this 3
 add
 push argument 2
 pop temp 0
@@ -35,40 +16,44 @@ push constant 2
 call Math.multiply 2
 push constant 1
 add
-push this 2
+push this 3
 add
 push argument 3
 pop temp 0
 pop pointer 1
 push temp 0
 pop that 0
-push this 3
+push this 4
 push argument 2
 push constant 1
 add
 call Math.max 2
-pop this 3
-push this 4
+pop this 4
+push this 5
 push argument 3
 push constant 1
 add
 call Math.max 2
-pop this 4
+pop this 5
 push constant 0
 return
 function Piece.new 0
-push constant 5
+push constant 6
 call Memory.alloc 1
 pop pointer 0
-push constant 0
-pop this 0
+push argument 0
+pop argument 0
+push constant 5
+pop static 0
 push constant 0
 pop this 1
-push static 1
+push constant 0
+pop this 2
+push static 0
 push constant 2
 call Math.multiply 2
 call Array.new 1
-pop this 2
+pop this 3
 push pointer 0
 push constant 0
 push constant 0
@@ -109,7 +94,7 @@ return
 function Piece.dispose 0
 push argument 0
 pop pointer 0
-push this 2
+push this 3
 call Array.dispose 1
 pop temp 0
 push pointer 0
@@ -127,53 +112,57 @@ push constant 0
 pop local 0
 label WHILE_EXP0
 push local 0
-push static 1
+push static 0
 lt
 not
 if-goto WHILE_END0
-push this 0
+push this 1
 push local 0
 push constant 2
 call Math.multiply 2
-push this 2
+push this 3
 add
 pop pointer 1
 push that 0
 add
 pop local 1
-push this 1
+push this 2
 push local 0
 push constant 2
 call Math.multiply 2
 push constant 1
 add
-push this 2
+push this 3
 add
 pop pointer 1
 push that 0
 add
 pop local 2
 push local 1
-push static 0
+push this 0
+call QuintrisGame.getSize 1
 call Math.multiply 2
 push constant 1
 add
 push local 2
-push static 0
+push this 0
+call QuintrisGame.getSize 1
 call Math.multiply 2
 push constant 1
 add
 push local 1
 push constant 1
 add
-push static 0
+push this 0
+call QuintrisGame.getSize 1
 call Math.multiply 2
 push constant 1
 sub
 push local 2
 push constant 1
 add
-push static 0
+push this 0
+call QuintrisGame.getSize 1
 call Math.multiply 2
 push constant 1
 sub
@@ -190,26 +179,28 @@ return
 function Piece.canDrop 0
 push argument 0
 pop pointer 0
-push this 0
-push this 3
+push this 1
+push this 4
 add
-push static 4
+push this 0
+call QuintrisGame.getScreenWidth 1
 lt
 return
 function Piece.canMoveUp 0
 push argument 0
 pop pointer 0
-push this 1
+push this 2
 push constant 0
 gt
 return
 function Piece.canMoveDown 0
 push argument 0
 pop pointer 0
-push this 1
-push this 4
+push this 2
+push this 5
 add
-push static 5
+push this 0
+call QuintrisGame.getScreenHeight 1
 lt
 return
 function Piece.drop 0
@@ -219,10 +210,10 @@ push pointer 0
 push constant 0
 call Piece.draw 2
 pop temp 0
-push this 0
+push this 1
 push constant 1
 add
-pop this 0
+pop this 1
 push pointer 0
 push constant 0
 not
@@ -237,10 +228,10 @@ push pointer 0
 push constant 0
 call Piece.draw 2
 pop temp 0
-push this 1
+push this 2
 push constant 1
 sub
-pop this 1
+pop this 2
 push pointer 0
 push constant 0
 not
@@ -255,10 +246,10 @@ push pointer 0
 push constant 0
 call Piece.draw 2
 pop temp 0
-push this 1
+push this 2
 push constant 1
 add
-pop this 1
+pop this 2
 push pointer 0
 push constant 0
 not

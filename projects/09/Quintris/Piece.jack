@@ -3,17 +3,10 @@
 
 /** A single Quintris piece */
 class Piece {
-   // Side length of squares making up the piece in pixels (16)
-   static int size;
    // Number of squares per piece (5)
    static int num_squares;
-   // Width and height of screen in px
-   static int screen_width_px;
-   static int screen_height_px;
-   // Width and height of screen in grid blocks
-   static int screen_width;
-   static int screen_height;
 
+   field QuintrisGame game;
    // Location of the square's top-left corner, in grid blocks relative to size
    //   (e.g. x = 3, is 16 * 3 = 48 in pixels)
    field int x, y;
@@ -26,20 +19,6 @@ class Piece {
    field int width;
    field int height;
 
-   function void initStatic() {
-      // Initialise classes static variables (should be called only once)
-      let size = 16;
-      let num_squares = 5;
-      let screen_width_px = 512;
-      let screen_height_px = 256;
-
-      // Calculate some static variables
-      let screen_width = screen_width_px / size;
-      let screen_height = screen_height_px / size;
-
-      return;
-   }
-
    method void _setSquare(int square_index, int x, int y) {
       let squares[square_index * 2] = x;
       let squares[(square_index * 2) + 1] = y;
@@ -51,7 +30,12 @@ class Piece {
    }
 
    /** Constructs a new square with a given location and size. */
-   constructor Piece new() {
+   constructor Piece new(Game game) {
+      let game = game;
+
+      // Initialise static variables
+      let num_squares = 5;
+
       // Initialise pieces starting position
       let x = 0;
       let y = 0;
@@ -89,7 +73,7 @@ class Piece {
       while (i < num_squares) {
          let square_x = x + squares[i * 2];
          let square_y = y + squares[(i * 2) + 1];
-         do Screen.drawRectangle(square_x * size + 1, square_y * size + 1, (square_x + 1) * size - 1, (square_y + 1) * size - 1);
+         do Screen.drawRectangle(square_x * game.getSize() + 1, square_y * game.getSize() + 1, (square_x + 1) * game.getSize() - 1, (square_y + 1) * game.getSize() - 1);
          let i = i + 1;
       }
       return;
@@ -97,7 +81,7 @@ class Piece {
 
    /** Checks whether the piece can "drop" any further */
    method boolean canDrop() {
-      return (x + width) < screen_width;
+      return (x + width) < game.getScreenWidth();
    }
 
    /** Checks whether the piece can move up */
@@ -107,7 +91,7 @@ class Piece {
 
    /** Checks whether the piece can move down */
    method boolean canMoveDown() {
-      return (y + height) < screen_height;
+      return (y + height) < game.getScreenHeight();
    }
 
    /** "Drop"s the piece 1 space to the right */
