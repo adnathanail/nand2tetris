@@ -18,13 +18,26 @@ class Piece {
    field Array squares;
    field int width;
 
-   function void init_static() {
+   function void initStatic() {
       // Initialise classes static variables (should be called only once)
       let size = 16;
       let num_squares = 5;
       let screen_width_px = 512;
 
       let screen_width = screen_width_px / size;
+
+      return;
+   }
+
+   method void _setSquare(int square_index, int x, int y) {
+      var Array two_d_helper;
+
+      let squares[square_index] = Array.new(2);
+      let two_d_helper = squares[square_index];
+      let two_d_helper[0] = x;
+      let two_d_helper[1] = y;
+
+      let width = Math.max(width, x + 1);
 
       return;
    }
@@ -42,32 +55,11 @@ class Piece {
       // Initialise array of square offsets
       let squares = Array.new(num_squares);
 
-      let squares[0] = Array.new(2);
-      let two_d_helper = squares[0];
-      let two_d_helper[0] = 0;
-      let two_d_helper[1] = 0;
-
-      let squares[1] = Array.new(2);
-      let two_d_helper = squares[1];
-      let two_d_helper[0] = 1;
-      let two_d_helper[1] = 0;
-
-      let squares[2] = Array.new(2);
-      let two_d_helper = squares[2];
-      let two_d_helper[0] = 0;
-      let two_d_helper[1] = 1;
-
-      let squares[3] = Array.new(2);
-      let two_d_helper = squares[3];
-      let two_d_helper[0] = 1;
-      let two_d_helper[1] = 1;
-
-      let squares[4] = Array.new(2);
-      let two_d_helper = squares[4];
-      let two_d_helper[0] = 2;
-      let two_d_helper[1] = 0;
-
-      let width = 3;
+      do _setSquare(0, 0, 0);
+      do _setSquare(1, 1, 0);
+      do _setSquare(2, 0, 1);
+      do _setSquare(3, 1, 1);
+      do _setSquare(4, 1, 2);
 
       // Draw piece on the screen
       do draw(true);

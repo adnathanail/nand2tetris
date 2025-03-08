@@ -10,7 +10,7 @@ class QuintrisGame {
 
    /** Constructs a new Square Game. */
    constructor QuintrisGame new() {
-      do Piece.init_static();
+      do Piece.initStatic();
 
       let piece = Piece.new();
       while (piece.canMove()) {
