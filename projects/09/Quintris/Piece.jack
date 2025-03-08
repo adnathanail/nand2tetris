@@ -15,15 +15,19 @@ class Piece {
    //   (e.g. ((0, 0), (0, 1), (0, 2), (0, 3) (1, 3)) is an L shape
    field Array squares;
 
+   function void init_static() {
+      // Initialise classes static variables (should be called only once)
+      let size = 16;
+      let num_squares = 15;
+
+      return;
+   }
+
    /** Constructs a new square with a given location and size. */
    constructor Piece new() {
       // Used to temporarily store an inner array in a 2D array to allow indexing
       //   as an_array[0][0] is invalid syntax
       var Array two_d_helper;
-
-      // Initialise classes static variables
-      let size = 16;
-      let num_squares = 15;
 
       // Initialise pieces starting position
       let x = 0;
@@ -58,7 +62,7 @@ class Piece {
       let two_d_helper[1] = 0;
 
       // Draw piece on the screen
-      do draw();
+      do draw(true);
       return this;
    }
 
@@ -69,21 +73,27 @@ class Piece {
    }
 
    /** Draws the piece on the screen. */
-   method void draw() {
+   method void draw(boolean color) {
       var int i;
       var Array two_d_helper;
-      do Screen.setColor(true);
+      do Screen.setColor(color);
       let i = 0;
       while (i < 5) {
          let two_d_helper = squares[i];
          do Screen.drawRectangle(
-            x + (two_d_helper[0]*size) + 1,
-            y + (two_d_helper[1]*size) + 1,
-            x +(two_d_helper[0]*size) + size - 1,
-            y + (two_d_helper[1]*size) + size - 1
+            (x * size) + (two_d_helper[0] * size) + 1,
+            (y * size) + (two_d_helper[1] * size) + 1,
+            (x * size) + (two_d_helper[0] * size) + size - 1,
+            (y * size) + (two_d_helper[1] * size) + size - 1
          );
          let i = i + 1;
       }
+      return;
+   }
+   method void move() {
+      do draw(false);
+      let x = x + 1;
+      do draw(true);
       return;
    }
 }
