@@ -43,7 +43,6 @@ class Piece {
       //   as an_array[0][0] is invalid syntax
       var Array two_d_helper;
 
-
       let squares[square_index] = Array.new(2);
       let two_d_helper = squares[square_index];
       let two_d_helper[0] = x;
@@ -77,6 +76,18 @@ class Piece {
 
    /** Disposes this piece. */
    method void dispose() {
+      var Array two_d_helper;
+      var int i;
+      // Dispose of sub-arrays of squares
+      let i = 0;
+      while (i < num_squares) {
+         let two_d_helper = squares[i];
+         do two_d_helper.dispose();
+         let i = i + 1;
+      }
+      // Dispose of squares array
+      do squares.dispose();
+      // Dispose of Piece
       do Memory.deAlloc(this);
       return;
    }
