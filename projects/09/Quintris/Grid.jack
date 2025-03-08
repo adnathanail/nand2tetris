@@ -11,10 +11,10 @@ class Grid {
     field Array grid;
 
     /** Constructs a new square with a given location and size. */
-    constructor Grid new(QuintrisGame game) {
+    constructor Grid new(QuintrisGame _game) {
         var int i;
 
-        let game = game;
+        let game = _game;
 
         // Create grid of squares
         let grid = Array.new(game.getScreenWidth() * game.getScreenHeight());
@@ -56,8 +56,8 @@ class Grid {
         return;
     }
 
-    method void setGridSquare(int x, int y) {
-        let grid[x + (y * game.getScreenWidth())] = 1;
+    method void setGridSquare(int x, int y, int enable) {
+        let grid[x + (y * game.getScreenWidth())] = enable;
         return;
     }
 
@@ -83,7 +83,7 @@ class Grid {
                 return false;
             }
             // Check square isn't filled
-            if (getGridSquare(squares[i * 2], squares[(i * 2) + 1])) {
+            if (getGridSquare(squares[i * 2], squares[(i * 2) + 1]) = 1) {
                 return false;
             }
             let i = i + 1;
@@ -95,10 +95,62 @@ class Grid {
         var int i;
         let i = 0;
         while (i < num_squares) {
-            do setGridSquare(squares[i * 2], squares[(i * 2) + 1]);
+            do setGridSquare(squares[i * 2], squares[(i * 2) + 1], 1);
             let i = i + 1;
         }
+        do checkForLines();
+        do game.clearScreen();
         do draw();
+        return;
+    }
+
+    method void checkLine(int x, int y_start, int line_length) {
+        var int y;
+        if (line_length < 6) {
+            return;
+        }
+        let y = y_start;
+        while (y < (y_start + line_length)) {
+            do setGridSquare(x, y, 0);
+            let y = y + 1;
+        }
+        do game.addToScore(line_length);
+        return;
+    }
+
+    method void checkForLines() {
+        var int x;
+        var int y;
+        var int line_length;
+        var boolean prev_filled;
+        var int temp;
+
+        let prev_filled = false;
+
+        let x = 0;
+        while (x < game.getScreenWidth()) {
+            let y = 0;
+            while (y < game.getScreenHeight()) {
+                if (getGridSquare(x, y) = 1) {
+                    if (prev_filled) {
+                        let line_length = line_length + 1;
+                    } else {
+                        let line_length = 1;
+                        let prev_filled = true;
+                    }
+                } else {
+                    if (prev_filled) {
+                        do checkLine(x, y - line_length, line_length);
+                        let prev_filled = false;
+                    }
+                }
+                let y = y + 1;
+            }
+            // Check for a complete line at the bottom of the screen
+            do checkLine(x, y - line_length, line_length);
+            let prev_filled = false;
+            let x = x + 1;
+        }
         return;
     }
 }

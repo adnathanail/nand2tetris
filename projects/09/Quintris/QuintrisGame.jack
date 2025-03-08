@@ -67,8 +67,7 @@ class QuintrisGame {
         }
 
         // Clear the screen
-        do Screen.setColor(false);
-        do Screen.drawRectangle(0, 0, screen_width_px - 1, screen_height_px - 1);
+        do clearScreen();
 
         // Initialise piece builder with random seed
         let piece_builder = PieceBuilder.new(rand_seed);
@@ -79,11 +78,11 @@ class QuintrisGame {
 
         while (~game_over) {
             // Give a point for each new piece
-            do updateScore(1);
+            do addToScore(1);
             while (grid.canMove(piece.tryToDrop(), piece.getNumSquares())) {
                 // Move the piece down (as attempted in the tryToDrop in the while condition)
                 do piece.acceptMove();
-                do Sys.wait(50);
+                do Sys.wait(200);
                 // Check keyboard input
                 let key = Keyboard.keyPressed();
                 // Up arrow
@@ -110,6 +109,12 @@ class QuintrisGame {
         return;
     }
 
+    method void clearScreen() {
+        do Screen.setColor(false);
+        do Screen.drawRectangle(0, 0, screen_width_px - 1, screen_height_px - 1);
+        return;
+    }
+
     method void _showMessage(String message) {
         do Output.moveCursor(12, 10 + (message.length() / 2));
         do Output.printString(message);
@@ -128,7 +133,7 @@ class QuintrisGame {
         return screen_width;
     }
 
-    method void updateScore(int points) {
+    method void addToScore(int points) {
         let score = score + points;
         do Output.moveCursor(22, 1);
         do Output.printString("Score: ");

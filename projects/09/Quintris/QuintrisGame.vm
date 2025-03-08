@@ -110,18 +110,8 @@ call Sys.wait 1
 pop temp 0
 goto WHILE_EXP0
 label WHILE_END0
-push constant 0
-call Screen.setColor 1
-pop temp 0
-push constant 0
-push constant 0
-push static 1
-push constant 1
-sub
-push static 2
-push constant 1
-sub
-call Screen.drawRectangle 4
+push pointer 0
+call QuintrisGame.clearScreen 1
 pop temp 0
 push local 1
 call PieceBuilder.new 1
@@ -139,7 +129,7 @@ not
 if-goto WHILE_END1
 push pointer 0
 push constant 1
-call QuintrisGame.updateScore 2
+call QuintrisGame.addToScore 2
 pop temp 0
 label WHILE_EXP2
 push this 2
@@ -153,7 +143,7 @@ if-goto WHILE_END2
 push this 1
 call Piece.acceptMove 1
 pop temp 0
-push constant 50
+push constant 200
 call Sys.wait 1
 pop temp 0
 call Keyboard.keyPressed 0
@@ -251,6 +241,24 @@ call QuintrisGame._showMessage 2
 pop temp 0
 push constant 0
 return
+function QuintrisGame.clearScreen 0
+push argument 0
+pop pointer 0
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push constant 0
+push constant 0
+push static 1
+push constant 1
+sub
+push static 2
+push constant 1
+sub
+call Screen.drawRectangle 4
+pop temp 0
+push constant 0
+return
 function QuintrisGame._showMessage 0
 push argument 0
 pop pointer 0
@@ -283,7 +291,7 @@ push argument 0
 pop pointer 0
 push static 3
 return
-function QuintrisGame.updateScore 0
+function QuintrisGame.addToScore 0
 push argument 0
 pop pointer 0
 push this 4

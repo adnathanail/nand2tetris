@@ -14,8 +14,8 @@ class Piece {
     field Array desired_squares;
 
     /** Constructs a new square with a given location and size. */
-    constructor Piece new(QuintrisGame game, int _num_squares, Array _current_squares) {
-        let game = game;
+    constructor Piece new(QuintrisGame _game, int _num_squares, Array _current_squares) {
+        let game = _game;
 
         // Set num squares
         let num_squares = _num_squares;

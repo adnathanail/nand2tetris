@@ -3,10 +3,10 @@ push constant 2
 call Memory.alloc 1
 pop pointer 0
 push argument 0
-pop argument 0
-push argument 0
+pop this 0
+push this 0
 call QuintrisGame.getScreenWidth 1
-push argument 0
+push this 0
 call QuintrisGame.getScreenHeight 1
 call Math.multiply 2
 call Array.new 1
@@ -15,10 +15,10 @@ push constant 0
 pop local 0
 label WHILE_EXP0
 push local 0
-push argument 0
+push this 0
 call QuintrisGame.getScreenWidth 1
 lt
-push argument 0
+push this 0
 call QuintrisGame.getScreenHeight 1
 call Math.multiply 2
 not
@@ -144,7 +144,7 @@ call Math.multiply 2
 add
 push this 1
 add
-push constant 1
+push argument 3
 pop temp 0
 pop pointer 1
 push temp 0
@@ -249,6 +249,8 @@ add
 pop pointer 1
 push that 0
 call Grid.getGridSquare 3
+push constant 1
+eq
 if-goto IF_TRUE3
 goto IF_FALSE3
 label IF_TRUE3
@@ -292,7 +294,8 @@ push argument 1
 add
 pop pointer 1
 push that 0
-call Grid.setGridSquare 3
+push constant 1
+call Grid.setGridSquare 4
 pop temp 0
 push local 0
 push constant 1
@@ -301,7 +304,143 @@ pop local 0
 goto WHILE_EXP0
 label WHILE_END0
 push pointer 0
+call Grid.checkForLines 1
+pop temp 0
+push this 0
+call QuintrisGame.clearScreen 1
+pop temp 0
+push pointer 0
 call Grid.draw 1
 pop temp 0
+push constant 0
+return
+function Grid.checkLine 1
+push argument 0
+pop pointer 0
+push argument 3
+push constant 6
+lt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+return
+label IF_FALSE0
+push argument 2
+pop local 0
+label WHILE_EXP0
+push local 0
+push argument 2
+push argument 3
+add
+lt
+not
+if-goto WHILE_END0
+push pointer 0
+push argument 1
+push local 0
+push constant 0
+call Grid.setGridSquare 4
+pop temp 0
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push this 0
+push argument 3
+call QuintrisGame.addToScore 2
+pop temp 0
+push constant 0
+return
+function Grid.checkForLines 5
+push argument 0
+pop pointer 0
+push constant 0
+pop local 3
+push constant 0
+pop local 0
+label WHILE_EXP0
+push local 0
+push this 0
+call QuintrisGame.getScreenWidth 1
+lt
+not
+if-goto WHILE_END0
+push constant 0
+pop local 1
+label WHILE_EXP1
+push local 1
+push this 0
+call QuintrisGame.getScreenHeight 1
+lt
+not
+if-goto WHILE_END1
+push pointer 0
+push local 0
+push local 1
+call Grid.getGridSquare 3
+push constant 1
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push local 3
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push local 2
+push constant 1
+add
+pop local 2
+goto IF_END1
+label IF_FALSE1
+push constant 1
+pop local 2
+push constant 0
+not
+pop local 3
+label IF_END1
+goto IF_END0
+label IF_FALSE0
+push local 3
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push pointer 0
+push local 0
+push local 1
+push local 2
+sub
+push local 2
+call Grid.checkLine 4
+pop temp 0
+push constant 0
+pop local 3
+label IF_FALSE2
+label IF_END0
+push local 1
+push constant 1
+add
+pop local 1
+goto WHILE_EXP1
+label WHILE_END1
+push pointer 0
+push local 0
+push local 1
+push local 2
+sub
+push local 2
+call Grid.checkLine 4
+pop temp 0
+push constant 0
+pop local 3
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
 push constant 0
 return
