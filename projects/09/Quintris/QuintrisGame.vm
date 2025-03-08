@@ -33,42 +33,57 @@ not
 not
 if-goto WHILE_END0
 label WHILE_EXP1
+push this 1
 push this 0
-call Piece.canDrop 1
+call Piece.tryToDrop 1
+push this 0
+call Piece.getNumSquares 1
+call Grid.canMove 3
 not
 if-goto WHILE_END1
+push this 1
+call Grid.draw 1
+pop temp 0
 push constant 50
 call Sys.wait 1
 pop temp 0
 push this 0
-call Piece.drop 1
+call Piece.acceptMove 1
 pop temp 0
 call Keyboard.keyPressed 0
 pop local 0
 push local 0
 push constant 131
 eq
+push this 1
 push this 0
-call Piece.canMoveUp 1
+call Piece.tryToMoveUp 1
+push this 0
+call Piece.getNumSquares 1
+call Grid.canMove 3
 and
 if-goto IF_TRUE0
 goto IF_FALSE0
 label IF_TRUE0
 push this 0
-call Piece.moveUp 1
+call Piece.acceptMove 1
 pop temp 0
 label IF_FALSE0
 push local 0
 push constant 133
 eq
+push this 1
 push this 0
-call Piece.canMoveDown 1
+call Piece.tryToMoveDown 1
+push this 0
+call Piece.getNumSquares 1
+call Grid.canMove 3
 and
 if-goto IF_TRUE1
 goto IF_FALSE1
 label IF_TRUE1
 push this 0
-call Piece.moveDown 1
+call Piece.acceptMove 1
 pop temp 0
 label IF_FALSE1
 goto WHILE_EXP1

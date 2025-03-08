@@ -42,12 +42,13 @@ class QuintrisGame {
       var int i;
 
       while (true) {
-         while (piece.canDrop()) {
+         while (grid.canMove(piece.tryToDrop(), piece.getNumSquares())) {
+            do grid.draw();
             do Sys.wait(50);
-            do piece.drop();
+            do piece.acceptMove();
             let key = Keyboard.keyPressed();
-            if ((key = 131) & piece.canMoveUp()) { do piece.moveUp(); }   // up arrow
-            if ((key = 133) & piece.canMoveDown()) { do piece.moveDown(); }   // down arrow
+            if ((key = 131) & grid.canMove(piece.tryToMoveUp(), piece.getNumSquares())) { do piece.acceptMove(); }   // up arrow
+            if ((key = 133) & grid.canMove(piece.tryToMoveDown(), piece.getNumSquares())) { do piece.acceptMove(); }   // down arrow
          }
 
          let pieceSquares = piece.getPieceSquares();
