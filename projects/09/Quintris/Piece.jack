@@ -11,12 +11,12 @@ class Piece {
    //   e.g. (0, 0, 0, 1, 0, 2, 0, 3, 1, 3)
    //   represents the 2D array ((0, 0), (0, 1), (0, 2), (0, 3) (1, 3))
    //   and forms an L shape
-   field Array squares;
+   field Array current_squares;
    field Array desired_squares;
 
    method void _setSquare(int square_index, int x, int y) {
-      let squares[square_index * 2] = x;
-      let squares[(square_index * 2) + 1] = y;
+      let current_squares[square_index * 2] = x;
+      let current_squares[(square_index * 2) + 1] = y;
 
       return;
    }
@@ -29,7 +29,7 @@ class Piece {
       let num_squares = 5;
 
       // Initialise array of square positions
-      let squares = Array.new(num_squares * 2);
+      let current_squares = Array.new(num_squares * 2);
       let desired_squares = Array.new(num_squares * 2);
 
       do _setSquare(0, 0, 0);
@@ -45,7 +45,7 @@ class Piece {
 
    /** Disposes this piece. */
    method void dispose() {
-      do squares.dispose();
+      do current_squares.dispose();
       do desired_squares.dispose();
       do Memory.deAlloc(this);
       return;
@@ -61,8 +61,8 @@ class Piece {
       do Screen.setColor(color);
       let i = 0;
       while (i < num_squares) {
-         let square_x = squares[i * 2];
-         let square_y = squares[(i * 2) + 1];
+         let square_x = current_squares[i * 2];
+         let square_y = current_squares[(i * 2) + 1];
          do Screen.drawRectangle(square_x * game.getSize() + 1, square_y * game.getSize() + 1, (square_x + 1) * game.getSize() - 1, (square_y + 1) * game.getSize() - 1);
          let i = i + 1;
       }
@@ -74,8 +74,8 @@ class Piece {
 
       let i = 0;
       while (i < num_squares) {
-         let desired_squares[i * 2] = squares[i * 2] + x_offset;
-         let desired_squares[(i * 2) + 1] = squares[(i * 2) + 1] + y_offset;
+         let desired_squares[i * 2] = current_squares[i * 2] + x_offset;
+         let desired_squares[(i * 2) + 1] = current_squares[(i * 2) + 1] + y_offset;
          let i = i + 1;
       }
 
@@ -104,8 +104,8 @@ class Piece {
 
       let i = 0;
       while (i < num_squares) {
-         let squares[i * 2] = desired_squares[i * 2];
-         let squares[(i * 2) + 1] = desired_squares[(i * 2) + 1];
+         let current_squares[i * 2] = desired_squares[i * 2];
+         let current_squares[(i * 2) + 1] = desired_squares[(i * 2) + 1];
          let i = i + 1;
       }
 
@@ -118,7 +118,7 @@ class Piece {
       return num_squares;
    }
 
-   method Array getPieceSquares() {
-      return squares;
+   method Array getCurrentSquares() {
+      return current_squares;
    }
 }

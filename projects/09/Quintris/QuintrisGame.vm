@@ -41,14 +41,11 @@ call Piece.getNumSquares 1
 call Grid.canMove 3
 not
 if-goto WHILE_END1
-push this 1
-call Grid.draw 1
+push this 0
+call Piece.acceptMove 1
 pop temp 0
 push constant 50
 call Sys.wait 1
-pop temp 0
-push this 0
-call Piece.acceptMove 1
 pop temp 0
 call Keyboard.keyPressed 0
 pop local 0
@@ -89,7 +86,7 @@ label IF_FALSE1
 goto WHILE_EXP1
 label WHILE_END1
 push this 0
-call Piece.getPieceSquares 1
+call Piece.getCurrentSquares 1
 pop local 1
 push constant 0
 pop local 2

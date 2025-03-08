@@ -317,7 +317,7 @@ push argument 0
 pop pointer 0
 push static 0
 return
-function Piece.getPieceSquares 0
+function Piece.getCurrentSquares 0
 push argument 0
 pop pointer 0
 push this 1

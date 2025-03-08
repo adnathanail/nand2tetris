@@ -44,15 +44,22 @@ class QuintrisGame {
 
       while (true) {
          while (grid.canMove(piece.tryToDrop(), piece.getNumSquares())) {
-            do grid.draw();
-            do Sys.wait(50);
+            // Move the piece down (as attempted in the tryToDrop in the while condition)
             do piece.acceptMove();
+            do Sys.wait(50);
+            // Check keyboard input
             let key = Keyboard.keyPressed();
-            if ((key = 131) & grid.canMove(piece.tryToMoveUp(), piece.getNumSquares())) { do piece.acceptMove(); }   // up arrow
-            if ((key = 133) & grid.canMove(piece.tryToMoveDown(), piece.getNumSquares())) { do piece.acceptMove(); }   // down arrow
+            // Up arrow
+            if ((key = 131) & grid.canMove(piece.tryToMoveUp(), piece.getNumSquares())) {
+               do piece.acceptMove();
+            }
+            // Down arrow
+            if ((key = 133) & grid.canMove(piece.tryToMoveDown(), piece.getNumSquares())) {
+               do piece.acceptMove();
+            }
          }
 
-         let pieceSquares = piece.getPieceSquares();
+         let pieceSquares = piece.getCurrentSquares();
          let i = 0;
          while (i < piece.getNumSquares()) {
             do grid.setGridSquare(pieceSquares[i * 2], pieceSquares[(i * 2) + 1]);
