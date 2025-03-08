@@ -3,107 +3,107 @@
 
 /** A single Quintris piece */
 class Piece {
-   field QuintrisGame game;
-   // Number of squares in the piece
-   field int num_squares;
-   // Flattened n*2 2D Array of coordinates to create a multi-square shape
-   //   e.g. (0, 0, 0, 1, 0, 2, 0, 3, 1, 3)
-   //   represents the 2D array ((0, 0), (0, 1), (0, 2), (0, 3) (1, 3))
-   //   and forms an L shape
-   field Array current_squares;
-   field Array desired_squares;
+    field QuintrisGame game;
+    // Number of squares in the piece
+    field int num_squares;
+    // Flattened n*2 2D Array of coordinates to create a multi-square shape
+    //    e.g. (0, 0, 0, 1, 0, 2, 0, 3, 1, 3)
+    //    represents the 2D array ((0, 0), (0, 1), (0, 2), (0, 3) (1, 3))
+    //    and forms an L shape
+    field Array current_squares;
+    field Array desired_squares;
 
-   /** Constructs a new square with a given location and size. */
-   constructor Piece new(QuintrisGame game, int _num_squares, Array _current_squares) {
-      let game = game;
+    /** Constructs a new square with a given location and size. */
+    constructor Piece new(QuintrisGame game, int _num_squares, Array _current_squares) {
+        let game = game;
 
-      // Set num squares
-      let num_squares = _num_squares;
+        // Set num squares
+        let num_squares = _num_squares;
 
-      // Initialise array of square positions
-      let current_squares = _current_squares;
-      let desired_squares = Array.new(num_squares * 2);
+        // Initialise array of square positions
+        let current_squares = _current_squares;
+        let desired_squares = Array.new(num_squares * 2);
 
-      // Draw piece on the screen
-      do draw(true);
-      return this;
-   }
+        // Draw piece on the screen
+        do draw(true);
+        return this;
+    }
 
-   method void dispose() {
-      do current_squares.dispose();
-      do desired_squares.dispose();
-      do Memory.deAlloc(this);
-      return;
-   }
+    method void dispose() {
+        do current_squares.dispose();
+        do desired_squares.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
 
-   /** Draws the piece on the screen. */
-   method void draw(boolean color) {
-      var int i;
+    /** Draws the piece on the screen. */
+    method void draw(boolean color) {
+        var int i;
 
-      var int square_x;
-      var int square_y;
+        var int square_x;
+        var int square_y;
 
-      do Screen.setColor(color);
-      let i = 0;
-      while (i < num_squares) {
-         let square_x = current_squares[i * 2];
-         let square_y = current_squares[(i * 2) + 1];
-         do Screen.drawRectangle(square_x * game.getSize() + 1, square_y * game.getSize() + 1, (square_x + 1) * game.getSize() - 1, (square_y + 1) * game.getSize() - 1);
-         let i = i + 1;
-      }
-      return;
-   }
+        do Screen.setColor(color);
+        let i = 0;
+        while (i < num_squares) {
+            let square_x = current_squares[i * 2];
+            let square_y = current_squares[(i * 2) + 1];
+            do Screen.drawRectangle(square_x * game.getSize() + 1, square_y * game.getSize() + 1, (square_x + 1) * game.getSize() - 1, (square_y + 1) * game.getSize() - 1);
+            let i = i + 1;
+        }
+        return;
+    }
 
-   method Array _tryToMove(int x_offset, int y_offset) {
-      var int i;
+    method Array _tryToMove(int x_offset, int y_offset) {
+        var int i;
 
-      let i = 0;
-      while (i < num_squares) {
-         let desired_squares[i * 2] = current_squares[i * 2] + x_offset;
-         let desired_squares[(i * 2) + 1] = current_squares[(i * 2) + 1] + y_offset;
-         let i = i + 1;
-      }
+        let i = 0;
+        while (i < num_squares) {
+            let desired_squares[i * 2] = current_squares[i * 2] + x_offset;
+            let desired_squares[(i * 2) + 1] = current_squares[(i * 2) + 1] + y_offset;
+            let i = i + 1;
+        }
 
-      return desired_squares;
-   }
+        return desired_squares;
+    }
 
-   /** Update the piece's desired location to 1 space to the right */
-   method Array tryToDrop() {
-      return _tryToMove(1, 0);
-   }
+    /** Update the piece's desired location to 1 space to the right */
+    method Array tryToDrop() {
+        return _tryToMove(1, 0);
+    }
 
-   /** Update the piece's desired location to 1 space up */
-   method Array tryToMoveUp() {
-      return _tryToMove(0, -1);
-   }
+    /** Update the piece's desired location to 1 space up */
+    method Array tryToMoveUp() {
+        return _tryToMove(0, -1);
+    }
 
-   /** Update the piece's desired location to 1 space down */
-   method Array tryToMoveDown() {
-      return _tryToMove(0, 1);
-   }
+    /** Update the piece's desired location to 1 space down */
+    method Array tryToMoveDown() {
+        return _tryToMove(0, 1);
+    }
 
-   method void acceptMove() {
-      var int i;
+    method void acceptMove() {
+        var int i;
 
-      do draw(false);
+        do draw(false);
 
-      let i = 0;
-      while (i < num_squares) {
-         let current_squares[i * 2] = desired_squares[i * 2];
-         let current_squares[(i * 2) + 1] = desired_squares[(i * 2) + 1];
-         let i = i + 1;
-      }
+        let i = 0;
+        while (i < num_squares) {
+            let current_squares[i * 2] = desired_squares[i * 2];
+            let current_squares[(i * 2) + 1] = desired_squares[(i * 2) + 1];
+            let i = i + 1;
+        }
 
-      do draw(true);
+        do draw(true);
 
-      return;
-   }
+        return;
+    }
 
-   method int getNumSquares() {
-      return num_squares;
-   }
+    method int getNumSquares() {
+        return num_squares;
+    }
 
-   method Array getCurrentSquares() {
-      return current_squares;
-   }
+    method Array getCurrentSquares() {
+        return current_squares;
+    }
 }

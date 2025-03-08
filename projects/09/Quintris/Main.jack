@@ -3,11 +3,11 @@
 
 /** Tetris game with 5 block pieces */
 class Main {
-   function void main() {
-      var QuintrisGame game;
-      let game = QuintrisGame.new();
-      do game.run();
-      do game.dispose();
-      return;
-   }
+    function void main() {
+        var QuintrisGame game;
+        let game = QuintrisGame.new();
+        do game.run();
+        do game.dispose();
+        return;
+    }
 }

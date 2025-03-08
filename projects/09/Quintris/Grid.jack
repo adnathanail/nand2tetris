@@ -3,91 +3,91 @@
 
 /** The grid of placed Quintris pieces */
 class Grid {
-   field QuintrisGame game;
-   // Flattened width*height Array of which squares are filled
-   //   e.g. (1, 1, 1, ..., 1, 0, 1, ..., 1, 1, 1, ..., ...)
-   //   represents the 2D array ((1, 1, 1, ...), (1, 0, 1, ...), (1, 1, 1, ...), ...)
-   //   and forms a empty square in the top left
-   field Array grid;
+    field QuintrisGame game;
+    // Flattened width*height Array of which squares are filled
+    //    e.g. (1, 1, 1, ..., 1, 0, 1, ..., 1, 1, 1, ..., ...)
+    //    represents the 2D array ((1, 1, 1, ...), (1, 0, 1, ...), (1, 1, 1, ...), ...)
+    //    and forms a empty square in the top left
+    field Array grid;
 
-   /** Constructs a new square with a given location and size. */
-   constructor Grid new(QuintrisGame game) {
-      var int i;
+    /** Constructs a new square with a given location and size. */
+    constructor Grid new(QuintrisGame game) {
+        var int i;
 
-      let game = game;
+        let game = game;
 
-      // Create grid of squares
-      let grid = Array.new(game.getScreenWidth() * game.getScreenHeight());
-      // Initialise grid to zeroes;
-      let i = 0;
-      while (i < game.getScreenWidth() * game.getScreenHeight()) {
-         let grid[i] = 0;
-         let i = i + 1;
-      }
+        // Create grid of squares
+        let grid = Array.new(game.getScreenWidth() * game.getScreenHeight());
+        // Initialise grid to zeroes;
+        let i = 0;
+        while (i < game.getScreenWidth() * game.getScreenHeight()) {
+            let grid[i] = 0;
+            let i = i + 1;
+        }
 
-      // Draw grid on the screen
-      do draw();
-      return this;
-   }
+        // Draw grid on the screen
+        do draw();
+        return this;
+    }
 
-   method void dispose() {
-      do grid.dispose();
-      do Memory.deAlloc(this);
-      return;
-   }
+    method void dispose() {
+        do grid.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
 
-   /** Draws the grid on the screen. */
-   method void draw() {
-      var int i;
+    /** Draws the grid on the screen. */
+    method void draw() {
+        var int i;
 
-      var int square_x;
-      var int square_y;
+        var int square_x;
+        var int square_y;
 
-      do Screen.setColor(true);
-      let i = 0;
-      while (i < (game.getScreenWidth() * game.getScreenHeight())) {
-         if (grid[i] = 1) {
-            let square_y = i / game.getScreenWidth();
-            let square_x = i - (square_y * game.getScreenWidth());
-            do Screen.drawRectangle(square_x * game.getSize() + 1, square_y * game.getSize() + 1, (square_x + 1) * game.getSize() - 1, (square_y + 1) * game.getSize() - 1);
-         }
-         let i = i + 1;
-      }
-      return;
-   }
+        do Screen.setColor(true);
+        let i = 0;
+        while (i < (game.getScreenWidth() * game.getScreenHeight())) {
+            if (grid[i] = 1) {
+                let square_y = i / game.getScreenWidth();
+                let square_x = i - (square_y * game.getScreenWidth());
+                do Screen.drawRectangle(square_x * game.getSize() + 1, square_y * game.getSize() + 1, (square_x + 1) * game.getSize() - 1, (square_y + 1) * game.getSize() - 1);
+            }
+            let i = i + 1;
+        }
+        return;
+    }
 
-   method void setGridSquare(int x, int y) {
-      let grid[x + (y * game.getScreenWidth())] = 1;
-      return;
-   }
+    method void setGridSquare(int x, int y) {
+        let grid[x + (y * game.getScreenWidth())] = 1;
+        return;
+    }
 
-   method boolean getGridSquare(int x, int y) {
-      return grid[x + (y * game.getScreenWidth())];
-   }
+    method boolean getGridSquare(int x, int y) {
+        return grid[x + (y * game.getScreenWidth())];
+    }
 
-   method boolean canMove(Array squares, int num_squares) {
-      var int i;
+    method boolean canMove(Array squares, int num_squares) {
+        var int i;
 
-      let i = 0;
-      while (i < num_squares) {
-         // Check x value isn't too big (right edge)
-         if (squares[i * 2] > (game.getScreenWidth() - 1)) {
-            return false;
-         }
-         // Check y value isn't too small (top edge)
-         if (squares[(i * 2) + 1] < 0) {
-            return false;
-         }
-         // Check y value isn't too big (bottom edge)
-         if (squares[(i * 2) + 1] > (game.getScreenHeight() - 1)) {
-            return false;
-         }
-         // Check square isn't filled
-         if (getGridSquare(squares[i * 2], squares[(i * 2) + 1])) {
-            return false;
-         }
-         let i = i + 1;
-      }
-      return true;
-   }
+        let i = 0;
+        while (i < num_squares) {
+            // Check x value isn't too big (right edge)
+            if (squares[i * 2] > (game.getScreenWidth() - 1)) {
+                return false;
+            }
+            // Check y value isn't too small (top edge)
+            if (squares[(i * 2) + 1] < 0) {
+                return false;
+            }
+            // Check y value isn't too big (bottom edge)
+            if (squares[(i * 2) + 1] > (game.getScreenHeight() - 1)) {
+                return false;
+            }
+            // Check square isn't filled
+            if (getGridSquare(squares[i * 2], squares[(i * 2) + 1])) {
+                return false;
+            }
+            let i = i + 1;
+        }
+        return true;
+    }
 }

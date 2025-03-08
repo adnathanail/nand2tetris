@@ -275,9 +275,9 @@ class Random {
     }
 
     method void dispose() {
-      do Memory.deAlloc(this);
-      return;
-   }
+        do Memory.deAlloc(this);
+        return;
+    }
 
     method int getRandom() {
         let rndindex = rndindex + 1;
