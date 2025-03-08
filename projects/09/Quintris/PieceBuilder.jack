@@ -10,13 +10,17 @@
 
 /** Utility class to generate random pieces */
 class PieceBuilder {
-    field int i;
+    field Random rnd;
+    field int num_squares;
 
     constructor PieceBuilder new() {
+        let rnd = Random.new();
+        let num_squares = 5;
         return this;
     }
 
     method void dispose() {
+        do rnd.dispose();
         do Memory.deAlloc(this);
         return;
     }
@@ -29,13 +33,48 @@ class PieceBuilder {
     }
 
     method Piece getRandomPiece(QuintrisGame game) {
-        var int num_squares;
         var Array squares;
-
-        let num_squares = 5;
+        var int squares_type;
 
         let squares = Array.new(num_squares * 2);
-        do _setSquares12(squares);
+        let squares_type = rnd.getRandomUpTo(12);
+
+        if (squares_type = 0) {
+            do _setSquares1(squares);
+        }
+        if (squares_type = 1) {
+            do _setSquares2(squares);
+        }
+        if (squares_type = 2) {
+            do _setSquares3(squares);
+        }
+        if (squares_type = 3) {
+            do _setSquares4(squares);
+        }
+        if (squares_type = 4) {
+            do _setSquares5(squares);
+        }
+        if (squares_type = 5) {
+            do _setSquares6(squares);
+        }
+        if (squares_type = 6) {
+            do _setSquares7(squares);
+        }
+        if (squares_type = 7) {
+            do _setSquares8(squares);
+        }
+        if (squares_type = 8) {
+            do _setSquares9(squares);
+        }
+        if (squares_type = 9) {
+            do _setSquares10(squares);
+        }
+        if (squares_type = 10) {
+            do _setSquares11(squares);
+        }
+        if (squares_type = 11) {
+            do _setSquares12(squares);
+        }
 
         return Piece.new(game, num_squares, squares);
     }

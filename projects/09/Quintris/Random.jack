@@ -10,8 +10,10 @@ class Random {
     field int rndindex;
 
     constructor Random new() {
+        // Initialise index of random number
         let rndindex = 0;
 
+        // Initialise table of random numbers
         let rndtable = Array.new(256);
 
         let rndtable[0] = 0;
@@ -280,10 +282,19 @@ class Random {
     }
 
     method int getRandom() {
+        // Get a random number from 0 to 255
         let rndindex = rndindex + 1;
         if (rndindex > 255) {
             let rndindex = 0;
         }
         return rndtable[rndindex];
+    }
+
+    method int getRandomUpTo(int to) {
+        // Get a random number from 0 to (to - 1)
+        var int range;
+        var int random_full_range;
+        let random_full_range = getRandom();
+        return random_full_range - ((random_full_range / to) * to);
     }
 }
