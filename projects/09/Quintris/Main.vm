@@ -2,6 +2,9 @@ function Main.main 1
 call QuintrisGame.new 0
 pop local 0
 push local 0
+call QuintrisGame.run 1
+pop temp 0
+push local 0
 call QuintrisGame.dispose 1
 pop temp 0
 push constant 0

@@ -6,7 +6,7 @@ class Main {
    function void main() {
       var QuintrisGame game;
       let game = QuintrisGame.new();
-      // do game.run();
+      do game.run();
       do game.dispose();
       return;
    }

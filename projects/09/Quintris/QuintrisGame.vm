@@ -1,4 +1,4 @@
-function QuintrisGame.new 1
+function QuintrisGame.new 0
 push constant 1
 call Memory.alloc 1
 pop pointer 0
@@ -19,6 +19,11 @@ pop static 4
 push pointer 0
 call Piece.new 1
 pop this 0
+push pointer 0
+return
+function QuintrisGame.run 1
+push argument 0
+pop pointer 0
 label WHILE_EXP0
 push this 0
 call Piece.canDrop 1
@@ -60,7 +65,7 @@ pop temp 0
 label IF_FALSE1
 goto WHILE_EXP0
 label WHILE_END0
-push pointer 0
+push constant 0
 return
 function QuintrisGame.dispose 0
 push argument 0

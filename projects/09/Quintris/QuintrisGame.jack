@@ -19,8 +19,6 @@ class QuintrisGame {
 
    /** Constructs a new Square Game. */
    constructor QuintrisGame new() {
-      var char key;  // the key currently pressed by the user
-
       // Initialise classes static variables (should be called only once)
       let size = 16;
       let screen_width_px = 512;
@@ -31,6 +29,11 @@ class QuintrisGame {
       let screen_height = screen_height_px / size;
 
       let piece = Piece.new(this);
+      return this;
+   }
+
+   method void run() {
+      var char key;  // the key currently pressed by the user
       while (piece.canDrop()) {
          do Sys.wait(200);
          do piece.drop();
@@ -38,7 +41,7 @@ class QuintrisGame {
          if ((key = 131) & piece.canMoveUp()) { do piece.moveUp(); }   // up arrow
          if ((key = 133) & piece.canMoveDown()) { do piece.moveDown(); }   // down arrow
       }
-      return this;
+      return;
    }
 
    /** Disposes this game. */
