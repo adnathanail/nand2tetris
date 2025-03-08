@@ -15,7 +15,10 @@ class QuintrisGame {
    static int screen_width;
    static int screen_height;
 
-   field Piece piece; // the square of this game
+   // Current active game piece
+   field Piece piece;
+   // Grid of placed squares
+   field Grid grid;
 
    /** Constructs a new Square Game. */
    constructor QuintrisGame new() {
@@ -29,6 +32,7 @@ class QuintrisGame {
       let screen_height = screen_height_px / size;
 
       let piece = Piece.new(this);
+      let grid = Grid.new(this);
       return this;
    }
 
@@ -47,6 +51,7 @@ class QuintrisGame {
    /** Disposes this game. */
    method void dispose() {
       do piece.dispose();
+      do grid.dispose();
       do Memory.deAlloc(this);
       return;
    }

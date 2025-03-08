@@ -1,0 +1,60 @@
+// Copyright (c) 2025-03-08 Alex Nathanail
+// All rights reserved
+
+/** The grid of placed Quintris pieces */
+class Grid {
+   field QuintrisGame game;
+   // Flattened width*height Array of which squares are filled
+   //   e.g. (1, 1, 1, ..., 1, 0, 1, ..., 1, 1, 1, ..., ...)
+   //   represents the 2D array ((1, 1, 1, ...), (1, 0, 1, ...), (1, 1, 1, ...), ...)
+   //   and forms a empty square in the top left
+   field Array grid;
+
+   /** Constructs a new square with a given location and size. */
+   constructor Grid new(QuintrisGame game) {
+      var int i;
+
+      let game = game;
+
+      // Create grid of squares
+      let grid = Array.new(game.getScreenWidth() * game.getScreenHeight());
+      // Initialise grid to zeroes;
+      let i = 0;
+      while (i < game.getScreenWidth() * game.getScreenHeight()) {
+         let grid[i] = 0;
+         let i = i + 1;
+      }
+      let grid[45] = 1;  // TODO remove
+
+      // Draw grid on the screen
+      do draw();
+      return this;
+   }
+
+   /** Disposes this piece. */
+   method void dispose() {
+      do grid.dispose();
+      do Memory.deAlloc(this);
+      return;
+   }
+
+   /** Draws the grid on the screen. */
+   method void draw() {
+      var int i;
+
+      var int square_x;
+      var int square_y;
+
+      do Screen.setColor(true);
+      let i = 0;
+      while (i < (game.getScreenWidth() * game.getScreenHeight())) {
+         if (grid[i] = 1) {
+            let square_y = i / game.getScreenWidth();
+            let square_x = i - (square_y * game.getScreenWidth());
+            do Screen.drawRectangle(square_x * game.getSize() + 1, square_y * game.getSize() + 1, (square_x + 1) * game.getSize() - 1, (square_y + 1) * game.getSize() - 1);
+         }
+         let i = i + 1;
+      }
+      return;
+   }
+}
