@@ -3,7 +3,26 @@
 
 /** Utility class to generate random pieces */
 class PieceBuilder {
+   function void _setSquare(Array squares, int square_index, int x, int y) {
+      let squares[square_index * 2] = x;
+      let squares[(square_index * 2) + 1] = y;
+
+      return;
+   }
+
     function Piece getRandomPiece(QuintrisGame game) {
-        return Piece.new(game, 5);
+        var int num_squares;
+        var Array squares;
+
+        let num_squares = 5;
+
+        let squares = Array.new(num_squares * 2);
+        do PieceBuilder._setSquare(squares, 0, 0, 0);
+        do PieceBuilder._setSquare(squares, 1, 1, 0);
+        do PieceBuilder._setSquare(squares, 2, 0, 1);
+        do PieceBuilder._setSquare(squares, 3, 1, 1);
+        do PieceBuilder._setSquare(squares, 4, 1, 2);
+
+        return Piece.new(game, num_squares, squares);
     }
 }
