@@ -69,46 +69,32 @@ class Piece {
       return;
    }
 
-   /** Update the piece's desired location to 1 space to the right */
-   method Array tryToDrop() {
+   method Array _tryToMove(int x_offset, int y_offset) {
       var int i;
 
       let i = 0;
       while (i < num_squares) {
-         let desired_squares[i * 2] = squares[i * 2] + 1;
-         let desired_squares[(i * 2) + 1] = squares[(i * 2) + 1];
+         let desired_squares[i * 2] = squares[i * 2] + x_offset;
+         let desired_squares[(i * 2) + 1] = squares[(i * 2) + 1] + y_offset;
          let i = i + 1;
       }
 
       return desired_squares;
+   }
+
+   /** Update the piece's desired location to 1 space to the right */
+   method Array tryToDrop() {
+      return _tryToMove(1, 0);
    }
 
    /** Update the piece's desired location to 1 space up */
    method Array tryToMoveUp() {
-      var int i;
-
-      let i = 0;
-      while (i < num_squares) {
-         let desired_squares[i * 2] = squares[i * 2];
-         let desired_squares[(i * 2) + 1] = squares[(i * 2) + 1] - 1;
-         let i = i + 1;
-      }
-
-      return desired_squares;
+      return _tryToMove(0, -1);
    }
 
    /** Update the piece's desired location to 1 space down */
    method Array tryToMoveDown() {
-      var int i;
-
-      let i = 0;
-      while (i < num_squares) {
-         let desired_squares[i * 2] = squares[i * 2];
-         let desired_squares[(i * 2) + 1] = squares[(i * 2) + 1] + 1;
-         let i = i + 1;
-      }
-
-      return desired_squares;
+      return _tryToMove(0, 1);
    }
 
    method void acceptMove() {

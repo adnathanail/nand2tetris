@@ -164,7 +164,7 @@ goto WHILE_EXP0
 label WHILE_END0
 push constant 0
 return
-function Piece.tryToDrop 1
+function Piece._tryToMove 1
 push argument 0
 pop pointer 0
 push constant 0
@@ -187,7 +187,7 @@ push this 1
 add
 pop pointer 1
 push that 0
-push constant 1
+push argument 1
 add
 pop temp 0
 pop pointer 1
@@ -209,6 +209,8 @@ push this 1
 add
 pop pointer 1
 push that 0
+push argument 2
+add
 pop temp 0
 pop pointer 1
 push temp 0
@@ -221,119 +223,30 @@ goto WHILE_EXP0
 label WHILE_END0
 push this 2
 return
-function Piece.tryToMoveUp 1
+function Piece.tryToDrop 0
 push argument 0
 pop pointer 0
+push pointer 0
+push constant 1
 push constant 0
-pop local 0
-label WHILE_EXP0
-push local 0
-push static 0
-lt
-not
-if-goto WHILE_END0
-push local 0
-push constant 2
-call Math.multiply 2
-push this 2
-add
-push local 0
-push constant 2
-call Math.multiply 2
-push this 1
-add
-pop pointer 1
-push that 0
-pop temp 0
-pop pointer 1
-push temp 0
-pop that 0
-push local 0
-push constant 2
-call Math.multiply 2
-push constant 1
-add
-push this 2
-add
-push local 0
-push constant 2
-call Math.multiply 2
-push constant 1
-add
-push this 1
-add
-pop pointer 1
-push that 0
-push constant 1
-sub
-pop temp 0
-pop pointer 1
-push temp 0
-pop that 0
-push local 0
-push constant 1
-add
-pop local 0
-goto WHILE_EXP0
-label WHILE_END0
-push this 2
+call Piece._tryToMove 3
 return
-function Piece.tryToMoveDown 1
+function Piece.tryToMoveUp 0
 push argument 0
 pop pointer 0
+push pointer 0
 push constant 0
-pop local 0
-label WHILE_EXP0
-push local 0
-push static 0
-lt
-not
-if-goto WHILE_END0
-push local 0
-push constant 2
-call Math.multiply 2
-push this 2
-add
-push local 0
-push constant 2
-call Math.multiply 2
-push this 1
-add
-pop pointer 1
-push that 0
-pop temp 0
-pop pointer 1
-push temp 0
-pop that 0
-push local 0
-push constant 2
-call Math.multiply 2
 push constant 1
-add
-push this 2
-add
-push local 0
-push constant 2
-call Math.multiply 2
+neg
+call Piece._tryToMove 3
+return
+function Piece.tryToMoveDown 0
+push argument 0
+pop pointer 0
+push pointer 0
+push constant 0
 push constant 1
-add
-push this 1
-add
-pop pointer 1
-push that 0
-push constant 1
-add
-pop temp 0
-pop pointer 1
-push temp 0
-pop that 0
-push local 0
-push constant 1
-add
-pop local 0
-goto WHILE_EXP0
-label WHILE_END0
-push this 2
+call Piece._tryToMove 3
 return
 function Piece.acceptMove 1
 push argument 0
