@@ -9,9 +9,9 @@ class Random {
     static Array rndtable;
     field int rndindex;
 
-    constructor Random new() {
-        // Initialise index of random number
-        let rndindex = 0;
+    constructor Random new(int rand_seed) {
+        // Normalise random seed to 0-255
+        let rndindex = rand_seed - ((rand_seed / 256) * 256);
 
         // Initialise table of random numbers
         let rndtable = Array.new(256);

@@ -13,8 +13,8 @@ class PieceBuilder {
     field Random rnd;
     field int num_squares;
 
-    constructor PieceBuilder new() {
-        let rnd = Random.new();
+    constructor PieceBuilder new(int rand_seed) {
+        let rnd = Random.new(rand_seed);
         let num_squares = 5;
         return this;
     }
