@@ -38,13 +38,30 @@ class QuintrisGame {
 
    method void run() {
       var char key;  // the key currently pressed by the user
-      while (piece.canDrop()) {
-         do Sys.wait(200);
-         do piece.drop();
-         let key = Keyboard.keyPressed();
-         if ((key = 131) & piece.canMoveUp()) { do piece.moveUp(); }   // up arrow
-         if ((key = 133) & piece.canMoveDown()) { do piece.moveDown(); }   // down arrow
+      var Array pieceSquares;
+      var int i;
+
+      while (true) {
+         while (piece.canDrop()) {
+            do Sys.wait(50);
+            do piece.drop();
+            let key = Keyboard.keyPressed();
+            if ((key = 131) & piece.canMoveUp()) { do piece.moveUp(); }   // up arrow
+            if ((key = 133) & piece.canMoveDown()) { do piece.moveDown(); }   // down arrow
+         }
+
+         let pieceSquares = piece.getPieceSquares();
+         let i = 0;
+         while (i < piece.getNumSquares()) {
+            do grid.setGridSquare(pieceSquares[i * 2], pieceSquares[(i * 2) + 1]);
+            let i = i + 1;
+         }
+         do pieceSquares.dispose();
+         do piece.dispose();
+         do grid.draw();
+         let piece = Piece.new(this);
       }
+
       return;
    }
 

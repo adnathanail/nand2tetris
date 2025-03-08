@@ -257,3 +257,72 @@ call Piece.draw 2
 pop temp 0
 push constant 0
 return
+function Piece.getNumSquares 0
+push argument 0
+pop pointer 0
+push static 0
+return
+function Piece.getPieceSquares 2
+push argument 0
+pop pointer 0
+push static 0
+push constant 2
+call Math.multiply 2
+call Array.new 1
+pop local 0
+push constant 0
+pop local 1
+label WHILE_EXP0
+push local 1
+push static 0
+lt
+not
+if-goto WHILE_END0
+push local 1
+push constant 2
+call Math.multiply 2
+push local 0
+add
+push this 1
+push local 1
+push constant 2
+call Math.multiply 2
+push this 3
+add
+pop pointer 1
+push that 0
+add
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push local 1
+push constant 2
+call Math.multiply 2
+push constant 1
+add
+push local 0
+add
+push this 2
+push local 1
+push constant 2
+call Math.multiply 2
+push constant 1
+add
+push this 3
+add
+pop pointer 1
+push that 0
+add
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push local 1
+push constant 1
+add
+pop local 1
+goto WHILE_EXP0
+label WHILE_END0
+push local 0
+return

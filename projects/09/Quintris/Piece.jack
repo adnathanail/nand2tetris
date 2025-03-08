@@ -117,4 +117,23 @@ class Piece {
       do draw(true);
       return;
    }
+
+   method int getNumSquares() {
+      return num_squares;
+   }
+
+   method Array getPieceSquares() {
+      var Array out;
+      var int i;
+
+      let out = Array.new(num_squares * 2);
+
+      let i = 0;
+      while (i < num_squares) {
+         let out[i * 2] = x + squares[i * 2];
+         let out[(i * 2) + 1] = y + squares[(i * 2) + 1];
+         let i = i + 1;
+      }
+      return out;
+   }
 }

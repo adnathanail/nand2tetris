@@ -24,7 +24,6 @@ class Grid {
          let grid[i] = 0;
          let i = i + 1;
       }
-      let grid[45] = 1;  // TODO remove
 
       // Draw grid on the screen
       do draw();
@@ -55,6 +54,11 @@ class Grid {
          }
          let i = i + 1;
       }
+      return;
+   }
+
+   method void setGridSquare(int x, int y) {
+      let grid[(x * game.getScreenWidth()) + y] = 1;
       return;
    }
 }
