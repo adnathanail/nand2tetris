@@ -3,10 +3,9 @@
 
 /** A single Quintris piece */
 class Piece {
-   // Number of squares per piece (5)
-   static int num_squares;
-
    field QuintrisGame game;
+   // Number of squares in the piece
+   field int num_squares;
    // Flattened n*2 2D Array of coordinates to create a multi-square shape
    //   e.g. (0, 0, 0, 1, 0, 2, 0, 3, 1, 3)
    //   represents the 2D array ((0, 0), (0, 1), (0, 2), (0, 3) (1, 3))
@@ -22,11 +21,11 @@ class Piece {
    }
 
    /** Constructs a new square with a given location and size. */
-   constructor Piece new(QuintrisGame game) {
+   constructor Piece new(QuintrisGame game, int _num_squares) {
       let game = game;
 
-      // Initialise static variables
-      let num_squares = 5;
+      // Set num squares
+      let num_squares = _num_squares;
 
       // Initialise array of square positions
       let current_squares = Array.new(num_squares * 2);

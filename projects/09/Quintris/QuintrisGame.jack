@@ -32,7 +32,7 @@ class QuintrisGame {
       let screen_height = screen_height_px / size;
 
       // Create a piece and a grid
-      let piece = Piece.new(this);
+      let piece = PieceBuilder.getRandomPiece(this);
       let grid = Grid.new(this);
       return this;
    }
@@ -67,7 +67,7 @@ class QuintrisGame {
          }
          do piece.dispose();
          do grid.draw();
-         let piece = Piece.new(this);
+         let piece = PieceBuilder.getRandomPiece(this);
       }
 
       return;

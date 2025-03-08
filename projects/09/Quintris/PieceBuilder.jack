@@ -1,0 +1,9 @@
+// Copyright (c) 2025-03-08 Alex Nathanail
+// All rights reserved
+
+/** Utility class to generate random pieces */
+class PieceBuilder {
+    function Piece getRandomPiece(QuintrisGame game) {
+        return Piece.new(game, 5);
+    }
+}

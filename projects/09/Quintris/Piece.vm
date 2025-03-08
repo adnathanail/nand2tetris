@@ -4,7 +4,7 @@ pop pointer 0
 push argument 1
 push constant 2
 call Math.multiply 2
-push this 1
+push this 2
 add
 push argument 2
 pop temp 0
@@ -16,7 +16,7 @@ push constant 2
 call Math.multiply 2
 push constant 1
 add
-push this 1
+push this 2
 add
 push argument 3
 pop temp 0
@@ -26,23 +26,23 @@ pop that 0
 push constant 0
 return
 function Piece.new 0
-push constant 3
+push constant 4
 call Memory.alloc 1
 pop pointer 0
 push argument 0
 pop argument 0
-push constant 5
-pop static 0
-push static 0
-push constant 2
-call Math.multiply 2
-call Array.new 1
+push argument 1
 pop this 1
-push static 0
+push this 1
 push constant 2
 call Math.multiply 2
 call Array.new 1
 pop this 2
+push this 1
+push constant 2
+call Math.multiply 2
+call Array.new 1
+pop this 3
 push pointer 0
 push constant 0
 push constant 0
@@ -83,10 +83,10 @@ return
 function Piece.dispose 0
 push argument 0
 pop pointer 0
-push this 1
+push this 2
 call Array.dispose 1
 pop temp 0
-push this 2
+push this 3
 call Array.dispose 1
 pop temp 0
 push pointer 0
@@ -104,14 +104,14 @@ push constant 0
 pop local 0
 label WHILE_EXP0
 push local 0
-push static 0
+push this 1
 lt
 not
 if-goto WHILE_END0
 push local 0
 push constant 2
 call Math.multiply 2
-push this 1
+push this 2
 add
 pop pointer 1
 push that 0
@@ -121,7 +121,7 @@ push constant 2
 call Math.multiply 2
 push constant 1
 add
-push this 1
+push this 2
 add
 pop pointer 1
 push that 0
@@ -171,19 +171,19 @@ push constant 0
 pop local 0
 label WHILE_EXP0
 push local 0
-push static 0
+push this 1
 lt
 not
 if-goto WHILE_END0
 push local 0
 push constant 2
 call Math.multiply 2
-push this 2
+push this 3
 add
 push local 0
 push constant 2
 call Math.multiply 2
-push this 1
+push this 2
 add
 pop pointer 1
 push that 0
@@ -198,14 +198,14 @@ push constant 2
 call Math.multiply 2
 push constant 1
 add
-push this 2
+push this 3
 add
 push local 0
 push constant 2
 call Math.multiply 2
 push constant 1
 add
-push this 1
+push this 2
 add
 pop pointer 1
 push that 0
@@ -221,7 +221,7 @@ add
 pop local 0
 goto WHILE_EXP0
 label WHILE_END0
-push this 2
+push this 3
 return
 function Piece.tryToDrop 0
 push argument 0
@@ -259,19 +259,19 @@ push constant 0
 pop local 0
 label WHILE_EXP0
 push local 0
-push static 0
+push this 1
 lt
 not
 if-goto WHILE_END0
 push local 0
 push constant 2
 call Math.multiply 2
-push this 1
+push this 2
 add
 push local 0
 push constant 2
 call Math.multiply 2
-push this 2
+push this 3
 add
 pop pointer 1
 push that 0
@@ -284,14 +284,14 @@ push constant 2
 call Math.multiply 2
 push constant 1
 add
-push this 1
+push this 2
 add
 push local 0
 push constant 2
 call Math.multiply 2
 push constant 1
 add
-push this 2
+push this 3
 add
 pop pointer 1
 push that 0
@@ -315,10 +315,10 @@ return
 function Piece.getNumSquares 0
 push argument 0
 pop pointer 0
-push static 0
+push this 1
 return
 function Piece.getCurrentSquares 0
 push argument 0
 pop pointer 0
-push this 1
+push this 2
 return
