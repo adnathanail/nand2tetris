@@ -87,10 +87,22 @@ class Piece {
         var int i;
         var int centerX;
         var int centerY;
+        var int sumX;
+        var int sumY;
+
+        // Calculate the sum of all x and y coordinates
+        let sumX = 0;
+        let sumY = 0;
+        let i = 0;
+        while (i < num_squares) {
+            let sumX = sumX + current_squares[i * 2];
+            let sumY = sumY + current_squares[(i * 2) + 1];
+            let i = i + 1;
+        }
 
         // Calculate the center of the piece
-        let centerX = current_squares[0];
-        let centerY = current_squares[1];
+        let centerX = sumX / num_squares;
+        let centerY = sumY / num_squares;
 
         let i = 0;
         while (i < num_squares) {
