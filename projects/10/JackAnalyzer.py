@@ -145,7 +145,7 @@ def parse(inp):
         else:
             raise Exception(f"Invalid token type '{tokenType}'")
         out += f" </{tokenType}>\n"
-    out = "</tokens>\n"
+    out += "</tokens>\n"
     return out
 
 
