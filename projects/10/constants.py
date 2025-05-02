@@ -22,6 +22,8 @@ KEYWORDS = (
     "return",
 )
 
+PRIMITIVE_TYPES = ("int", "char", "boolean")
+
 SYMBOLS = (
     "{",
     "}",

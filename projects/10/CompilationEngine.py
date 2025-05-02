@@ -1,4 +1,5 @@
 from utils import make_indent
+from constants import PRIMITIVE_TYPES
 
 
 class CompilationError(Exception):
@@ -67,6 +68,13 @@ class CompilationEngine:
                 f"Nothing expected after class definition, got {self.tokenizer.tokenType} {self.tokenizer.token}"
             )
 
+    def _parseType(self):
+        if self.tokenizer.nextTokenType == "keyword" and self.tokenizer.nextToken in PRIMITIVE_TYPES:
+            return self._parseKeyword(PRIMITIVE_TYPES)
+        else:
+            return self._parseIdentifier()
+
+
     def compileClassVarDec(self, indent):
         if (
             self.tokenizer.nextTokenType != "keyword"
@@ -75,7 +83,7 @@ class CompilationEngine:
             return
         print(make_indent(indent) + "<classVarDec>")
         print(make_indent(indent + 1) + self._parseKeyword(["static"]))
-        print(make_indent(indent + 1) + self._parseKeyword(["int", "char", "boolean"]))
+        print(make_indent(indent + 1) + self._parseType())
         print(make_indent(indent + 1) + self._parseIdentifier())
         print(make_indent(indent + 1) + self._parseSymbol(";"))
         print(make_indent(indent) + "</classVarDec>")
