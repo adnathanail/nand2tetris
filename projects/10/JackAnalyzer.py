@@ -16,6 +16,12 @@ SYMBOLS = (
     "|", "<", ">", "=", "~"
 )
 
+SYMBOL_LOOKUP = {
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "&": "&amp;",
+}
 
 def _strip_comments_and_whitespace(in_text: str) -> str:
     lines = in_text.splitlines()
@@ -76,6 +82,27 @@ class JackTokenizer:
             return self.tokenStart + 1
         return False
 
+    def _lexIntegerConstant(self) -> str:
+        if not self.text[self.tokenStart].isdigit():
+            return False
+        endInd = self.tokenStart + 1
+        decimal_used = False
+        while self.text[endInd].isdigit() or (not decimal_used and self.text[endInd] == "."):
+            if self.text[endInd] == ".":
+                decimal_used = True
+            endInd += 1
+        return endInd
+
+    def _lexStringConstant(self) -> str:
+        if self.text[self.tokenStart] != '"':
+            return False
+        endInd = self.tokenStart + 1
+        while self.text[endInd] not in ['"', "\n"]:
+            endInd += 1
+        if self.text[endInd] == '"':
+            return endInd + 1
+        return False
+
     def _lexIdentifier(self) -> str:
         endInd = self.tokenStart
         if not self.text[endInd].isalpha() and self.text[endInd] != "_":
@@ -97,29 +124,38 @@ class JackTokenizer:
         elif nextInd := self._lexSymbol():
             self.tokenEnd = nextInd
             self._tokenType = "symbol"
+        elif nextInd := self._lexIntegerConstant():
+            self.tokenEnd = nextInd
+            self._tokenType = "integerConstant"
+        elif nextInd := self._lexStringConstant():
+            self.tokenEnd = nextInd
+            self._tokenType = "stringConstant"
         elif nextInd := self._lexIdentifier():
             self.tokenEnd = nextInd
             self._tokenType = "identifier"
         else:
             raise Exception()
 
-    def tokenType(self) -> Literal["keyword", "symbol", "identifier", "int_const", "string_const"]:
+    def tokenType(self):
         return self._tokenType
 
     def keyWord(self):
         return self.text[self.tokenStart:self.tokenEnd]
 
-    def symbol(self) -> str:
+    def intVal(self) -> int:
         return self.text[self.tokenStart:self.tokenEnd]
+
+    def stringVal(self) -> int:
+        return self.text[self.tokenStart + 1:self.tokenEnd - 1]
+
+    def symbol(self) -> str:
+        symb = self.text[self.tokenStart:self.tokenEnd]
+        if symb in SYMBOL_LOOKUP:
+            return SYMBOL_LOOKUP[symb]
+        return symb
 
     def identifier(self) -> str:
         return self.text[self.tokenStart:self.tokenEnd]
-
-    def intVal(self) -> int:
-        pass
-
-    def stringVal(self) -> int:
-        pass
 
 
 def parse(inp):
@@ -130,11 +166,20 @@ def parse(inp):
         tokenType = tokenizer.tokenType()
         out += f"<{tokenType}> "
         if tokenType == "keyword":
+            print(tokenizer.keyWord())
             out += tokenizer.keyWord()
-        elif tokenType == "identifier":
-            out += tokenizer.identifier()
         elif tokenType == "symbol":
+            print(tokenizer.symbol())
             out += tokenizer.symbol()
+        elif tokenType == "integerConstant":
+            print(tokenizer.intVal())
+            out += tokenizer.intVal()
+        elif tokenType == "stringConstant":
+            print(tokenizer.stringVal())
+            out += tokenizer.stringVal()
+        elif tokenType == "identifier":
+            print(tokenizer.identifier())
+            out += tokenizer.identifier()
         else:
             raise Exception(f"Invalid token type '{tokenType}'")
         out += f" </{tokenType}>\n"
