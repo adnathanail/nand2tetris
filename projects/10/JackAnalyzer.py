@@ -173,4 +173,3 @@ if __name__ == "__main__":
         out_file_name = ".".join(fp.name.split(".")[:-1]) + ".xml"
         with open(out_dir / out_file_name, "w") as f:
             f.write(xml_output)
-        break  # TODO remove
