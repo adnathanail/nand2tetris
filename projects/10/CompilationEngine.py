@@ -57,7 +57,8 @@ class CompilationEngine:
         while self.tokenizer.nextTokenType == "keyword" and self.tokenizer.nextToken in ("static", "field"):
             self.compileClassVarDec(indent + 1)
 
-        # subroutineDec*
+        while self.tokenizer.nextTokenType == "keyword" and self.tokenizer.nextToken in ("constructor", "function", "method"):
+            self.compileSubroutine(indent + 1)
 
         print(make_indent(indent + 1) + self._parseSymbol("}"))
         print(make_indent(indent) + "</class>")
@@ -68,9 +69,9 @@ class CompilationEngine:
                 f"Nothing expected after class definition, got {self.tokenizer.tokenType} {self.tokenizer.token}"
             )
 
-    def _parseType(self):
-        if self.tokenizer.nextTokenType == "keyword" and self.tokenizer.nextToken in PRIMITIVE_TYPES:
-            return self._parseKeyword(PRIMITIVE_TYPES)
+    def _parseType(self, *, include_void=False):
+        if self.tokenizer.nextTokenType == "keyword" and (self.tokenizer.nextToken in PRIMITIVE_TYPES or (include_void and self.tokenizer.nextToken == "void")):
+            return self._parseKeyword(PRIMITIVE_TYPES + (("void",) if include_void else ()))
         else:
             return self._parseIdentifier()
 
@@ -82,3 +83,51 @@ class CompilationEngine:
         print(make_indent(indent + 1) + self._parseIdentifier())
         print(make_indent(indent + 1) + self._parseSymbol(";"))
         print(make_indent(indent) + "</classVarDec>")
+
+    def compileSubroutine(self, indent):
+        print(make_indent(indent) + "<subroutineDec>")
+        print(make_indent(indent + 1) + self._parseKeyword(["constructor", "function", "method"]))
+        print(make_indent(indent + 1) + self._parseType(include_void=True))
+        print(make_indent(indent + 1) + self._parseIdentifier())
+        print(make_indent(indent + 1) + self._parseSymbol("("))
+        # TODO
+        print(make_indent(indent + 1) + self._parseSymbol(")"))
+        self.compileSubroutineBody(indent + 1)
+
+    def compileSubroutineBody(self, indent):
+        print(make_indent(indent) + "<subroutineDec>")
+        print(make_indent(indent + 1) + self._parseSymbol("{"))
+        while self.tokenizer.nextTokenType == "keyword" and self.tokenizer.nextToken == "var":
+            self.compileVarDec(indent + 1)
+        self.compileStatements(indent + 1)
+        print(make_indent(indent + 1) + self._parseSymbol("}"))
+        print(make_indent(indent) + "</subroutineDec>")
+    
+    def compileVarDec(self, indent):
+        print(make_indent(indent) + "<varDec>")
+        print(make_indent(indent + 1) + self._parseKeyword(["var"]))
+        print(make_indent(indent + 1) + self._parseType())
+        print(make_indent(indent + 1) + self._parseIdentifier())
+        while self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ",":
+            print(make_indent(indent + 1) + self._parseSymbol(","))
+            print(make_indent(indent + 1) + self._parseIdentifier())
+        print(make_indent(indent + 1) + self._parseSymbol(";"))
+        print(make_indent(indent) + "</varDec>")
+    
+    def compileStatements(self, indent):
+        if self.tokenizer.nextTokenType != "keyword" or self.tokenizer.nextToken not in ["let", "if", "while", "do", "return"]:
+            return
+        print(make_indent(indent) + "<statements>")
+        while self.tokenizer.nextTokenType == "keyword" and self.tokenizer.nextToken in ["let", "if", "while", "do", "return"]:
+            if self.tokenizer.nextToken == "let":
+                self.compileLetStatement(indent + 1)
+        print(make_indent(indent) + "</statements>")
+    
+    def compileLetStatement(self, indent):
+        print(make_indent(indent) + "<letStatement>")
+        print(make_indent(indent + 1) + self._parseKeyword(["let"]))
+        print(make_indent(indent + 1) + self._parseIdentifier())
+        print(make_indent(indent + 1) + self._parseSymbol("="))
+        print(make_indent(indent + 1) + self._parseIdentifier())
+        print(make_indent(indent + 1) + self._parseSymbol(";"))
+        print(make_indent(indent) + "</letStatement>")
