@@ -8,6 +8,7 @@ from CompilationEngine import CompilationEngine
 def parse(inp):
     tokenizer = JackTokenizer(inp)
     engine = CompilationEngine(tokenizer)
+    engine.compileClass()
     return engine.output
 
 
