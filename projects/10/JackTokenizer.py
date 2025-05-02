@@ -9,9 +9,12 @@ class JackTokenizer:
         self._tokenEnd = 0
         self.tokenType = None
         self.token = None
+        self.nextToken = None
+        self.nextTokenType = None
+        self.advance()
 
     def hasMoreTokens(self) -> bool:
-        return (self._tokenStart + 1) < len(self._text)
+        return self.nextToken is not None
 
     def _lexKeyWord(self):
         for kw in KEYWORDS:
@@ -60,7 +63,7 @@ class JackTokenizer:
         return endInd
 
     def _chew(self):
-        while self._text[self._tokenStart] == " ":
+        while self._tokenStart < len(self._text) and self._text[self._tokenStart] == " ":
             self._tokenStart += 1
 
     def keyWord(self):
@@ -84,25 +87,35 @@ class JackTokenizer:
     def advance(self):
         self._tokenStart = self._tokenEnd
         self._chew()
-        if nextInd := self._lexKeyWord():
-            self._tokenEnd = nextInd
-            self.tokenType = "keyword"
-            self.token = self.keyWord()
-        elif nextInd := self._lexSymbol():
-            self._tokenEnd = nextInd
-            self.tokenType = "symbol"
-            self.token = self.symbol()
-        elif nextInd := self._lexIntegerConstant():
-            self._tokenEnd = nextInd
-            self.tokenType = "integerConstant"
-            self.token = self.intVal()
-        elif nextInd := self._lexStringConstant():
-            self._tokenEnd = nextInd
-            self.tokenType = "stringConstant"
-            self.token = self.stringVal()
-        elif nextInd := self._lexIdentifier():
-            self._tokenEnd = nextInd
-            self.tokenType = "identifier"
-            self.token = self.identifier()
+
+        self.token = self.nextToken
+        self.tokenType = self.nextTokenType
+
+        if self._tokenStart < len(self._text):
+            if nextInd := self._lexKeyWord():
+                self._tokenEnd = nextInd
+                self.nextTokenType = "keyword"
+                self.nextToken = self.keyWord()
+            elif nextInd := self._lexSymbol():
+                self._tokenEnd = nextInd
+                self.nextTokenType = "symbol"
+                self.nextToken = self.symbol()
+            elif nextInd := self._lexIntegerConstant():
+                self._tokenEnd = nextInd
+                self.nextTokenType = "integerConstant"
+                self.nextToken = self.intVal()
+            elif nextInd := self._lexStringConstant():
+                self._tokenEnd = nextInd
+                self.nextTokenType = "stringConstant"
+                self.nextToken = self.stringVal()
+            elif nextInd := self._lexIdentifier():
+                self._tokenEnd = nextInd
+                self.nextTokenType = "identifier"
+                self.nextToken = self.identifier()
+            else:
+                raise Exception(f"Couldn't tokenize from '{self._text[self._tokenStart:self._tokenStart + 5]}'")
+        elif self.nextToken is None:
+            raise Exception("No more tokens")
         else:
-            raise Exception()
+            self.nextToken = None
+            self.nextTokenType = None
