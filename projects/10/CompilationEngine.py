@@ -54,8 +54,8 @@ class CompilationEngine:
         print(make_indent(indent + 1) + self._parseIdentifier())
         print(make_indent(indent + 1) + self._parseSymbol("{"))
 
-        # classVarDec*
-        self.compileClassVarDec(indent + 1)
+        while self.tokenizer.nextTokenType == "keyword" and self.tokenizer.nextToken in ("static", "field"):
+            self.compileClassVarDec(indent + 1)
 
         # subroutineDec*
 
@@ -76,13 +76,8 @@ class CompilationEngine:
 
 
     def compileClassVarDec(self, indent):
-        if (
-            self.tokenizer.nextTokenType != "keyword"
-            or self.tokenizer.nextToken not in ("static", "field")
-        ):
-            return
         print(make_indent(indent) + "<classVarDec>")
-        print(make_indent(indent + 1) + self._parseKeyword(["static"]))
+        print(make_indent(indent + 1) + self._parseKeyword(["static", "field"]))
         print(make_indent(indent + 1) + self._parseType())
         print(make_indent(indent + 1) + self._parseIdentifier())
         print(make_indent(indent + 1) + self._parseSymbol(";"))
