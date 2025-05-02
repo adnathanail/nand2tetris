@@ -58,69 +58,62 @@ def _strip_comments_and_whitespace(in_text: str) -> str:
 class JackTokenizer:
     def __init__(self, jack_code):
         self.text = _strip_comments_and_whitespace(jack_code)
-        self.ind = 0
+        self.tokenStart = 0
+        self.tokenEnd = 0
         self._tokenType = None
-        self._keyWord = None
-        self._symbol = None
-        self._identifier = None
-        self._intVal = None
-        self._stringVal = None
 
     def hasMoreTokens(self) -> bool:
-        return (self.ind + 1) < len(self.text)
-
-    def advance(self):
-        if kwNextInd := self._lexKeyWord():
-            (self._keyWord, self.ind) = kwNextInd
-            self._tokenType = "keyword"
-            # print(self._tokenType, f"'{self._keyWord}'")
-        elif symbolNextInd := self._lexSymbol():
-            (self._symbol, self.ind) = symbolNextInd
-            self._tokenType = "symbol"
-            # print(self._tokenType, f"'{self._symbol}'")
-        elif identifierNextInd := self._lexIdentifier():
-            (self._identifier, self.ind) = identifierNextInd
-            self._tokenType = "identifier"
-            # print(self._tokenType, f"'{self._identifier}'")
-        else:
-            raise Exception()
-        self._chew()
-        # print()
-
-    def _chew(self):
-        while self.text[self.ind] == " ":
-            self.ind += 1
-
-    def tokenType(self) -> Literal["keyword", "symbol", "identifier", "int_const", "string_const"]:
-        return self._tokenType
+        return (self.tokenStart + 1) < len(self.text)
     
     def _lexKeyWord(self):
         for kw in KEYWORDS:
-            if kw == self.text[self.ind:self.ind + len(kw)]:
-                return self.text[self.ind:self.ind + len(kw)], self.ind + len(kw)
+            if kw == self.text[self.tokenStart:self.tokenStart + len(kw)]:
+                return self.tokenStart + len(kw)
         return False
 
     def _lexSymbol(self) -> str:
-        if self.text[self.ind] in SYMBOLS:
-            return self.text[self.ind], self.ind + 1
+        if self.text[self.tokenStart] in SYMBOLS:
+            return self.tokenStart + 1
         return False
 
     def _lexIdentifier(self) -> str:
-        endInd = self.ind
+        endInd = self.tokenStart
         if not self.text[endInd].isalpha() and self.text[endInd] != "_":
             return False
         while self.text[endInd].isalpha() or self.text[endInd].isdigit() or self.text[endInd] == "_":
             endInd += 1
-        return self.text[self.ind:endInd], endInd
+        return endInd
+
+    def _chew(self):
+        while self.text[self.tokenStart] == " ":
+            self.tokenStart += 1
+
+    def advance(self):
+        self.tokenStart = self.tokenEnd
+        self._chew()
+        if nextInd := self._lexKeyWord():
+            self.tokenEnd = nextInd
+            self._tokenType = "keyword"
+        elif nextInd := self._lexSymbol():
+            self.tokenEnd = nextInd
+            self._tokenType = "symbol"
+        elif nextInd := self._lexIdentifier():
+            self.tokenEnd = nextInd
+            self._tokenType = "identifier"
+        else:
+            raise Exception()
+
+    def tokenType(self) -> Literal["keyword", "symbol", "identifier", "int_const", "string_const"]:
+        return self._tokenType
 
     def keyWord(self):
-        return self._keyWord
+        return self.text[self.tokenStart:self.tokenEnd]
 
     def symbol(self) -> str:
-        return self._symbol
+        return self.text[self.tokenStart:self.tokenEnd]
 
     def identifier(self) -> str:
-        return self._identifier
+        return self.text[self.tokenStart:self.tokenEnd]
 
     def intVal(self) -> int:
         pass
