@@ -2,16 +2,13 @@ import os
 import sys
 from pathlib import Path
 from JackTokenizer import JackTokenizer
+from CompilationEngine import CompilationEngine
 
 
 def parse(inp):
-    out = "<tokens>\n"
     tokenizer = JackTokenizer(inp)
-    while tokenizer.hasMoreTokens():
-        tokenizer.advance()
-        out += f"<{tokenizer.tokenType}> {tokenizer.token} </{tokenizer.tokenType}>\n"
-    out += "</tokens>\n"
-    return out
+    engine = CompilationEngine(tokenizer)
+    return engine.output
 
 
 if __name__ == "__main__":
