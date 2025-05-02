@@ -7,3 +7,4 @@ Hardware Simulator.dat
 Virtual Machine Emulator.dat
 
 .idea/
+**/__pycache__/**
