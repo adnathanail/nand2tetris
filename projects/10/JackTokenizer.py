@@ -63,7 +63,9 @@ class JackTokenizer:
         return endInd
 
     def _chew(self):
-        while self._tokenStart < len(self._text) and self._text[self._tokenStart] == " ":
+        while (
+            self._tokenStart < len(self._text) and self._text[self._tokenStart] == " "
+        ):
             self._tokenStart += 1
 
     def keyWord(self):
@@ -113,7 +115,9 @@ class JackTokenizer:
                 self.nextTokenType = "identifier"
                 self.nextToken = self.identifier()
             else:
-                raise Exception(f"Couldn't tokenize from '{self._text[self._tokenStart:self._tokenStart + 5]}'")
+                raise Exception(
+                    f"Couldn't tokenize from '{self._text[self._tokenStart:self._tokenStart + 5]}'"
+                )
         elif self.nextToken is None:
             raise Exception("No more tokens")
         else:

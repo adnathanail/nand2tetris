@@ -34,3 +34,7 @@ def strip_comments_and_whitespace(in_text: str) -> str:
             out += line
         i += 1
     return out
+
+
+def make_indent(indent):
+    return "  " * indent

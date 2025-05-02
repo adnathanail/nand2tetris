@@ -1,3 +1,6 @@
+from utils import make_indent
+
+
 class CompilationError(Exception):
     pass
 
@@ -7,19 +10,29 @@ class CompilationEngine:
         self.tokenizer = tokenizer
         self.output = ""
 
-    def _parseKeyword(self, expectedKeyword):
+    def _parseKeyword(self, expectedKeywords):
         self.tokenizer.advance()
-        if (self.tokenizer.tokenType, self.tokenizer.token) == ("keyword", expectedKeyword):
+        if (
+            self.tokenizer.tokenType == "keyword"
+            and self.tokenizer.token in expectedKeywords
+        ):
             return f"<keyword> {self.tokenizer.token} </keyword>"
         else:
-            raise CompilationError(f"Expected keyword {expectedKeyword}, got {self.tokenizer.tokenType} {self.tokenizer.token}")
+            raise CompilationError(
+                f"Expected keyword(s) {expectedKeywords}, got {self.tokenizer.tokenType} {self.tokenizer.token}"
+            )
 
     def _parseSymbol(self, expectedSymbol):
         self.tokenizer.advance()
-        if (self.tokenizer.tokenType, self.tokenizer.token) == ("symbol", expectedSymbol):
+        if (self.tokenizer.tokenType, self.tokenizer.token) == (
+            "symbol",
+            expectedSymbol,
+        ):
             return f"<symbol> {self.tokenizer.token} </symbol>"
         else:
-            raise CompilationError(f"Expected symbol {expectedSymbol}, got {self.tokenizer.tokenType} {self.tokenizer.token}")
+            raise CompilationError(
+                f"Expected symbol {expectedSymbol}, got {self.tokenizer.tokenType} {self.tokenizer.token}"
+            )
 
     # parseIntegerConstant
 
@@ -30,21 +43,39 @@ class CompilationEngine:
         if self.tokenizer.tokenType == "identifier":
             return f"<identifier> {self.tokenizer.token} </identifier>"
         else:
-            raise CompilationError(f"Expected identifier, got {self.tokenizer.tokenType} {self.tokenizer.token}")
+            raise CompilationError(
+                f"Expected identifier, got {self.tokenizer.tokenType} {self.tokenizer.token}"
+            )
 
-    def compileClass(self):
-        print("<class>")
-        print(self._parseKeyword("class"))
-        print(self._parseIdentifier())
-        print(self._parseSymbol("{"))
+    def compileClass(self, indent=0):
+        print(make_indent(indent) + "<class>")
+        print(make_indent(indent + 1) + self._parseKeyword(["class"]))
+        print(make_indent(indent + 1) + self._parseIdentifier())
+        print(make_indent(indent + 1) + self._parseSymbol("{"))
 
         # classVarDec*
+        self.compileClassVarDec(indent + 1)
 
         # subroutineDec*
 
-        print(self._parseSymbol("}"))
-        print("</class>")
+        print(make_indent(indent + 1) + self._parseSymbol("}"))
+        print(make_indent(indent) + "</class>")
 
         if self.tokenizer.hasMoreTokens():
             self.tokenizer.advance()
-            raise CompilationError(f"Nothing expected after class definition, got {self.tokenizer.tokenType} {self.tokenizer.token}")
+            raise CompilationError(
+                f"Nothing expected after class definition, got {self.tokenizer.tokenType} {self.tokenizer.token}"
+            )
+
+    def compileClassVarDec(self, indent):
+        if (
+            self.tokenizer.nextTokenType != "keyword"
+            or self.tokenizer.nextToken not in ("static", "field")
+        ):
+            return
+        print(make_indent(indent) + "<classVarDec>")
+        print(make_indent(indent + 1) + self._parseKeyword(["static"]))
+        print(make_indent(indent + 1) + self._parseKeyword(["int", "char", "boolean"]))
+        print(make_indent(indent + 1) + self._parseIdentifier())
+        print(make_indent(indent + 1) + self._parseSymbol(";"))
+        print(make_indent(indent) + "</classVarDec>")
