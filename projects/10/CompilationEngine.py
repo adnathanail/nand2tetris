@@ -39,7 +39,14 @@ class CompilationEngine:
                 f"Expected symbol {expectedSymbol}, got {self.tokenizer.tokenType} {self.tokenizer.token}"
             )
 
-    # parseIntegerConstant
+    def _parseIntegerConstant(self):
+        self.tokenizer.advance()
+        if self.tokenizer.tokenType == "integerConstant":
+            return f"<integerConstant> {self.tokenizer.token} </integerConstant>"
+        else:
+            raise CompilationError(
+                f"Expected integer constant, got {self.tokenizer.tokenType} {self.tokenizer.token}"
+            )
 
     # parseStringConstant
 
@@ -169,6 +176,12 @@ class CompilationEngine:
         self._output("<letStatement>", indent)
         self._output(self._parseKeyword(["let"]), indent + 1)
         self._output(self._parseIdentifier(), indent + 1)
+
+        if self.tokenizer.nextToken == "[":
+            self._output(self._parseSymbol("["), indent + 1)
+            self.compileExpression(indent + 1)
+            self._output(self._parseSymbol("]"), indent + 1)
+
         self._output(self._parseSymbol("="), indent + 1)
 
         self.compileExpression(indent + 1)
@@ -243,12 +256,19 @@ class CompilationEngine:
     
     def compileTerm(self, indent):
         self._output("<term>", indent)
-        if self.tokenizer.nextTokenType == "identifier":
+        if self.tokenizer.nextTokenType == "integerConstant":
+            self._output(self._parseIntegerConstant(), indent + 1)
+        elif self.tokenizer.nextTokenType == "identifier":
             self._output(self._parseIdentifier(), indent + 1)
-            if self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken in [".", "("]:
-                self._compileSubroutineCall(indent + 1)
+            if self.tokenizer.nextTokenType == "symbol":
+                if self.tokenizer.nextToken in [".", "("]:
+                    self._compileSubroutineCall(indent + 1)
+                elif self.tokenizer.nextToken == "[":
+                    self._output(self._parseSymbol("["), indent + 1)
+                    self.compileExpression(indent + 1)
+                    self._output(self._parseSymbol("]"), indent + 1)
         elif self.tokenizer.nextTokenType == "keyword":
-            self._output(self._parseKeyword("this"), indent + 1)
+            self._output(self._parseKeyword(["this", "true", "false", "null"]), indent + 1)
         self._output("</term>", indent)
 
     def compileExpressionList(self, indent):
