@@ -121,6 +121,8 @@ class CompilationEngine:
         while self.tokenizer.nextTokenType == "keyword" and self.tokenizer.nextToken in ["let", "if", "while", "do", "return"]:
             if self.tokenizer.nextToken == "let":
                 self.compileLetStatement(indent + 1)
+            elif self.tokenizer.nextToken == "do":
+                self.compileDoStatement(indent + 1)
         print(make_indent(indent) + "</statements>")
     
     def compileLetStatement(self, indent):
@@ -131,3 +133,25 @@ class CompilationEngine:
         print(make_indent(indent + 1) + self._parseIdentifier())
         print(make_indent(indent + 1) + self._parseSymbol(";"))
         print(make_indent(indent) + "</letStatement>")
+    
+    def _parseSubroutineCall(self):
+        out = (self._parseIdentifier(),)
+        while self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ".":
+            out += (
+                self._parseSymbol("."),
+                self._parseIdentifier()
+                )
+        out += (
+            self._parseSymbol("("),
+            # self._parseIdentifier()
+            self._parseSymbol(")"),
+        )
+        return out
+
+    def compileDoStatement(self, indent):
+        print(make_indent(indent) + "<doStatement>")
+        print(make_indent(indent + 1) + self._parseKeyword(["do"]))
+        for item in self._parseSubroutineCall():
+            print(make_indent(indent + 1) + item)
+        print(make_indent(indent + 1) + self._parseSymbol(";"))
+        print(make_indent(indent) + "</doStatement>")
