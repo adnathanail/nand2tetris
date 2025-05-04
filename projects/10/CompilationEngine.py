@@ -123,6 +123,8 @@ class CompilationEngine:
                 self.compileLetStatement(indent + 1)
             elif self.tokenizer.nextToken == "do":
                 self.compileDoStatement(indent + 1)
+            elif self.tokenizer.nextToken == "return":
+                self.compileReturnStatement(indent + 1)
         print(make_indent(indent) + "</statements>")
     
     def compileLetStatement(self, indent):
@@ -155,3 +157,9 @@ class CompilationEngine:
             print(make_indent(indent + 1) + item)
         print(make_indent(indent + 1) + self._parseSymbol(";"))
         print(make_indent(indent) + "</doStatement>")
+
+    def compileReturnStatement(self, indent):
+        print(make_indent(indent) + "<returnStatement>")
+        print(make_indent(indent + 1) + self._parseKeyword(["return"]))
+        print(make_indent(indent + 1) + self._parseSymbol(";"))
+        print(make_indent(indent) + "</returnStatement>")
