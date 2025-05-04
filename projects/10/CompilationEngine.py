@@ -129,6 +129,8 @@ class CompilationEngine:
                 self.compileLetStatement(indent + 1)
             elif self.tokenizer.nextToken == "if":
                 self.compileIfStatement(indent + 1)
+            elif self.tokenizer.nextToken == "while":
+                self.compileWhileStatement(indent + 1)
             elif self.tokenizer.nextToken == "do":
                 self.compileDoStatement(indent + 1)
             elif self.tokenizer.nextToken == "return":
@@ -163,9 +165,21 @@ class CompilationEngine:
             self.compileStatements(indent + 1)
             self._output(self._parseSymbol("}"), indent + 1)
         self._output("</ifStatement>", indent)
+    
+    def compileWhileStatement(self, indent):
+        self._output("<whileStatement>", indent)
+        self._output(self._parseKeyword(["while"]), indent + 1)
+        self._output(self._parseSymbol("("), indent + 1)
+
+        self.compileExpression(indent + 1)
+
+        self._output(self._parseSymbol(")"), indent + 1)
+        self._output(self._parseSymbol("{"), indent + 1)
+        self.compileStatements(indent + 1)
+        self._output(self._parseSymbol("}"), indent + 1)
+        self._output("</whileStatement>", indent)
 
     def _compileSubroutineCall(self, indent):
-        # TODO remove indent gubbins?
         self._output(self._parseIdentifier(), indent)
         if self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ".":
             self._output(self._parseSymbol("."), indent)
