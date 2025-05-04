@@ -201,7 +201,7 @@ class CompilationEngine:
         self._output(self._parseSymbol("("), indent)
         self._output("<expressionList>", indent)
 
-        if self.tokenizer.nextTokenType == "identifier":
+        if self.tokenizer.nextTokenType in ["identifier", "keyword"]:
             self.compileExpression(indent + 1)
 
         self._output("</expressionList>", indent)
@@ -225,6 +225,9 @@ class CompilationEngine:
     def compileExpression(self, indent):
         self._output("<expression>", indent)
         self._output("<term>", indent + 1)
-        self._output(self._parseIdentifier(), indent + 2)
+        if self.tokenizer.nextTokenType == "identifier":
+            self._output(self._parseIdentifier(), indent + 2)
+        elif self.tokenizer.nextTokenType == "keyword":
+            self._output(self._parseKeyword("this"), indent + 2)
         self._output("</term>", indent + 1)
         self._output("</expression>", indent)
