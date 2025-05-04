@@ -278,6 +278,14 @@ class CompilationEngine:
                     self._output(self._parseSymbol(["]"]), indent + 1)
         elif self.tokenizer.nextTokenType == "keyword":
             self._output(self._parseKeyword(KEYWORD_CONSTANTS), indent + 1)
+        elif self.tokenizer.nextTokenType == "symbol":
+            if self.tokenizer.nextToken == "(":
+                self._output(self._parseSymbol(["("]), indent + 1)
+                self.compileExpression(indent + 1)
+                self._output(self._parseSymbol([")"]), indent + 1)
+            elif self.tokenizer.nextToken in UNARY_OPS:
+                self._output(self._parseSymbol(UNARY_OPS), indent + 1)
+                self.compileTerm(indent + 1)
         self._output("</term>", indent)
 
     def compileExpressionList(self, indent):
