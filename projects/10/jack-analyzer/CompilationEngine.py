@@ -12,7 +12,6 @@ class CompilationEngine:
         self.output = ""
 
     def _output(self, line, indent):
-        print(make_indent(indent) + line)
         self.output += make_indent(indent) + line + "\n"
 
     def _parseKeyword(self, expectedKeywords):
