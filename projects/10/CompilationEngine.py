@@ -141,11 +141,7 @@ class CompilationEngine:
         self._output(self._parseIdentifier(), indent + 1)
         self._output(self._parseSymbol("="), indent + 1)
 
-        self._output("<expression>", indent + 1)
-        self._output("<term>", indent + 2)
-        self._output(self._parseIdentifier(), indent + 3)
-        self._output("</term>", indent + 2)
-        self._output("</expression>", indent + 1)
+        self.compileExpression(indent + 1)
 
         self._output(self._parseSymbol(";"), indent + 1)
         self._output("</letStatement>", indent)
@@ -155,11 +151,7 @@ class CompilationEngine:
         self._output(self._parseKeyword(["if"]), indent + 1)
         self._output(self._parseSymbol("("), indent + 1)
 
-        self._output("<expression>", indent + 1)
-        self._output("<term>", indent + 2)
-        self._output(self._parseIdentifier(), indent + 3)
-        self._output("</term>", indent + 2)
-        self._output("</expression>", indent + 1)
+        self.compileExpression(indent + 1)
 
         self._output(self._parseSymbol(")"), indent + 1)
         self._output(self._parseSymbol("{"), indent + 1)
@@ -172,32 +164,40 @@ class CompilationEngine:
             self._output(self._parseSymbol("}"), indent + 1)
         self._output("</ifStatement>", indent)
 
-    def _parseSubroutineCall(self, indent):
+    def _compileSubroutineCall(self, indent):
         # TODO remove indent gubbins?
-        out = ((self._parseIdentifier(), indent),)
+        self._output(self._parseIdentifier(), indent)
         if self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ".":
-            out += (
-                (self._parseSymbol("."), indent),
-                (self._parseIdentifier(), indent)
-                )
-        out += (
-            (self._parseSymbol("("), indent),
-            ("<expressionList>", indent),
-            ("</expressionList>", indent),
-            (self._parseSymbol(")"), indent),
-        )
-        return out
+            self._output(self._parseSymbol("."), indent)
+            self._output(self._parseIdentifier(), indent)
+
+        self._output(self._parseSymbol("("), indent)
+        self._output("<expressionList>", indent)
+
+        if self.tokenizer.nextTokenType == "identifier":
+            self.compileExpression(indent + 1)
+
+        self._output("</expressionList>", indent)
+        self._output(self._parseSymbol(")"), indent)
 
     def compileDoStatement(self, indent):
         self._output("<doStatement>", indent)
         self._output(self._parseKeyword(["do"]), indent + 1)
-        for (ttext, indd) in self._parseSubroutineCall(indent + 1):
-            self._output(ttext, indd)
+        self._compileSubroutineCall(indent + 1)
         self._output(self._parseSymbol(";"), indent + 1)
         self._output("</doStatement>", indent)
 
     def compileReturnStatement(self, indent):
         self._output("<returnStatement>", indent)
         self._output(self._parseKeyword(["return"]), indent + 1)
+        if self.tokenizer.nextTokenType == "identifier":
+            self.compileExpression(indent + 1)
         self._output(self._parseSymbol(";"), indent + 1)
         self._output("</returnStatement>", indent)
+    
+    def compileExpression(self, indent):
+        self._output("<expression>", indent)
+        self._output("<term>", indent + 1)
+        self._output(self._parseIdentifier(), indent + 2)
+        self._output("</term>", indent + 1)
+        self._output("</expression>", indent)
