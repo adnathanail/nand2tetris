@@ -33,7 +33,7 @@ if __name__ == "__main__":
 
     for fp in file_paths:
         print(f"Parsing: {fp.name}")
-        out_dir = fp.parent / "out"
+        out_dir = fp.parent
         if not os.path.exists(out_dir):
             os.mkdir(out_dir)
 
