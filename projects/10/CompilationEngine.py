@@ -139,18 +139,18 @@ class CompilationEngine:
         self._output("<statements>", indent)
         while self.tokenizer.nextTokenType == "keyword" and self.tokenizer.nextToken in ["let", "if", "while", "do", "return"]:
             if self.tokenizer.nextToken == "let":
-                self.compileLetStatement(indent + 1)
+                self.compileLet(indent + 1)
             elif self.tokenizer.nextToken == "if":
-                self.compileIfStatement(indent + 1)
+                self.compileIf(indent + 1)
             elif self.tokenizer.nextToken == "while":
-                self.compileWhileStatement(indent + 1)
+                self.compileWhile(indent + 1)
             elif self.tokenizer.nextToken == "do":
-                self.compileDoStatement(indent + 1)
+                self.compileDo(indent + 1)
             elif self.tokenizer.nextToken == "return":
-                self.compileReturnStatement(indent + 1)
+                self.compileReturn(indent + 1)
         self._output("</statements>", indent)
     
-    def compileLetStatement(self, indent):
+    def compileLet(self, indent):
         self._output("<letStatement>", indent)
         self._output(self._parseKeyword(["let"]), indent + 1)
         self._output(self._parseIdentifier(), indent + 1)
@@ -161,7 +161,7 @@ class CompilationEngine:
         self._output(self._parseSymbol(";"), indent + 1)
         self._output("</letStatement>", indent)
     
-    def compileIfStatement(self, indent):
+    def compileIf(self, indent):
         self._output("<ifStatement>", indent)
         self._output(self._parseKeyword(["if"]), indent + 1)
         self._output(self._parseSymbol("("), indent + 1)
@@ -179,7 +179,7 @@ class CompilationEngine:
             self._output(self._parseSymbol("}"), indent + 1)
         self._output("</ifStatement>", indent)
     
-    def compileWhileStatement(self, indent):
+    def compileWhile(self, indent):
         self._output("<whileStatement>", indent)
         self._output(self._parseKeyword(["while"]), indent + 1)
         self._output(self._parseSymbol("("), indent + 1)
@@ -199,25 +199,17 @@ class CompilationEngine:
             self._output(self._parseIdentifier(), indent)
 
         self._output(self._parseSymbol("("), indent)
-        self._output("<expressionList>", indent)
-
-        if self.tokenizer.nextTokenType in ["identifier", "keyword"]:
-            self.compileExpression(indent + 1)
-            while self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ",":
-                self._output(self._parseSymbol(","), indent + 1)
-                self.compileExpression(indent + 1)
-
-        self._output("</expressionList>", indent)
+        self.compileExpressionList(indent)
         self._output(self._parseSymbol(")"), indent)
 
-    def compileDoStatement(self, indent):
+    def compileDo(self, indent):
         self._output("<doStatement>", indent)
         self._output(self._parseKeyword(["do"]), indent + 1)
         self._compileSubroutineCall(indent + 1)
         self._output(self._parseSymbol(";"), indent + 1)
         self._output("</doStatement>", indent)
 
-    def compileReturnStatement(self, indent):
+    def compileReturn(self, indent):
         self._output("<returnStatement>", indent)
         self._output(self._parseKeyword(["return"]), indent + 1)
         if self.tokenizer.nextTokenType == "identifier":
@@ -234,3 +226,17 @@ class CompilationEngine:
             self._output(self._parseKeyword("this"), indent + 2)
         self._output("</term>", indent + 1)
         self._output("</expression>", indent)
+    
+    def compileTerm(self, indent):
+        pass
+
+    def compileExpressionList(self, indent):
+        self._output("<expressionList>", indent)
+
+        if self.tokenizer.nextTokenType in ["identifier", "keyword"]:
+            self.compileExpression(indent + 1)
+            while self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ",":
+                self._output(self._parseSymbol(","), indent + 1)
+                self.compileExpression(indent + 1)
+
+        self._output("</expressionList>", indent)
