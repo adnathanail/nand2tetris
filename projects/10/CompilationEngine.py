@@ -203,6 +203,9 @@ class CompilationEngine:
 
         if self.tokenizer.nextTokenType in ["identifier", "keyword"]:
             self.compileExpression(indent + 1)
+            while self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ",":
+                self._output(self._parseSymbol(","), indent + 1)
+                self.compileExpression(indent + 1)
 
         self._output("</expressionList>", indent)
         self._output(self._parseSymbol(")"), indent)
