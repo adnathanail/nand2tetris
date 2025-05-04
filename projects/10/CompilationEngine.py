@@ -238,16 +238,16 @@ class CompilationEngine:
     
     def compileExpression(self, indent):
         self._output("<expression>", indent)
-        self._output("<term>", indent + 1)
-        if self.tokenizer.nextTokenType == "identifier":
-            self._output(self._parseIdentifier(), indent + 2)
-        elif self.tokenizer.nextTokenType == "keyword":
-            self._output(self._parseKeyword("this"), indent + 2)
-        self._output("</term>", indent + 1)
+        self.compileTerm(indent + 1)
         self._output("</expression>", indent)
     
     def compileTerm(self, indent):
-        pass
+        self._output("<term>", indent)
+        if self.tokenizer.nextTokenType == "identifier":
+            self._output(self._parseIdentifier(), indent + 1)
+        elif self.tokenizer.nextTokenType == "keyword":
+            self._output(self._parseKeyword("this"), indent + 1)
+        self._output("</term>", indent)
 
     def compileExpressionList(self, indent):
         self._output("<expressionList>", indent)
