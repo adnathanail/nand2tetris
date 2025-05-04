@@ -121,6 +121,8 @@ class CompilationEngine:
         while self.tokenizer.nextTokenType == "keyword" and self.tokenizer.nextToken in ["let", "if", "while", "do", "return"]:
             if self.tokenizer.nextToken == "let":
                 self.compileLetStatement(indent + 1)
+            elif self.tokenizer.nextToken == "if":
+                self.compileIfStatement(indent + 1)
             elif self.tokenizer.nextToken == "do":
                 self.compileDoStatement(indent + 1)
             elif self.tokenizer.nextToken == "return":
@@ -136,9 +138,31 @@ class CompilationEngine:
         print(make_indent(indent + 1) + self._parseSymbol(";"))
         print(make_indent(indent) + "</letStatement>")
     
+    def compileIfStatement(self, indent):
+        print(make_indent(indent) + "<ifStatement>")
+        print(make_indent(indent + 1) + self._parseKeyword(["if"]))
+        print(make_indent(indent + 1) + self._parseSymbol("("))
+
+        print(make_indent(indent + 1) + "<expression>")
+        print(make_indent(indent + 2) + "<term>")
+        print(make_indent(indent + 3) + self._parseIdentifier())
+        print(make_indent(indent + 2) + "</term>")
+        print(make_indent(indent + 1) + "</expression>")
+
+        print(make_indent(indent + 1) + self._parseSymbol(")"))
+        print(make_indent(indent + 1) + self._parseSymbol("{"))
+        self.compileStatements(indent + 1)
+        print(make_indent(indent + 1) + self._parseSymbol("}"))
+        if self.tokenizer.nextTokenType == "keyword" and self.tokenizer.nextToken == "else":
+            print(make_indent(indent + 1) + self._parseKeyword(["else"]))
+            print(make_indent(indent + 1) + self._parseSymbol("{"))
+            self.compileStatements(indent + 1)
+            print(make_indent(indent + 1) + self._parseSymbol("}"))
+        print(make_indent(indent) + "</ifStatement>")
+
     def _parseSubroutineCall(self):
         out = (self._parseIdentifier(),)
-        while self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ".":
+        if self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ".":
             out += (
                 self._parseSymbol("."),
                 self._parseIdentifier()
