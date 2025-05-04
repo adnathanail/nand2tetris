@@ -85,6 +85,9 @@ class CompilationEngine:
         self._output(self._parseKeyword(["static", "field"]), indent + 1)
         self._output(self._parseType(), indent + 1)
         self._output(self._parseIdentifier(), indent + 1)
+        while self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ",":
+            self._output(self._parseSymbol(","), indent + 1)
+            self._output(self._parseIdentifier(), indent + 1)
         self._output(self._parseSymbol(";"), indent + 1)
         self._output("</classVarDec>", indent)
 
@@ -95,12 +98,22 @@ class CompilationEngine:
         self._output(self._parseIdentifier(), indent + 1)
         self._output(self._parseSymbol("("), indent + 1)
 
-        self._output("<parameterList>", indent + 1)
-        self._output("</parameterList>", indent + 1)
+        self.compileParameterList(indent + 1)
 
         self._output(self._parseSymbol(")"), indent + 1)
         self.compileSubroutineBody(indent + 1)
         self._output("</subroutineDec>", indent)
+    
+    def compileParameterList(self, indent):
+        self._output("<parameterList>", indent)
+        if self.tokenizer.nextTokenType in ["keyword", "identifier"]:
+            self._output(self._parseType(), indent + 1)
+            self._output(self._parseIdentifier(), indent + 1)
+        while self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ",":
+            self._output(self._parseSymbol(","), indent + 1)
+            self._output(self._parseType(), indent + 1)
+            self._output(self._parseIdentifier(), indent + 1)
+        self._output("</parameterList>", indent)
 
     def compileSubroutineBody(self, indent):
         self._output("<subroutineBody>", indent)
