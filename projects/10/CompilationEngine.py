@@ -212,7 +212,6 @@ class CompilationEngine:
         self._output("</whileStatement>", indent)
 
     def _compileSubroutineCall(self, indent):
-        self._output(self._parseIdentifier(), indent)
         if self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ".":
             self._output(self._parseSymbol("."), indent)
             self._output(self._parseIdentifier(), indent)
@@ -224,6 +223,7 @@ class CompilationEngine:
     def compileDo(self, indent):
         self._output("<doStatement>", indent)
         self._output(self._parseKeyword(["do"]), indent + 1)
+        self._output(self._parseIdentifier(), indent)
         self._compileSubroutineCall(indent + 1)
         self._output(self._parseSymbol(";"), indent + 1)
         self._output("</doStatement>", indent)
@@ -245,6 +245,8 @@ class CompilationEngine:
         self._output("<term>", indent)
         if self.tokenizer.nextTokenType == "identifier":
             self._output(self._parseIdentifier(), indent + 1)
+            if self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken in [".", "("]:
+                self._compileSubroutineCall(indent + 1)
         elif self.tokenizer.nextTokenType == "keyword":
             self._output(self._parseKeyword("this"), indent + 1)
         self._output("</term>", indent)
