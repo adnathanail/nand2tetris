@@ -248,7 +248,7 @@ class CompilationEngine:
     def compileReturn(self, indent):
         self._output("<returnStatement>", indent)
         self._output(self._parseKeyword(["return"]), indent + 1)
-        if self.tokenizer.nextTokenType == "identifier":
+        if not (self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ";"):
             self.compileExpression(indent + 1)
         self._output(self._parseSymbol([";"]), indent + 1)
         self._output("</returnStatement>", indent)
@@ -291,7 +291,7 @@ class CompilationEngine:
     def compileExpressionList(self, indent):
         self._output("<expressionList>", indent)
 
-        if self.tokenizer.nextTokenType in ["identifier", "keyword"]:
+        if not (self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ")"):
             self.compileExpression(indent + 1)
             while self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ",":
                 self._output(self._parseSymbol([","]), indent + 1)
