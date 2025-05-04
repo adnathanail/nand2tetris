@@ -29,7 +29,10 @@ class CompilationEngine:
 
     def _parseSymbol(self, expectedSymbols):
         self.tokenizer.advance()
-        if (self.tokenizer.tokenType == "symbol" and self.tokenizer.token in expectedSymbols):
+        if (
+            self.tokenizer.tokenType == "symbol"
+            and self.tokenizer.token in expectedSymbols
+        ):
             return f"<symbol> {self.tokenizer.token} </symbol>"
         else:
             raise CompilationError(
@@ -71,10 +74,16 @@ class CompilationEngine:
 
         self._output(self._parseSymbol(["{"]), indent + 1)
 
-        while self.tokenizer.nextTokenType == "keyword" and self.tokenizer.nextToken in ("static", "field"):
+        while (
+            self.tokenizer.nextTokenType == "keyword"
+            and self.tokenizer.nextToken in ("static", "field")
+        ):
             self.compileClassVarDec(indent + 1)
 
-        while self.tokenizer.nextTokenType == "keyword" and self.tokenizer.nextToken in ("constructor", "function", "method"):
+        while (
+            self.tokenizer.nextTokenType == "keyword"
+            and self.tokenizer.nextToken in ("constructor", "function", "method")
+        ):
             self.compileSubroutine(indent + 1)
 
         self._output(self._parseSymbol(["}"]), indent + 1)
@@ -88,11 +97,15 @@ class CompilationEngine:
             )
 
     def _parseType(self, *, include_void=False):
-        if self.tokenizer.nextTokenType == "keyword" and (self.tokenizer.nextToken in PRIMITIVE_TYPES or (include_void and self.tokenizer.nextToken == "void")):
-            return self._parseKeyword(PRIMITIVE_TYPES + (("void",) if include_void else ()))
+        if self.tokenizer.nextTokenType == "keyword" and (
+            self.tokenizer.nextToken in PRIMITIVE_TYPES
+            or (include_void and self.tokenizer.nextToken == "void")
+        ):
+            return self._parseKeyword(
+                PRIMITIVE_TYPES + (("void",) if include_void else ())
+            )
         else:
             return self._parseIdentifier()
-
 
     def compileClassVarDec(self, indent):
         self._output("<classVarDec>", indent)
@@ -101,7 +114,9 @@ class CompilationEngine:
         self._output(self._parseType(), indent + 1)
         self._output(self._parseIdentifier(), indent + 1)
 
-        while self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ",":
+        while (
+            self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ","
+        ):
             self._output(self._parseSymbol([","]), indent + 1)
             self._output(self._parseIdentifier(), indent + 1)
 
@@ -110,7 +125,9 @@ class CompilationEngine:
 
     def compileSubroutine(self, indent):
         self._output("<subroutineDec>", indent)
-        self._output(self._parseKeyword(["constructor", "function", "method"]), indent + 1)
+        self._output(
+            self._parseKeyword(["constructor", "function", "method"]), indent + 1
+        )
         self._output(self._parseType(include_void=True), indent + 1)
         self._output(self._parseIdentifier(), indent + 1)
 
@@ -121,7 +138,7 @@ class CompilationEngine:
         self.compileSubroutineBody(indent + 1)
 
         self._output("</subroutineDec>", indent)
-    
+
     def compileParameterList(self, indent):
         self._output("<parameterList>", indent)
 
@@ -129,7 +146,9 @@ class CompilationEngine:
             self._output(self._parseType(), indent + 1)
             self._output(self._parseIdentifier(), indent + 1)
 
-        while self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ",":
+        while (
+            self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ","
+        ):
             self._output(self._parseSymbol([","]), indent + 1)
             self._output(self._parseType(), indent + 1)
             self._output(self._parseIdentifier(), indent + 1)
@@ -140,13 +159,16 @@ class CompilationEngine:
         self._output("<subroutineBody>", indent)
 
         self._output(self._parseSymbol(["{"]), indent + 1)
-        while self.tokenizer.nextTokenType == "keyword" and self.tokenizer.nextToken == "var":
+        while (
+            self.tokenizer.nextTokenType == "keyword"
+            and self.tokenizer.nextToken == "var"
+        ):
             self.compileVarDec(indent + 1)
         self.compileStatements(indent + 1)
         self._output(self._parseSymbol(["}"]), indent + 1)
 
         self._output("</subroutineBody>", indent)
-    
+
     def compileVarDec(self, indent):
         self._output("<varDec>", indent)
 
@@ -154,16 +176,21 @@ class CompilationEngine:
         self._output(self._parseType(), indent + 1)
         self._output(self._parseIdentifier(), indent + 1)
 
-        while self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ",":
+        while (
+            self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ","
+        ):
             self._output(self._parseSymbol([","]), indent + 1)
             self._output(self._parseIdentifier(), indent + 1)
 
         self._output(self._parseSymbol([";"]), indent + 1)
         self._output("</varDec>", indent)
-    
+
     def compileStatements(self, indent):
         self._output("<statements>", indent)
-        while self.tokenizer.nextTokenType == "keyword" and self.tokenizer.nextToken in ["let", "if", "while", "do", "return"]:
+        while (
+            self.tokenizer.nextTokenType == "keyword"
+            and self.tokenizer.nextToken in ["let", "if", "while", "do", "return"]
+        ):
             if self.tokenizer.nextToken == "let":
                 self.compileLet(indent + 1)
             elif self.tokenizer.nextToken == "if":
@@ -175,7 +202,7 @@ class CompilationEngine:
             elif self.tokenizer.nextToken == "return":
                 self.compileReturn(indent + 1)
         self._output("</statements>", indent)
-    
+
     def compileLet(self, indent):
         self._output("<letStatement>", indent)
         self._output(self._parseKeyword(["let"]), indent + 1)
@@ -192,7 +219,7 @@ class CompilationEngine:
 
         self._output(self._parseSymbol([";"]), indent + 1)
         self._output("</letStatement>", indent)
-    
+
     def compileIf(self, indent):
         self._output("<ifStatement>", indent)
 
@@ -206,14 +233,17 @@ class CompilationEngine:
         self.compileStatements(indent + 1)
         self._output(self._parseSymbol(["}"]), indent + 1)
 
-        if self.tokenizer.nextTokenType == "keyword" and self.tokenizer.nextToken == "else":
+        if (
+            self.tokenizer.nextTokenType == "keyword"
+            and self.tokenizer.nextToken == "else"
+        ):
             self._output(self._parseKeyword(["else"]), indent + 1)
             self._output(self._parseSymbol(["{"]), indent + 1)
             self.compileStatements(indent + 1)
             self._output(self._parseSymbol(["}"]), indent + 1)
 
         self._output("</ifStatement>", indent)
-    
+
     def compileWhile(self, indent):
         self._output("<whileStatement>", indent)
         self._output(self._parseKeyword(["while"]), indent + 1)
@@ -248,11 +278,13 @@ class CompilationEngine:
     def compileReturn(self, indent):
         self._output("<returnStatement>", indent)
         self._output(self._parseKeyword(["return"]), indent + 1)
-        if not (self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ";"):
+        if not (
+            self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ";"
+        ):
             self.compileExpression(indent + 1)
         self._output(self._parseSymbol([";"]), indent + 1)
         self._output("</returnStatement>", indent)
-    
+
     def compileExpression(self, indent):
         self._output("<expression>", indent)
         self.compileTerm(indent + 1)
@@ -260,7 +292,7 @@ class CompilationEngine:
             self._output(self._parseSymbol(OPS), indent + 1)
             self.compileTerm(indent + 1)
         self._output("</expression>", indent)
-    
+
     def compileTerm(self, indent):
         self._output("<term>", indent)
         if self.tokenizer.nextTokenType == "integerConstant":
@@ -291,9 +323,14 @@ class CompilationEngine:
     def compileExpressionList(self, indent):
         self._output("<expressionList>", indent)
 
-        if not (self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ")"):
+        if not (
+            self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ")"
+        ):
             self.compileExpression(indent + 1)
-            while self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ",":
+            while (
+                self.tokenizer.nextTokenType == "symbol"
+                and self.tokenizer.nextToken == ","
+            ):
                 self._output(self._parseSymbol([","]), indent + 1)
                 self.compileExpression(indent + 1)
 

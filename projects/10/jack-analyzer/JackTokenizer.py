@@ -116,7 +116,7 @@ class JackTokenizer:
                 self.nextToken = self.identifier()
             else:
                 raise Exception(
-                    f"Couldn't tokenize from '{self._text[self._tokenStart:self._tokenStart + 5]}'"
+                    f"Couldn't tokenize from '{self._text[self._tokenStart : self._tokenStart + 5]}'"
                 )
         elif self.nextToken is None:
             raise Exception("No more tokens")
