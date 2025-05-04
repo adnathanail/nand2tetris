@@ -48,7 +48,14 @@ class CompilationEngine:
                 f"Expected integer constant, got {self.tokenizer.tokenType} {self.tokenizer.token}"
             )
 
-    # parseStringConstant
+    def _parseStringConstant(self):
+        self.tokenizer.advance()
+        if self.tokenizer.tokenType == "stringConstant":
+            return f"<stringConstant> {self.tokenizer.token} </stringConstant>"
+        else:
+            raise CompilationError(
+                f"Expected string constant, got {self.tokenizer.tokenType} {self.tokenizer.token}"
+            )
 
     def _parseIdentifier(self):
         self.tokenizer.advance()
@@ -258,6 +265,8 @@ class CompilationEngine:
         self._output("<term>", indent)
         if self.tokenizer.nextTokenType == "integerConstant":
             self._output(self._parseIntegerConstant(), indent + 1)
+        if self.tokenizer.nextTokenType == "stringConstant":
+            self._output(self._parseStringConstant(), indent + 1)
         elif self.tokenizer.nextTokenType == "identifier":
             self._output(self._parseIdentifier(), indent + 1)
             if self.tokenizer.nextTokenType == "symbol":
