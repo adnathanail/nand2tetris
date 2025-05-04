@@ -54,8 +54,10 @@ class CompilationEngine:
 
     def compileClass(self, indent=0):
         self._output("<class>", indent)
+
         self._output(self._parseKeyword(["class"]), indent + 1)
         self._output(self._parseIdentifier(), indent + 1)
+
         self._output(self._parseSymbol("{"), indent + 1)
 
         while self.tokenizer.nextTokenType == "keyword" and self.tokenizer.nextToken in ("static", "field"):
@@ -65,6 +67,7 @@ class CompilationEngine:
             self.compileSubroutine(indent + 1)
 
         self._output(self._parseSymbol("}"), indent + 1)
+
         self._output("</class>", indent)
 
         if self.tokenizer.hasMoreTokens():
@@ -82,12 +85,15 @@ class CompilationEngine:
 
     def compileClassVarDec(self, indent):
         self._output("<classVarDec>", indent)
+
         self._output(self._parseKeyword(["static", "field"]), indent + 1)
         self._output(self._parseType(), indent + 1)
         self._output(self._parseIdentifier(), indent + 1)
+
         while self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ",":
             self._output(self._parseSymbol(","), indent + 1)
             self._output(self._parseIdentifier(), indent + 1)
+
         self._output(self._parseSymbol(";"), indent + 1)
         self._output("</classVarDec>", indent)
 
@@ -96,42 +102,51 @@ class CompilationEngine:
         self._output(self._parseKeyword(["constructor", "function", "method"]), indent + 1)
         self._output(self._parseType(include_void=True), indent + 1)
         self._output(self._parseIdentifier(), indent + 1)
+
         self._output(self._parseSymbol("("), indent + 1)
-
         self.compileParameterList(indent + 1)
-
         self._output(self._parseSymbol(")"), indent + 1)
+
         self.compileSubroutineBody(indent + 1)
+
         self._output("</subroutineDec>", indent)
     
     def compileParameterList(self, indent):
         self._output("<parameterList>", indent)
+
         if self.tokenizer.nextTokenType in ["keyword", "identifier"]:
             self._output(self._parseType(), indent + 1)
             self._output(self._parseIdentifier(), indent + 1)
+
         while self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ",":
             self._output(self._parseSymbol(","), indent + 1)
             self._output(self._parseType(), indent + 1)
             self._output(self._parseIdentifier(), indent + 1)
+
         self._output("</parameterList>", indent)
 
     def compileSubroutineBody(self, indent):
         self._output("<subroutineBody>", indent)
+
         self._output(self._parseSymbol("{"), indent + 1)
         while self.tokenizer.nextTokenType == "keyword" and self.tokenizer.nextToken == "var":
             self.compileVarDec(indent + 1)
         self.compileStatements(indent + 1)
         self._output(self._parseSymbol("}"), indent + 1)
+
         self._output("</subroutineBody>", indent)
     
     def compileVarDec(self, indent):
         self._output("<varDec>", indent)
+
         self._output(self._parseKeyword(["var"]), indent + 1)
         self._output(self._parseType(), indent + 1)
         self._output(self._parseIdentifier(), indent + 1)
+
         while self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ",":
             self._output(self._parseSymbol(","), indent + 1)
             self._output(self._parseIdentifier(), indent + 1)
+
         self._output(self._parseSymbol(";"), indent + 1)
         self._output("</varDec>", indent)
     
@@ -163,33 +178,37 @@ class CompilationEngine:
     
     def compileIf(self, indent):
         self._output("<ifStatement>", indent)
+
         self._output(self._parseKeyword(["if"]), indent + 1)
+
         self._output(self._parseSymbol("("), indent + 1)
-
         self.compileExpression(indent + 1)
-
         self._output(self._parseSymbol(")"), indent + 1)
+
         self._output(self._parseSymbol("{"), indent + 1)
         self.compileStatements(indent + 1)
         self._output(self._parseSymbol("}"), indent + 1)
+
         if self.tokenizer.nextTokenType == "keyword" and self.tokenizer.nextToken == "else":
             self._output(self._parseKeyword(["else"]), indent + 1)
             self._output(self._parseSymbol("{"), indent + 1)
             self.compileStatements(indent + 1)
             self._output(self._parseSymbol("}"), indent + 1)
+
         self._output("</ifStatement>", indent)
     
     def compileWhile(self, indent):
         self._output("<whileStatement>", indent)
         self._output(self._parseKeyword(["while"]), indent + 1)
+
         self._output(self._parseSymbol("("), indent + 1)
-
         self.compileExpression(indent + 1)
-
         self._output(self._parseSymbol(")"), indent + 1)
+
         self._output(self._parseSymbol("{"), indent + 1)
         self.compileStatements(indent + 1)
         self._output(self._parseSymbol("}"), indent + 1)
+
         self._output("</whileStatement>", indent)
 
     def _compileSubroutineCall(self, indent):
