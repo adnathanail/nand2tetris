@@ -256,6 +256,9 @@ class CompilationEngine:
     def compileExpression(self, indent):
         self._output("<expression>", indent)
         self.compileTerm(indent + 1)
+        if self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken in OPS:
+            self._output(self._parseSymbol(OPS), indent + 1)
+            self.compileTerm(indent + 1)
         self._output("</expression>", indent)
     
     def compileTerm(self, indent):
