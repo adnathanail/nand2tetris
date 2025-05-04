@@ -11,6 +11,10 @@ class CompilationEngine:
         self.tokenizer = tokenizer
         self.output = ""
 
+    def _output(self, line, indent):
+        print(make_indent(indent) + line)
+        self.output += make_indent(indent) + line + "\n"
+
     def _parseKeyword(self, expectedKeywords):
         self.tokenizer.advance()
         if (
@@ -49,10 +53,10 @@ class CompilationEngine:
             )
 
     def compileClass(self, indent=0):
-        print(make_indent(indent) + "<class>")
-        print(make_indent(indent + 1) + self._parseKeyword(["class"]))
-        print(make_indent(indent + 1) + self._parseIdentifier())
-        print(make_indent(indent + 1) + self._parseSymbol("{"))
+        self._output("<class>", indent)
+        self._output(self._parseKeyword(["class"]), indent + 1)
+        self._output(self._parseIdentifier(), indent + 1)
+        self._output(self._parseSymbol("{"), indent + 1)
 
         while self.tokenizer.nextTokenType == "keyword" and self.tokenizer.nextToken in ("static", "field"):
             self.compileClassVarDec(indent + 1)
@@ -60,8 +64,8 @@ class CompilationEngine:
         while self.tokenizer.nextTokenType == "keyword" and self.tokenizer.nextToken in ("constructor", "function", "method"):
             self.compileSubroutine(indent + 1)
 
-        print(make_indent(indent + 1) + self._parseSymbol("}"))
-        print(make_indent(indent) + "</class>")
+        self._output(self._parseSymbol("}"), indent + 1)
+        self._output("</class>", indent)
 
         if self.tokenizer.hasMoreTokens():
             self.tokenizer.advance()
@@ -77,47 +81,49 @@ class CompilationEngine:
 
 
     def compileClassVarDec(self, indent):
-        print(make_indent(indent) + "<classVarDec>")
-        print(make_indent(indent + 1) + self._parseKeyword(["static", "field"]))
-        print(make_indent(indent + 1) + self._parseType())
-        print(make_indent(indent + 1) + self._parseIdentifier())
-        print(make_indent(indent + 1) + self._parseSymbol(";"))
-        print(make_indent(indent) + "</classVarDec>")
+        self._output("<classVarDec>", indent)
+        self._output(self._parseKeyword(["static", "field"]), indent + 1)
+        self._output(self._parseType(), indent + 1)
+        self._output(self._parseIdentifier(), indent + 1)
+        self._output(self._parseSymbol(";"), indent + 1)
+        self._output("</classVarDec>", indent)
 
     def compileSubroutine(self, indent):
-        print(make_indent(indent) + "<subroutineDec>")
-        print(make_indent(indent + 1) + self._parseKeyword(["constructor", "function", "method"]))
-        print(make_indent(indent + 1) + self._parseType(include_void=True))
-        print(make_indent(indent + 1) + self._parseIdentifier())
-        print(make_indent(indent + 1) + self._parseSymbol("("))
-        # TODO
-        print(make_indent(indent + 1) + self._parseSymbol(")"))
+        self._output("<subroutineDec>", indent)
+        self._output(self._parseKeyword(["constructor", "function", "method"]), indent + 1)
+        self._output(self._parseType(include_void=True), indent + 1)
+        self._output(self._parseIdentifier(), indent + 1)
+        self._output(self._parseSymbol("("), indent + 1)
+
+        self._output("<parameterList>", indent + 1)
+        self._output("</parameterList>", indent + 1)
+
+        self._output(self._parseSymbol(")"), indent + 1)
         self.compileSubroutineBody(indent + 1)
+        self._output("</subroutineDec>", indent)
 
     def compileSubroutineBody(self, indent):
-        print(make_indent(indent) + "<subroutineDec>")
-        print(make_indent(indent + 1) + self._parseSymbol("{"))
+        self._output("<subroutineBody>", indent)
+        self._output(self._parseSymbol("{"), indent + 1)
         while self.tokenizer.nextTokenType == "keyword" and self.tokenizer.nextToken == "var":
             self.compileVarDec(indent + 1)
         self.compileStatements(indent + 1)
-        print(make_indent(indent + 1) + self._parseSymbol("}"))
-        print(make_indent(indent) + "</subroutineDec>")
+        self._output(self._parseSymbol("}"), indent + 1)
+        self._output("</subroutineBody>", indent)
     
     def compileVarDec(self, indent):
-        print(make_indent(indent) + "<varDec>")
-        print(make_indent(indent + 1) + self._parseKeyword(["var"]))
-        print(make_indent(indent + 1) + self._parseType())
-        print(make_indent(indent + 1) + self._parseIdentifier())
+        self._output("<varDec>", indent)
+        self._output(self._parseKeyword(["var"]), indent + 1)
+        self._output(self._parseType(), indent + 1)
+        self._output(self._parseIdentifier(), indent + 1)
         while self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ",":
-            print(make_indent(indent + 1) + self._parseSymbol(","))
-            print(make_indent(indent + 1) + self._parseIdentifier())
-        print(make_indent(indent + 1) + self._parseSymbol(";"))
-        print(make_indent(indent) + "</varDec>")
+            self._output(self._parseSymbol(","), indent + 1)
+            self._output(self._parseIdentifier(), indent + 1)
+        self._output(self._parseSymbol(";"), indent + 1)
+        self._output("</varDec>", indent)
     
     def compileStatements(self, indent):
-        if self.tokenizer.nextTokenType != "keyword" or self.tokenizer.nextToken not in ["let", "if", "while", "do", "return"]:
-            return
-        print(make_indent(indent) + "<statements>")
+        self._output("<statements>", indent)
         while self.tokenizer.nextTokenType == "keyword" and self.tokenizer.nextToken in ["let", "if", "while", "do", "return"]:
             if self.tokenizer.nextToken == "let":
                 self.compileLetStatement(indent + 1)
@@ -127,63 +133,71 @@ class CompilationEngine:
                 self.compileDoStatement(indent + 1)
             elif self.tokenizer.nextToken == "return":
                 self.compileReturnStatement(indent + 1)
-        print(make_indent(indent) + "</statements>")
+        self._output("</statements>", indent)
     
     def compileLetStatement(self, indent):
-        print(make_indent(indent) + "<letStatement>")
-        print(make_indent(indent + 1) + self._parseKeyword(["let"]))
-        print(make_indent(indent + 1) + self._parseIdentifier())
-        print(make_indent(indent + 1) + self._parseSymbol("="))
-        print(make_indent(indent + 1) + self._parseIdentifier())
-        print(make_indent(indent + 1) + self._parseSymbol(";"))
-        print(make_indent(indent) + "</letStatement>")
+        self._output("<letStatement>", indent)
+        self._output(self._parseKeyword(["let"]), indent + 1)
+        self._output(self._parseIdentifier(), indent + 1)
+        self._output(self._parseSymbol("="), indent + 1)
+
+        self._output("<expression>", indent + 1)
+        self._output("<term>", indent + 2)
+        self._output(self._parseIdentifier(), indent + 3)
+        self._output("</term>", indent + 2)
+        self._output("</expression>", indent + 1)
+
+        self._output(self._parseSymbol(";"), indent + 1)
+        self._output("</letStatement>", indent)
     
     def compileIfStatement(self, indent):
-        print(make_indent(indent) + "<ifStatement>")
-        print(make_indent(indent + 1) + self._parseKeyword(["if"]))
-        print(make_indent(indent + 1) + self._parseSymbol("("))
+        self._output("<ifStatement>", indent)
+        self._output(self._parseKeyword(["if"]), indent + 1)
+        self._output(self._parseSymbol("("), indent + 1)
 
-        print(make_indent(indent + 1) + "<expression>")
-        print(make_indent(indent + 2) + "<term>")
-        print(make_indent(indent + 3) + self._parseIdentifier())
-        print(make_indent(indent + 2) + "</term>")
-        print(make_indent(indent + 1) + "</expression>")
+        self._output("<expression>", indent + 1)
+        self._output("<term>", indent + 2)
+        self._output(self._parseIdentifier(), indent + 3)
+        self._output("</term>", indent + 2)
+        self._output("</expression>", indent + 1)
 
-        print(make_indent(indent + 1) + self._parseSymbol(")"))
-        print(make_indent(indent + 1) + self._parseSymbol("{"))
+        self._output(self._parseSymbol(")"), indent + 1)
+        self._output(self._parseSymbol("{"), indent + 1)
         self.compileStatements(indent + 1)
-        print(make_indent(indent + 1) + self._parseSymbol("}"))
+        self._output(self._parseSymbol("}"), indent + 1)
         if self.tokenizer.nextTokenType == "keyword" and self.tokenizer.nextToken == "else":
-            print(make_indent(indent + 1) + self._parseKeyword(["else"]))
-            print(make_indent(indent + 1) + self._parseSymbol("{"))
+            self._output(self._parseKeyword(["else"]), indent + 1)
+            self._output(self._parseSymbol("{"), indent + 1)
             self.compileStatements(indent + 1)
-            print(make_indent(indent + 1) + self._parseSymbol("}"))
-        print(make_indent(indent) + "</ifStatement>")
+            self._output(self._parseSymbol("}"), indent + 1)
+        self._output("</ifStatement>", indent)
 
-    def _parseSubroutineCall(self):
-        out = (self._parseIdentifier(),)
+    def _parseSubroutineCall(self, indent):
+        # TODO remove indent gubbins?
+        out = ((self._parseIdentifier(), indent),)
         if self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ".":
             out += (
-                self._parseSymbol("."),
-                self._parseIdentifier()
+                (self._parseSymbol("."), indent),
+                (self._parseIdentifier(), indent)
                 )
         out += (
-            self._parseSymbol("("),
-            # self._parseIdentifier()
-            self._parseSymbol(")"),
+            (self._parseSymbol("("), indent),
+            ("<expressionList>", indent),
+            ("</expressionList>", indent),
+            (self._parseSymbol(")"), indent),
         )
         return out
 
     def compileDoStatement(self, indent):
-        print(make_indent(indent) + "<doStatement>")
-        print(make_indent(indent + 1) + self._parseKeyword(["do"]))
-        for item in self._parseSubroutineCall():
-            print(make_indent(indent + 1) + item)
-        print(make_indent(indent + 1) + self._parseSymbol(";"))
-        print(make_indent(indent) + "</doStatement>")
+        self._output("<doStatement>", indent)
+        self._output(self._parseKeyword(["do"]), indent + 1)
+        for (ttext, indd) in self._parseSubroutineCall(indent + 1):
+            self._output(ttext, indd)
+        self._output(self._parseSymbol(";"), indent + 1)
+        self._output("</doStatement>", indent)
 
     def compileReturnStatement(self, indent):
-        print(make_indent(indent) + "<returnStatement>")
-        print(make_indent(indent + 1) + self._parseKeyword(["return"]))
-        print(make_indent(indent + 1) + self._parseSymbol(";"))
-        print(make_indent(indent) + "</returnStatement>")
+        self._output("<returnStatement>", indent)
+        self._output(self._parseKeyword(["return"]), indent + 1)
+        self._output(self._parseSymbol(";"), indent + 1)
+        self._output("</returnStatement>", indent)
