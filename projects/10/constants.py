@@ -22,6 +22,13 @@ KEYWORDS = (
     "return",
 )
 
+KEYWORD_CONSTANTS = (
+    "true",
+    "false",
+    "null",
+    "this",
+)
+
 PRIMITIVE_TYPES = ("int", "char", "boolean")
 
 SYMBOLS = (
@@ -44,6 +51,14 @@ SYMBOLS = (
     ">",
     "=",
     "~",
+)
+
+OPS = (
+    "+", "-", "*", "/", "&", "|", "<", ">", "="
+)
+
+UNARY_OPS = (
+    "-", "~"
 )
 
 SYMBOL_LOOKUP = {
