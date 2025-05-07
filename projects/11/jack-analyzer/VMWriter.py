@@ -21,7 +21,7 @@ class VMWriter:
         self._writeVMLine(f"push {segment} {index}")
 
     def writePop(self, segment: SEGMENTS, index: int):
-        pass
+        self._writeVMLine(f"pop {segment} {index}")
 
     def writeArithmetic(self, command: ARITHMETIC_OPS):
         pass
@@ -36,13 +36,13 @@ class VMWriter:
         pass
 
     def writeCall(self, name: str, nArgs: int):
-        pass
+        self._writeVMLine(f"call {name} {nArgs}")
 
     def writeFunction(self, name: str, nVars: int):
         self._writeVMLine(f"function {name} {nVars}")
 
     def writeReturn(self):
-        pass
+        self._writeVMLine("return")
 
     def close(self):
         self.xml_out_file.close()

@@ -268,21 +268,14 @@ class CompilationEngine:
 
         self.vm_writer._xmlOutput("</whileStatement>", indent)
 
-    def _compileSubroutineCall(self, indent):
-        if self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ".":
-            self.vm_writer._xmlOutput(self._parseSymbol(["."]), indent)
-            self.vm_writer._xmlOutput(self._parseIdentifier()[0], indent)
-
-        self.vm_writer._xmlOutput(self._parseSymbol(["("]), indent)
-        self.compileExpressionList(indent)
-        self.vm_writer._xmlOutput(self._parseSymbol([")"]), indent)
-
     def compileDo(self, indent):
         self.vm_writer._xmlOutput("<doStatement>", indent)
         self.vm_writer._xmlOutput(self._parseKeyword(["do"]), indent + 1)
         self.compileExpression(indent + 1)
         self.vm_writer._xmlOutput(self._parseSymbol([";"]), indent + 1)
         self.vm_writer._xmlOutput("</doStatement>", indent)
+
+        self.vm_writer.writePop("temp", 0)
 
     def compileReturn(self, indent):
         self.vm_writer._xmlOutput("<returnStatement>", indent)
@@ -293,6 +286,8 @@ class CompilationEngine:
             self.compileExpression(indent + 1)
         self.vm_writer._xmlOutput(self._parseSymbol([";"]), indent + 1)
         self.vm_writer._xmlOutput("</returnStatement>", indent)
+
+        self.vm_writer.writeReturn()
 
     def compileExpression(self, indent):
         self.vm_writer._xmlOutput("<expression>", indent)
@@ -311,16 +306,21 @@ class CompilationEngine:
         if self.tokenizer.nextTokenType == "stringConstant":
             self.vm_writer._xmlOutput(self._parseStringConstant(), indent + 1)
         elif self.tokenizer.nextTokenType == "identifier":
-            self.vm_writer._xmlOutput(self._parseIdentifier()[0], indent + 1)
+            identifier_xml, identifier_name = self._parseIdentifier()
+            self.vm_writer._xmlOutput(identifier_xml, indent + 1)
             if self.tokenizer.nextTokenType == "symbol":
                 if self.tokenizer.nextToken in [".", "("]:
+                    callee_name = identifier_name
                     if self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ".":
                         self.vm_writer._xmlOutput(self._parseSymbol(["."]), indent + 1)
-                        self.vm_writer._xmlOutput(self._parseIdentifier()[0], indent + 1)
+                        identifier_xml, method_name = self._parseIdentifier()
+                        callee_name += f".{method_name}"
+                        self.vm_writer._xmlOutput(identifier_xml, indent + 1)
 
                     self.vm_writer._xmlOutput(self._parseSymbol(["("]), indent + 1)
-                    self.compileExpressionList(indent + 1)
+                    num_arguments = self.compileExpressionList(indent + 1)
                     self.vm_writer._xmlOutput(self._parseSymbol([")"]), indent + 1)
+                    self.vm_writer.writeCall(callee_name, num_arguments)
                 elif self.tokenizer.nextToken == "[":
                     self.vm_writer._xmlOutput(self._parseSymbol(["["]), indent + 1)
                     self.compileExpression(indent + 1)
@@ -337,18 +337,23 @@ class CompilationEngine:
                 self.compileTerm(indent + 1)
         self.vm_writer._xmlOutput("</term>", indent)
 
-    def compileExpressionList(self, indent):
+    def compileExpressionList(self, indent) -> int:
         self.vm_writer._xmlOutput("<expressionList>", indent)
+
+        num_arguments = 0
 
         if not (
             self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ")"
         ):
             self.compileExpression(indent + 1)
+            num_arguments += 1
             while (
                 self.tokenizer.nextTokenType == "symbol"
                 and self.tokenizer.nextToken == ","
             ):
                 self.vm_writer._xmlOutput(self._parseSymbol([","]), indent + 1)
                 self.compileExpression(indent + 1)
+                num_arguments += 1
 
         self.vm_writer._xmlOutput("</expressionList>", indent)
+        return num_arguments
