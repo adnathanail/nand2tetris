@@ -187,14 +187,14 @@ class CompilationEngine:
         self._parseKeyword(["var"], indent + 1)
         var_type = self._parseType(indent + 1)
         var_identifier = self._parseIdentifier(indent + 1)
-        self.method_symbol_table.define(var_identifier, var_type, "var")
+        self.method_symbol_table.define(var_identifier, var_type, "local")
 
         while (
             self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ","
         ):
             self._parseSymbol([","], indent + 1)
             var_identifier = self._parseIdentifier(indent + 1)
-            self.method_symbol_table.define(var_identifier, var_type, "var")
+            self.method_symbol_table.define(var_identifier, var_type, "local")
 
         self._parseSymbol([";"], indent + 1)
         self.vm_writer._xmlOutput("</varDec>", indent)

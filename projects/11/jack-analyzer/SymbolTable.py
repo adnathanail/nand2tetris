@@ -2,7 +2,7 @@ from typing import Literal, TypedDict
 from utils import rows_to_table
 
 
-SYMBOL_KINDS = Literal["static", "field", "arg", "var"]
+SYMBOL_KINDS = Literal["static", "this", "argument", "local"]
 
 
 class SymbolTableError(Exception):
@@ -19,9 +19,9 @@ class SymbolTable:
     def __init__(self):
         self._entries: dict[str,SymbolTableEntry] = {}
         self._static_counter: int = 0
-        self._field_counter: int = 0
-        self._arg_counter: int = 0
-        self._var_counter: int = 0
+        self._this_counter: int = 0
+        self._argument_counter: int = 0
+        self._local_counter: int = 0
 
     def __str__(self):
         rows = [["Name", "Type", "Kind", "Index"]]
@@ -32,30 +32,30 @@ class SymbolTable:
 
     def reset(self):
         self._entries = {}
-        self._static_counter = self._field_counter = self._arg_counter = self._var_counter = 0
+        self._static_counter = self._this_counter = self._argument_counter = self._local_counter = 0
 
     def define(self, name: str, ttype: str, kind: SYMBOL_KINDS):
         self._entries[name] = {"type": ttype, "kind": kind, "index": self.varCount(kind)}
         if kind == "static":
             self._static_counter += 1
-        elif kind == "field":
-            self._field_counter += 1
-        elif kind == "arg":
-            self._arg_counter += 1
-        elif kind == "var":
-            self._var_counter += 1
+        elif kind == "this":
+            self._this_counter += 1
+        elif kind == "argument":
+            self._argument_counter += 1
+        elif kind == "local":
+            self._local_counter += 1
         else:
             raise SymbolTableError(f"define: invalid kind '{kind}'")
 
     def varCount(self, kind: SYMBOL_KINDS):
         if kind == "static":
             return self._static_counter
-        elif kind == "field":
-            return self._field_counter
-        elif kind == "arg":
-            return self._arg_counter
-        elif kind == "var":
-            return self._var_counter
+        elif kind == "this":
+            return self._this_counter
+        elif kind == "argument":
+            return self._argument_counter
+        elif kind == "local":
+            return self._local_counter
         else:
             raise SymbolTableError(f"varCount: invalid kind '{kind}'")
 
