@@ -355,8 +355,13 @@ class CompilationEngine:
                 self.compileExpression(indent + 1)
                 self.vm_writer._xmlOutput(self._parseSymbol([")"])[0], indent + 1)
             elif self.tokenizer.nextToken in UNARY_OPS:
-                self.vm_writer._xmlOutput(self._parseSymbol(UNARY_OPS)[0], indent + 1)
+                symbol_xml, operator_symbol = self._parseSymbol(UNARY_OPS)
+                self.vm_writer._xmlOutput(symbol_xml, indent + 1)
                 self.compileTerm(indent + 1)
+                if operator_symbol == "-":
+                    self.vm_writer.writeArithmetic("neg")
+                elif operator_symbol == "~":
+                    self.vm_writer.writeArithmetic("not")
         self.vm_writer._xmlOutput("</term>", indent)
 
     def compileExpressionList(self, indent) -> int:
