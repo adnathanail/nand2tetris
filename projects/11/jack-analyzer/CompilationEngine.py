@@ -280,8 +280,7 @@ class CompilationEngine:
     def compileDo(self, indent):
         self.vm_writer._xmlOutput("<doStatement>", indent)
         self.vm_writer._xmlOutput(self._parseKeyword(["do"]), indent + 1)
-        self.vm_writer._xmlOutput(self._parseIdentifier()[0], indent + 1)
-        self._compileSubroutineCall(indent + 1)
+        self.compileExpression(indent + 1)
         self.vm_writer._xmlOutput(self._parseSymbol([";"]), indent + 1)
         self.vm_writer._xmlOutput("</doStatement>", indent)
 
@@ -315,7 +314,13 @@ class CompilationEngine:
             self.vm_writer._xmlOutput(self._parseIdentifier()[0], indent + 1)
             if self.tokenizer.nextTokenType == "symbol":
                 if self.tokenizer.nextToken in [".", "("]:
-                    self._compileSubroutineCall(indent + 1)
+                    if self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ".":
+                        self.vm_writer._xmlOutput(self._parseSymbol(["."]), indent + 1)
+                        self.vm_writer._xmlOutput(self._parseIdentifier()[0], indent + 1)
+
+                    self.vm_writer._xmlOutput(self._parseSymbol(["("]), indent + 1)
+                    self.compileExpressionList(indent + 1)
+                    self.vm_writer._xmlOutput(self._parseSymbol([")"]), indent + 1)
                 elif self.tokenizer.nextToken == "[":
                     self.vm_writer._xmlOutput(self._parseSymbol(["["]), indent + 1)
                     self.compileExpression(indent + 1)

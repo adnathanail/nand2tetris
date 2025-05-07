@@ -96,29 +96,37 @@
       <statements>
         <doStatement>
           <keyword> do </keyword>
-          <identifier> square </identifier>
-          <symbol> . </symbol>
-          <identifier> dispose </identifier>
-          <symbol> ( </symbol>
-          <expressionList>
-          </expressionList>
-          <symbol> ) </symbol>
+          <expression>
+            <term>
+              <identifier> square </identifier>
+              <symbol> . </symbol>
+              <identifier> dispose </identifier>
+              <symbol> ( </symbol>
+              <expressionList>
+              </expressionList>
+              <symbol> ) </symbol>
+            </term>
+          </expression>
           <symbol> ; </symbol>
         </doStatement>
         <doStatement>
           <keyword> do </keyword>
-          <identifier> Memory </identifier>
-          <symbol> . </symbol>
-          <identifier> deAlloc </identifier>
-          <symbol> ( </symbol>
-          <expressionList>
-            <expression>
-              <term>
-                <keyword> this </keyword>
-              </term>
-            </expression>
-          </expressionList>
-          <symbol> ) </symbol>
+          <expression>
+            <term>
+              <identifier> Memory </identifier>
+              <symbol> . </symbol>
+              <identifier> deAlloc </identifier>
+              <symbol> ( </symbol>
+              <expressionList>
+                <expression>
+                  <term>
+                    <keyword> this </keyword>
+                  </term>
+                </expression>
+              </expressionList>
+              <symbol> ) </symbol>
+            </term>
+          </expression>
           <symbol> ; </symbol>
         </doStatement>
         <returnStatement>
@@ -157,13 +165,17 @@
           <statements>
             <doStatement>
               <keyword> do </keyword>
-              <identifier> square </identifier>
-              <symbol> . </symbol>
-              <identifier> moveUp </identifier>
-              <symbol> ( </symbol>
-              <expressionList>
-              </expressionList>
-              <symbol> ) </symbol>
+              <expression>
+                <term>
+                  <identifier> square </identifier>
+                  <symbol> . </symbol>
+                  <identifier> moveUp </identifier>
+                  <symbol> ( </symbol>
+                  <expressionList>
+                  </expressionList>
+                  <symbol> ) </symbol>
+                </term>
+              </expression>
               <symbol> ; </symbol>
             </doStatement>
           </statements>
@@ -186,13 +198,17 @@
           <statements>
             <doStatement>
               <keyword> do </keyword>
-              <identifier> square </identifier>
-              <symbol> . </symbol>
-              <identifier> moveDown </identifier>
-              <symbol> ( </symbol>
-              <expressionList>
-              </expressionList>
-              <symbol> ) </symbol>
+              <expression>
+                <term>
+                  <identifier> square </identifier>
+                  <symbol> . </symbol>
+                  <identifier> moveDown </identifier>
+                  <symbol> ( </symbol>
+                  <expressionList>
+                  </expressionList>
+                  <symbol> ) </symbol>
+                </term>
+              </expression>
               <symbol> ; </symbol>
             </doStatement>
           </statements>
@@ -215,13 +231,17 @@
           <statements>
             <doStatement>
               <keyword> do </keyword>
-              <identifier> square </identifier>
-              <symbol> . </symbol>
-              <identifier> moveLeft </identifier>
-              <symbol> ( </symbol>
-              <expressionList>
-              </expressionList>
-              <symbol> ) </symbol>
+              <expression>
+                <term>
+                  <identifier> square </identifier>
+                  <symbol> . </symbol>
+                  <identifier> moveLeft </identifier>
+                  <symbol> ( </symbol>
+                  <expressionList>
+                  </expressionList>
+                  <symbol> ) </symbol>
+                </term>
+              </expression>
               <symbol> ; </symbol>
             </doStatement>
           </statements>
@@ -244,13 +264,17 @@
           <statements>
             <doStatement>
               <keyword> do </keyword>
-              <identifier> square </identifier>
-              <symbol> . </symbol>
-              <identifier> moveRight </identifier>
-              <symbol> ( </symbol>
-              <expressionList>
-              </expressionList>
-              <symbol> ) </symbol>
+              <expression>
+                <term>
+                  <identifier> square </identifier>
+                  <symbol> . </symbol>
+                  <identifier> moveRight </identifier>
+                  <symbol> ( </symbol>
+                  <expressionList>
+                  </expressionList>
+                  <symbol> ) </symbol>
+                </term>
+              </expression>
               <symbol> ; </symbol>
             </doStatement>
           </statements>
@@ -258,18 +282,22 @@
         </ifStatement>
         <doStatement>
           <keyword> do </keyword>
-          <identifier> Sys </identifier>
-          <symbol> . </symbol>
-          <identifier> wait </identifier>
-          <symbol> ( </symbol>
-          <expressionList>
-            <expression>
-              <term>
-                <integerConstant> 5 </integerConstant>
-              </term>
-            </expression>
-          </expressionList>
-          <symbol> ) </symbol>
+          <expression>
+            <term>
+              <identifier> Sys </identifier>
+              <symbol> . </symbol>
+              <identifier> wait </identifier>
+              <symbol> ( </symbol>
+              <expressionList>
+                <expression>
+                  <term>
+                    <integerConstant> 5 </integerConstant>
+                  </term>
+                </expression>
+              </expressionList>
+              <symbol> ) </symbol>
+            </term>
+          </expression>
           <symbol> ; </symbol>
         </doStatement>
         <returnStatement>
@@ -362,11 +390,15 @@
                 </letStatement>
                 <doStatement>
                   <keyword> do </keyword>
-                  <identifier> moveSquare </identifier>
-                  <symbol> ( </symbol>
-                  <expressionList>
-                  </expressionList>
-                  <symbol> ) </symbol>
+                  <expression>
+                    <term>
+                      <identifier> moveSquare </identifier>
+                      <symbol> ( </symbol>
+                      <expressionList>
+                      </expressionList>
+                      <symbol> ) </symbol>
+                    </term>
+                  </expression>
                   <symbol> ; </symbol>
                 </doStatement>
               </statements>
@@ -418,13 +450,17 @@
               <statements>
                 <doStatement>
                   <keyword> do </keyword>
-                  <identifier> square </identifier>
-                  <symbol> . </symbol>
-                  <identifier> decSize </identifier>
-                  <symbol> ( </symbol>
-                  <expressionList>
-                  </expressionList>
-                  <symbol> ) </symbol>
+                  <expression>
+                    <term>
+                      <identifier> square </identifier>
+                      <symbol> . </symbol>
+                      <identifier> decSize </identifier>
+                      <symbol> ( </symbol>
+                      <expressionList>
+                      </expressionList>
+                      <symbol> ) </symbol>
+                    </term>
+                  </expression>
                   <symbol> ; </symbol>
                 </doStatement>
               </statements>
@@ -447,13 +483,17 @@
               <statements>
                 <doStatement>
                   <keyword> do </keyword>
-                  <identifier> square </identifier>
-                  <symbol> . </symbol>
-                  <identifier> incSize </identifier>
-                  <symbol> ( </symbol>
-                  <expressionList>
-                  </expressionList>
-                  <symbol> ) </symbol>
+                  <expression>
+                    <term>
+                      <identifier> square </identifier>
+                      <symbol> . </symbol>
+                      <identifier> incSize </identifier>
+                      <symbol> ( </symbol>
+                      <expressionList>
+                      </expressionList>
+                      <symbol> ) </symbol>
+                    </term>
+                  </expression>
                   <symbol> ; </symbol>
                 </doStatement>
               </statements>
@@ -618,11 +658,15 @@
                 </letStatement>
                 <doStatement>
                   <keyword> do </keyword>
-                  <identifier> moveSquare </identifier>
-                  <symbol> ( </symbol>
-                  <expressionList>
-                  </expressionList>
-                  <symbol> ) </symbol>
+                  <expression>
+                    <term>
+                      <identifier> moveSquare </identifier>
+                      <symbol> ( </symbol>
+                      <expressionList>
+                      </expressionList>
+                      <symbol> ) </symbol>
+                    </term>
+                  </expression>
                   <symbol> ; </symbol>
                 </doStatement>
               </statements>
