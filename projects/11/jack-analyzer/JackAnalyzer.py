@@ -1,13 +1,11 @@
 import os
 import sys
 from pathlib import Path
-from JackTokenizer import JackTokenizer
 from CompilationEngine import CompilationEngine
 
 
 def parse(inp):
-    tokenizer = JackTokenizer(inp)
-    engine = CompilationEngine(tokenizer)
+    engine = CompilationEngine(inp)
     engine.compileClass()
     return engine.output
 

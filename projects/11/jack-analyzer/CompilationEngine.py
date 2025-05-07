@@ -1,5 +1,8 @@
 from utils import make_indent
 from constants import PRIMITIVE_TYPES, KEYWORD_CONSTANTS, OPS, UNARY_OPS
+from JackTokenizer import JackTokenizer
+from SymbolTable import SymbolTable
+from VMWriter import VMWriter
 
 
 class CompilationError(Exception):
@@ -7,8 +10,11 @@ class CompilationError(Exception):
 
 
 class CompilationEngine:
-    def __init__(self, tokenizer):
-        self.tokenizer = tokenizer
+    def __init__(self, in_text):
+        self.tokenizer = JackTokenizer(in_text)
+        self.class_symbol_table = SymbolTable()
+        self.method_symbol_table = SymbolTable()
+        self.vm_writer = VMWriter()
         self.output = ""
 
     def _output(self, line, indent):
