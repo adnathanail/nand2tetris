@@ -6,6 +6,10 @@ SEGMENTS = Literal["constant", "argument", "local", "static", "this", "that", "p
 ARITHMETIC_OPS = Literal["add", "sub", "neg", "eq", "gt", "lt", "and", "or", "not"]
 
 
+class VMWriteError(Exception):
+    pass
+
+
 class VMWriter:
     def __init__(self, xml_out_file_path, vm_out_file_path):
         self.xml_out_file = open(xml_out_file_path, "w")
@@ -18,13 +22,13 @@ class VMWriter:
         self.vm_out_file.write(line + "\n")
 
     def writePush(self, segment: SEGMENTS, index: int):
-        self._writeVMLine(f"push {segment} {index}")
+        self._writeVMLine(f"  push {segment} {index}")
 
     def writePop(self, segment: SEGMENTS, index: int):
-        self._writeVMLine(f"pop {segment} {index}")
+        self._writeVMLine(f"  pop {segment} {index}")
 
     def writeArithmetic(self, command: ARITHMETIC_OPS):
-        pass
+        self._writeVMLine(f"  {command}")
 
     def writeLabel(self, label: str):
         pass
@@ -36,13 +40,13 @@ class VMWriter:
         pass
 
     def writeCall(self, name: str, nArgs: int):
-        self._writeVMLine(f"call {name} {nArgs}")
+        self._writeVMLine(f"  call {name} {nArgs}")
 
     def writeFunction(self, name: str, nVars: int):
         self._writeVMLine(f"function {name} {nVars}")
 
     def writeReturn(self):
-        self._writeVMLine("return")
+        self._writeVMLine("  return")
 
     def close(self):
         self.xml_out_file.close()

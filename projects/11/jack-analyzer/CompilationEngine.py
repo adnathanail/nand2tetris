@@ -138,7 +138,7 @@ class CompilationEngine:
         num_parameters = self.compileParameterList(indent + 1)
         self.vm_writer._xmlOutput(self._parseSymbol([")"])[0], indent + 1)
 
-        self.vm_writer.writeFunction(f"{subroutine_name}.{class_name}", num_parameters)
+        self.vm_writer.writeFunction(f"{class_name}.{subroutine_name}", num_parameters)
 
         self.compileSubroutineBody(indent + 1)
 
@@ -287,14 +287,36 @@ class CompilationEngine:
         self.vm_writer._xmlOutput(self._parseSymbol([";"])[0], indent + 1)
         self.vm_writer._xmlOutput("</returnStatement>", indent)
 
+        self.vm_writer.writePush("constant", 0)
         self.vm_writer.writeReturn()
 
     def compileExpression(self, indent):
         self.vm_writer._xmlOutput("<expression>", indent)
         self.compileTerm(indent + 1)
         if self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken in OPS:
-            self.vm_writer._xmlOutput(self._parseSymbol(OPS)[0], indent + 1)
+            symbol_xml, operator_symbol = self._parseSymbol(OPS)
+            self.vm_writer._xmlOutput(symbol_xml, indent + 1)
             self.compileTerm(indent + 1)
+            if operator_symbol == "+":
+                self.vm_writer.writeArithmetic("add")
+            elif operator_symbol == "-":
+                self.vm_writer.writeArithmetic("sub")
+            elif operator_symbol == "*":
+                self.vm_writer.writeCall("Math.multiply", 2)
+            elif operator_symbol == "/":
+                self.vm_writer.writeArithmetic("Math.divide", 2)
+            elif operator_symbol == "&amp;":
+                self.vm_writer.writeArithmetic("and")
+            elif operator_symbol == "|":
+                self.vm_writer.writeArithmetic("or")
+            elif operator_symbol == "&lt;":
+                self.vm_writer.writeArithmetic("lt")
+            elif operator_symbol == "&gt;":
+                self.vm_writer.writeArithmetic("gt")
+            elif operator_symbol == "=":
+                self.vm_writer.writeArithmetic("eq")
+            else:
+                raise CompilationError(f"compileExpression: invalid operator '{operator_symbol}'")
         self.vm_writer._xmlOutput("</expression>", indent)
 
     def compileTerm(self, indent):
