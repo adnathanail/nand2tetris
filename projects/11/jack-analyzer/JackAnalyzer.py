@@ -2,12 +2,7 @@ import os
 import sys
 from pathlib import Path
 from CompilationEngine import CompilationEngine
-
-
-def parse(inp):
-    engine = CompilationEngine(inp)
-    engine.compileClass()
-    return engine.output
+from VMWriter import VMWriter
 
 
 if __name__ == "__main__":
@@ -35,9 +30,11 @@ if __name__ == "__main__":
         if not os.path.exists(out_dir):
             os.mkdir(out_dir)
 
-        with open(fp) as f:
-            xml_output = parse(f.read())
+        in_file_name_no_ext = ".".join(fp.name.split(".")[:-1])
+        vm_writer = VMWriter(out_dir/f"{in_file_name_no_ext}.xml", out_dir/f"{in_file_name_no_ext}.vm")
 
-        out_file_name = ".".join(fp.name.split(".")[:-1]) + ".xml"
-        with open(out_dir / out_file_name, "w") as f:
-            f.write(xml_output)
+        with open(fp) as f:
+            engine = CompilationEngine(f, vm_writer)
+            engine.compileClass()
+
+        vm_writer.close()

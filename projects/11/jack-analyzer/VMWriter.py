@@ -1,3 +1,4 @@
+from utils import make_indent
 from typing import Literal
 
 
@@ -6,6 +7,13 @@ ARITHMETIC_OPS = Literal["ADD", "SUB", "NEG", "EQ", "GT", "LT", "AND", "OR", "NO
 
 
 class VMWriter:
+    def __init__(self, xml_out_file_path, vm_out_file_path):
+        self.xml_out_file = open(xml_out_file_path, "w")
+        self.vm_out_file = open(vm_out_file_path, "w")
+
+    def _xmlOutput(self, line: str, indent: int):
+        self.xml_out_file.write(make_indent(indent) + line + "\n")
+
     def writePush(self, segment: SEGMENTS, index: int):
         pass
 
@@ -34,4 +42,5 @@ class VMWriter:
         pass
 
     def close(self):
-        pass
+        self.xml_out_file.close()
+        self.vm_out_file.close()
