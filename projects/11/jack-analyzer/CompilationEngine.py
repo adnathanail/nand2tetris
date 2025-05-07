@@ -40,10 +40,10 @@ class CompilationEngine:
                 f"Expected symbol(s) {expectedSymbols}, got {self.tokenizer.tokenType} {self.tokenizer.token}"
             )
 
-    def _parseIntegerConstant(self):
+    def _parseIntegerConstant(self) -> tuple[str, int]:
         self.tokenizer.advance()
         if self.tokenizer.tokenType == "integerConstant":
-            return f"<integerConstant> {self.tokenizer.token} </integerConstant>"
+            return f"<integerConstant> {self.tokenizer.token} </integerConstant>", int(self.tokenizer.token)
         else:
             raise CompilationError(
                 f"Expected integer constant, got {self.tokenizer.tokenType} {self.tokenizer.token}"
@@ -306,7 +306,9 @@ class CompilationEngine:
     def compileTerm(self, indent):
         self.vm_writer._xmlOutput("<term>", indent)
         if self.tokenizer.nextTokenType == "integerConstant":
-            self.vm_writer._xmlOutput(self._parseIntegerConstant(), indent + 1)
+            integer_xml, integer_value = self._parseIntegerConstant()
+            self.vm_writer._xmlOutput(integer_xml, indent + 1)
+            self.vm_writer.writePush("constant", integer_value)
         if self.tokenizer.nextTokenType == "stringConstant":
             self.vm_writer._xmlOutput(self._parseStringConstant(), indent + 1)
         elif self.tokenizer.nextTokenType == "identifier":

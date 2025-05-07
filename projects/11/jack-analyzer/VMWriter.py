@@ -2,8 +2,8 @@ from utils import make_indent
 from typing import Literal
 
 
-SEGMENTS = Literal["CONSTANT", "ARGUMENT", "LOCAL", "STATIC", "THIS", "THAT", "POINTER", "TEMP"]
-ARITHMETIC_OPS = Literal["ADD", "SUB", "NEG", "EQ", "GT", "LT", "AND", "OR", "NOT"]
+SEGMENTS = Literal["constant", "argument", "local", "static", "this", "that", "pointer", "temp"]
+ARITHMETIC_OPS = Literal["add", "sub", "neg", "eq", "gt", "lt", "and", "or", "not"]
 
 
 class VMWriter:
@@ -18,7 +18,7 @@ class VMWriter:
         self.vm_out_file.write(line + "\n")
 
     def writePush(self, segment: SEGMENTS, index: int):
-        pass
+        self._writeVMLine(f"push {segment} {index}")
 
     def writePop(self, segment: SEGMENTS, index: int):
         pass
