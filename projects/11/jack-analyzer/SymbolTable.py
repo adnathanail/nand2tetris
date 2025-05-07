@@ -1,28 +1,62 @@
-from typing import Literal
+from typing import Literal, TypedDict
 
 
-SYMBOL_KINDS = Literal["STATIC", "FIELD", "ARG", "VAR"]
+SYMBOL_KINDS = Literal["static", "field", "arg", "var"]
+
+
+class SymbolTableError(Exception):
+    pass
+
+
+class SymbolTableEntry(TypedDict):
+    type: str
+    kind: SYMBOL_KINDS
+    index: int
 
 
 class SymbolTable:
     def __init__(self):
-        pass
+        self._entries: dict[str,SymbolTableEntry] = {}
+        self._static_counter: int = 0
+        self._field_counter: int = 0
+        self._arg_counter: int = 0
+        self._var_counter: int = 0
 
     def reset(self):
-        pass
+        self._entries = {}
+        self._static_counter = self._field_counter = self._arg_counter = self._var_counter = 0
 
-    def define(self, name: str, type: str, kind: SYMBOL_KINDS):
-        pass
+    def define(self, name: str, ttype: str, kind: SYMBOL_KINDS):
+        self._entries[name] = {"type": ttype, "kind": kind, "index": self.varCount(kind)}
+        if kind == "static":
+            self._static_counter += 1
+        elif kind == "field":
+            self._field_counter += 1
+        elif kind == "arg":
+            self._arg_counter += 1
+        elif kind == "var":
+            self._var_counter += 1
+        else:
+            raise SymbolTableError(f"define: invalid kind '{kind}'")
 
     def varCount(self, kind: SYMBOL_KINDS):
-        pass
+        if kind == "static":
+            return self._static_counter
+        elif kind == "field":
+            return self._field_counter
+        elif kind == "arg":
+            return self._arg_counter
+        elif kind == "var":
+            return self._var_counter
+        else:
+            raise SymbolTableError(f"varCount: invalid kind '{kind}'")
 
     def kindOf(self, name: str):
-        pass
+        return self._entries[name]["kind"]
 
     def typeOf(self, name: str):
-        pass
+        return self._entries[name]["type"]
 
     def indexOf(self, name: str):
-        pass
+        return self._entries[name]["index"]
 
