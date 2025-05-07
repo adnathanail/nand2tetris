@@ -107,7 +107,7 @@ class CompilationEngine:
             self.tokenizer.nextToken in PRIMITIVE_TYPES
             or (include_void and self.tokenizer.nextToken == "void")
         ):
-            self._parseKeyword(
+            return self._parseKeyword(
                 PRIMITIVE_TYPES + (("void",) if include_void else ()),
                 indent
             )
@@ -185,14 +185,16 @@ class CompilationEngine:
         self.vm_writer._xmlOutput("<varDec>", indent)
 
         self._parseKeyword(["var"], indent + 1)
-        self._parseType(indent + 1)
-        self._parseIdentifier(indent + 1)
+        var_type = self._parseType(indent + 1)
+        var_identifier = self._parseIdentifier(indent + 1)
+        self.method_symbol_table.define(var_identifier, var_type, "var")
 
         while (
             self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ","
         ):
             self._parseSymbol([","], indent + 1)
-            self._parseIdentifier(indent + 1)
+            var_identifier = self._parseIdentifier(indent + 1)
+            self.method_symbol_table.define(var_identifier, var_type, "var")
 
         self._parseSymbol([";"], indent + 1)
         self.vm_writer._xmlOutput("</varDec>", indent)

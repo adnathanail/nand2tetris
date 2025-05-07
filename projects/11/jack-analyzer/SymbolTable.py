@@ -1,4 +1,5 @@
 from typing import Literal, TypedDict
+from utils import rows_to_table
 
 
 SYMBOL_KINDS = Literal["static", "field", "arg", "var"]
@@ -21,6 +22,13 @@ class SymbolTable:
         self._field_counter: int = 0
         self._arg_counter: int = 0
         self._var_counter: int = 0
+
+    def __str__(self):
+        rows = [["Name", "Type", "Kind", "Index"]]
+        for name in self._entries:
+            entry = self._entries[name]
+            rows.append([name, entry["type"], entry["kind"], str(entry["index"])])
+        return rows_to_table(rows)
 
     def reset(self):
         self._entries = {}

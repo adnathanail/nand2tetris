@@ -38,3 +38,28 @@ def strip_comments_and_whitespace(in_text: str) -> str:
 
 def make_indent(indent):
     return "  " * indent
+
+
+class RowsToTableError(Exception):
+    pass
+
+
+def rows_to_table(rows: list[list[str]]):
+    row_len = len(rows[0])
+    col_maxs = [0 for _ in range(row_len)]
+    for row in rows:
+        if len(row) != row_len:
+            raise RowsToTableError("All rows must be same length")
+        for i in range(len(row)):
+            col_maxs[i] = max(col_maxs[i], len(row[i]))
+ 
+    out = ""
+
+    rows_with_header = [rows[0]] + [["-"*col_maxs[i] for i in range(row_len)]] + rows[1:]
+    for row in rows_with_header:
+        for i in range(len(row)):
+            out += row[i]
+            out += " "*(col_maxs[i] - len(row[i]))
+            out += " | "
+        out += "\n"
+    return out
