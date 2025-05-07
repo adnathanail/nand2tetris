@@ -21,6 +21,9 @@ class VMWriter:
     def _writeVMLine(self, line):
         self.vm_out_file.write(line + "\n")
 
+    def writeComment(self, comment: str):
+        self._writeVMLine(f"  // {comment}")
+
     def writePush(self, segment: SEGMENTS, index: int):
         self._writeVMLine(f"  push {segment} {index}")
 
@@ -31,13 +34,13 @@ class VMWriter:
         self._writeVMLine(f"  {command}")
 
     def writeLabel(self, label: str):
-        pass
+        self._writeVMLine(f"  label {label}")
 
     def writeGoto(self, label: str):
-        pass
+        self._writeVMLine(f"  goto {label}")
 
     def writeIf(self, label: str):
-        pass
+        self._writeVMLine(f"  if-goto {label}")
 
     def writeCall(self, name: str, nArgs: int):
         self._writeVMLine(f"  call {name} {nArgs}")

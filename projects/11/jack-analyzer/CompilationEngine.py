@@ -15,6 +15,8 @@ class CompilationEngine:
         self.method_symbol_table = SymbolTable()
         self.vm_writer = vm_writer
         self.output = ""
+        # Counter used to generate unique labels for while loops
+        self._num_whiles = 0
 
     def _symbol_tables_lookup(self, variable_identifier) -> tuple[str, int]:
         if variable_identifier in self.method_symbol_table._entries:
@@ -226,6 +228,8 @@ class CompilationEngine:
         self.vm_writer._xmlOutput("</statements>", indent)
 
     def compileLet(self, indent):
+        self.vm_writer.writeComment("let")
+
         self.vm_writer._xmlOutput("<letStatement>", indent)
         self._parseKeyword(["let"], indent + 1)
         variable_identifier = self._parseIdentifier(indent + 1)
@@ -245,6 +249,8 @@ class CompilationEngine:
         self.vm_writer._xmlOutput("</letStatement>", indent)
 
     def compileIf(self, indent):
+        self.vm_writer.writeComment("if")
+
         self.vm_writer._xmlOutput("<ifStatement>", indent)
 
         self._parseKeyword(["if"], indent + 1)
@@ -269,20 +275,34 @@ class CompilationEngine:
         self.vm_writer._xmlOutput("</ifStatement>", indent)
 
     def compileWhile(self, indent):
+        self.vm_writer.writeComment("while")
+
         self.vm_writer._xmlOutput("<whileStatement>", indent)
         self._parseKeyword(["while"], indent + 1)
+
+        while_label = f"WHILE{self._num_whiles}"
+        self.vm_writer.writeLabel(f"{while_label}L1")
+        self._num_whiles += 1
 
         self._parseSymbol(["("], indent + 1)
         self.compileExpression(indent + 1)
         self._parseSymbol([")"], indent + 1)
 
+        self.vm_writer.writeArithmetic("not")
+        self.vm_writer.writeIf(f"{while_label}L2")
+
         self._parseSymbol(["{"], indent + 1)
         self.compileStatements(indent + 1)
         self._parseSymbol(["}"], indent + 1)
 
+        self.vm_writer.writeGoto(f"{while_label}L1")
+        self.vm_writer.writeLabel(f"{while_label}L2")
+
         self.vm_writer._xmlOutput("</whileStatement>", indent)
 
     def compileDo(self, indent):
+        self.vm_writer.writeComment("do")
+
         self.vm_writer._xmlOutput("<doStatement>", indent)
         self._parseKeyword(["do"], indent + 1)
         self.compileExpression(indent + 1)
@@ -292,6 +312,8 @@ class CompilationEngine:
         self.vm_writer.writePop("temp", 0)
 
     def compileReturn(self, indent):
+        self.vm_writer.writeComment("return")
+
         self.vm_writer._xmlOutput("<returnStatement>", indent)
         self._parseKeyword(["return"], indent + 1)
         if not (
@@ -363,7 +385,16 @@ class CompilationEngine:
                 segment, index = self._symbol_tables_lookup(identifier_name)
                 self.vm_writer.writePush(segment, index)
         elif self.tokenizer.nextTokenType == "keyword":
-            self._parseKeyword(KEYWORD_CONSTANTS, indent + 1)
+            keyword_constant = self._parseKeyword(KEYWORD_CONSTANTS, indent + 1)
+            if keyword_constant == "true":
+                self.vm_writer.writePush("constant", 1)
+                self.vm_writer.writeArithmetic("neg")
+            elif keyword_constant == "false":
+                self.vm_writer.writePush("constant", 0)
+            elif keyword_constant == "null":
+                self.vm_writer.writePush("constant", 0)
+            elif keyword_constant == "this":
+                self.vm_writer.writePush("pointer", 1)
         elif self.tokenizer.nextTokenType == "symbol":
             if self.tokenizer.nextToken == "(":
                 self._parseSymbol(["("], indent + 1)
