@@ -16,6 +16,14 @@ class CompilationEngine:
         self.vm_writer = vm_writer
         self.output = ""
 
+    def _symbol_tables_lookup(self, variable_identifier) -> tuple[str, int]:
+        if variable_identifier in self.method_symbol_table._entries:
+            return self.method_symbol_table.kindOf(variable_identifier), self.method_symbol_table.indexOf(variable_identifier)
+        elif variable_identifier in self.class_symbol_table._entries:
+            return self.class_symbol_table.kindOf(variable_identifier), self.class_symbol_table.indexOf(variable_identifier)
+        else:
+            raise CompilationError(f"Couldn't find identifier {variable_identifier}")
+
     def _parseKeyword(self, expectedKeywords, indent) -> str:
         self.tokenizer.advance()
         if (
@@ -220,7 +228,7 @@ class CompilationEngine:
     def compileLet(self, indent):
         self.vm_writer._xmlOutput("<letStatement>", indent)
         self._parseKeyword(["let"], indent + 1)
-        self._parseIdentifier(indent + 1)
+        variable_identifier = self._parseIdentifier(indent + 1)
 
         if self.tokenizer.nextToken == "[":
             self._parseSymbol(["["], indent + 1)
@@ -230,6 +238,8 @@ class CompilationEngine:
         self._parseSymbol(["="], indent + 1)
 
         self.compileExpression(indent + 1)
+        segment, index = self._symbol_tables_lookup(variable_identifier)
+        self.vm_writer.writePop(segment, index)
 
         self._parseSymbol([";"], indent + 1)
         self.vm_writer._xmlOutput("</letStatement>", indent)
@@ -331,8 +341,9 @@ class CompilationEngine:
             self._parseStringConstant(indent + 1)
         elif self.tokenizer.nextTokenType == "identifier":
             identifier_name = self._parseIdentifier(indent + 1)
-            if self.tokenizer.nextTokenType == "symbol":
+            if self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken in [".", "(", "["]:
                 if self.tokenizer.nextToken in [".", "("]:
+                    # Function/Method call
                     callee_name = identifier_name
                     if self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ".":
                         self._parseSymbol(["."], indent + 1)
@@ -343,10 +354,14 @@ class CompilationEngine:
                     num_arguments = self.compileExpressionList(indent + 1)
                     self._parseSymbol([")"], indent + 1)
                     self.vm_writer.writeCall(callee_name, num_arguments)
-                elif self.tokenizer.nextToken == "[":
+                else:
+                    # Array access
                     self._parseSymbol(["["], indent + 1)
                     self.compileExpression(indent + 1)
                     self._parseSymbol(["]"], indent + 1)
+            else:
+                segment, index = self._symbol_tables_lookup(identifier_name)
+                self.vm_writer.writePush(segment, index)
         elif self.tokenizer.nextTokenType == "keyword":
             self._parseKeyword(KEYWORD_CONSTANTS, indent + 1)
         elif self.tokenizer.nextTokenType == "symbol":
