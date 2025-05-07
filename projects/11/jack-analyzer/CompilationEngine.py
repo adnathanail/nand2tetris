@@ -16,52 +16,57 @@ class CompilationEngine:
         self.vm_writer = vm_writer
         self.output = ""
 
-    def _parseKeyword(self, expectedKeywords) -> tuple[str, str]:
+    def _parseKeyword(self, expectedKeywords, indent) -> str:
         self.tokenizer.advance()
         if (
             self.tokenizer.tokenType == "keyword"
             and self.tokenizer.token in expectedKeywords
         ):
-            return f"<keyword> {self.tokenizer.token} </keyword>", self.tokenizer.token
+            self.vm_writer._xmlOutput(f"<keyword> {self.tokenizer.token} </keyword>", indent)
+            return self.tokenizer.token
         else:
             raise CompilationError(
                 f"Expected keyword(s) {expectedKeywords}, got {self.tokenizer.tokenType} {self.tokenizer.token}"
             )
 
-    def _parseSymbol(self, expectedSymbols) -> tuple[str, str]:
+    def _parseSymbol(self, expectedSymbols, indent) -> str:
         self.tokenizer.advance()
         if (
             self.tokenizer.tokenType == "symbol"
             and self.tokenizer.token in expectedSymbols
         ):
-            return f"<symbol> {self.tokenizer.token} </symbol>", self.tokenizer.token
+            self.vm_writer._xmlOutput(f"<symbol> {self.tokenizer.token} </symbol>", indent)
+            return self.tokenizer.token
         else:
             raise CompilationError(
                 f"Expected symbol(s) {expectedSymbols}, got {self.tokenizer.tokenType} {self.tokenizer.token}"
             )
 
-    def _parseIntegerConstant(self) -> tuple[str, int]:
+    def _parseIntegerConstant(self, indent) -> int:
         self.tokenizer.advance()
         if self.tokenizer.tokenType == "integerConstant":
-            return f"<integerConstant> {self.tokenizer.token} </integerConstant>", int(self.tokenizer.token)
+            self.vm_writer._xmlOutput(f"<integerConstant> {self.tokenizer.token} </integerConstant>", indent)
+            return int(self.tokenizer.token)
         else:
             raise CompilationError(
                 f"Expected integer constant, got {self.tokenizer.tokenType} {self.tokenizer.token}"
             )
 
-    def _parseStringConstant(self):
+    def _parseStringConstant(self, indent) -> str:
         self.tokenizer.advance()
         if self.tokenizer.tokenType == "stringConstant":
-            return f"<stringConstant> {self.tokenizer.token} </stringConstant>"
+            self.vm_writer._xmlOutput(f"<stringConstant> {self.tokenizer.token} </stringConstant>", indent)
+            return self.tokenizer.token
         else:
             raise CompilationError(
                 f"Expected string constant, got {self.tokenizer.tokenType} {self.tokenizer.token}"
             )
 
-    def _parseIdentifier(self) -> tuple[str, str]:
+    def _parseIdentifier(self, indent) -> str:
         self.tokenizer.advance()
         if self.tokenizer.tokenType == "identifier":
-            return f"<identifier> {self.tokenizer.token} </identifier>", self.tokenizer.token
+            self.vm_writer._xmlOutput(f"<identifier> {self.tokenizer.token} </identifier>", indent)
+            return self.tokenizer.token
         else:
             raise CompilationError(
                 f"Expected identifier, got {self.tokenizer.tokenType} {self.tokenizer.token}"
@@ -70,11 +75,10 @@ class CompilationEngine:
     def compileClass(self, indent=0):
         self.vm_writer._xmlOutput("<class>", indent)
 
-        self.vm_writer._xmlOutput(self._parseKeyword(["class"])[0], indent + 1)
-        identifier_xml, class_name = self._parseIdentifier()
-        self.vm_writer._xmlOutput(identifier_xml, indent + 1)
+        self._parseKeyword(["class"], indent + 1)
+        class_name = self._parseIdentifier(indent + 1)
 
-        self.vm_writer._xmlOutput(self._parseSymbol(["{"])[0], indent + 1)
+        self._parseSymbol(["{"], indent + 1)
 
         while (
             self.tokenizer.nextTokenType == "keyword"
@@ -88,7 +92,7 @@ class CompilationEngine:
         ):
             self.compileSubroutine(indent + 1, class_name)
 
-        self.vm_writer._xmlOutput(self._parseSymbol(["}"])[0], indent + 1)
+        self._parseSymbol(["}"], indent + 1)
 
         self.vm_writer._xmlOutput("</class>", indent)
 
@@ -98,45 +102,43 @@ class CompilationEngine:
                 f"Nothing expected after class definition, got {self.tokenizer.tokenType} {self.tokenizer.token}"
             )
 
-    def _parseType(self, *, include_void=False):
+    def _parseType(self, indent, *, include_void=False):
         if self.tokenizer.nextTokenType == "keyword" and (
             self.tokenizer.nextToken in PRIMITIVE_TYPES
             or (include_void and self.tokenizer.nextToken == "void")
         ):
-            return self._parseKeyword(
-                PRIMITIVE_TYPES + (("void",) if include_void else ())
-            )[0]
+            self._parseKeyword(
+                PRIMITIVE_TYPES + (("void",) if include_void else ()),
+                indent
+            )
         else:
-            return self._parseIdentifier()[0]
+            return self._parseIdentifier(indent)
 
     def compileClassVarDec(self, indent):
         self.vm_writer._xmlOutput("<classVarDec>", indent)
 
-        self.vm_writer._xmlOutput(self._parseKeyword(["static", "field"])[0], indent + 1)
-        self.vm_writer._xmlOutput(self._parseType(), indent + 1)
-        self.vm_writer._xmlOutput(self._parseIdentifier()[0], indent + 1)
+        self._parseKeyword(["static", "field"], indent + 1)
+        self._parseType(indent + 1)
+        self._parseIdentifier(indent + 1)
 
         while (
             self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ","
         ):
-            self.vm_writer._xmlOutput(self._parseSymbol([","])[0], indent + 1)
-            self.vm_writer._xmlOutput(self._parseIdentifier()[0], indent + 1)
+            self._parseSymbol([","], indent + 1)
+            self._parseIdentifier(indent + 1)
 
-        self.vm_writer._xmlOutput(self._parseSymbol([";"])[0], indent + 1)
+        self._parseSymbol([";"], indent + 1)
         self.vm_writer._xmlOutput("</classVarDec>", indent)
 
     def compileSubroutine(self, indent, class_name):
         self.vm_writer._xmlOutput("<subroutineDec>", indent)
-        self.vm_writer._xmlOutput(
-            self._parseKeyword(["constructor", "function", "method"])[0], indent + 1
-        )
-        self.vm_writer._xmlOutput(self._parseType(include_void=True), indent + 1)
-        identifier_xml, subroutine_name = self._parseIdentifier()
-        self.vm_writer._xmlOutput(identifier_xml, indent + 1)
+        self._parseKeyword(["constructor", "function", "method"], indent + 1)
+        self._parseType(indent + 1, include_void=True)
+        subroutine_name = self._parseIdentifier(indent + 1)
 
-        self.vm_writer._xmlOutput(self._parseSymbol(["("])[0], indent + 1)
+        self._parseSymbol(["("], indent + 1)
         num_parameters = self.compileParameterList(indent + 1)
-        self.vm_writer._xmlOutput(self._parseSymbol([")"])[0], indent + 1)
+        self._parseSymbol([")"], indent + 1)
 
         self.vm_writer.writeFunction(f"{class_name}.{subroutine_name}", num_parameters)
 
@@ -150,16 +152,16 @@ class CompilationEngine:
         num_parameters = 0
 
         if self.tokenizer.nextTokenType in ["keyword", "identifier"]:
-            self.vm_writer._xmlOutput(self._parseType(), indent + 1)
-            self.vm_writer._xmlOutput(self._parseIdentifier()[0], indent + 1)
+            self._parseType(indent + 1)
+            self._parseIdentifier(indent + 1)
             num_parameters += 1
 
         while (
             self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ","
         ):
-            self.vm_writer._xmlOutput(self._parseSymbol([","])[0], indent + 1)
-            self.vm_writer._xmlOutput(self._parseType(), indent + 1)
-            self.vm_writer._xmlOutput(self._parseIdentifier()[0], indent + 1)
+            self._parseSymbol([","], indent + 1)
+            self._parseType(indent + 1)
+            self._parseIdentifier(indent + 1)
             num_parameters += 1
 
         self.vm_writer._xmlOutput("</parameterList>", indent)
@@ -168,31 +170,31 @@ class CompilationEngine:
     def compileSubroutineBody(self, indent):
         self.vm_writer._xmlOutput("<subroutineBody>", indent)
 
-        self.vm_writer._xmlOutput(self._parseSymbol(["{"])[0], indent + 1)
+        self._parseSymbol(["{"], indent + 1)
         while (
             self.tokenizer.nextTokenType == "keyword"
             and self.tokenizer.nextToken == "var"
         ):
             self.compileVarDec(indent + 1)
         self.compileStatements(indent + 1)
-        self.vm_writer._xmlOutput(self._parseSymbol(["}"])[0], indent + 1)
+        self._parseSymbol(["}"], indent + 1)
 
         self.vm_writer._xmlOutput("</subroutineBody>", indent)
 
     def compileVarDec(self, indent):
         self.vm_writer._xmlOutput("<varDec>", indent)
 
-        self.vm_writer._xmlOutput(self._parseKeyword(["var"])[0], indent + 1)
-        self.vm_writer._xmlOutput(self._parseType(), indent + 1)
-        self.vm_writer._xmlOutput(self._parseIdentifier()[0], indent + 1)
+        self._parseKeyword(["var"], indent + 1)
+        self._parseType(indent + 1)
+        self._parseIdentifier(indent + 1)
 
         while (
             self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ","
         ):
-            self.vm_writer._xmlOutput(self._parseSymbol([","])[0], indent + 1)
-            self.vm_writer._xmlOutput(self._parseIdentifier()[0], indent + 1)
+            self._parseSymbol([","], indent + 1)
+            self._parseIdentifier(indent + 1)
 
-        self.vm_writer._xmlOutput(self._parseSymbol([";"])[0], indent + 1)
+        self._parseSymbol([";"], indent + 1)
         self.vm_writer._xmlOutput("</varDec>", indent)
 
     def compileStatements(self, indent):
@@ -215,76 +217,76 @@ class CompilationEngine:
 
     def compileLet(self, indent):
         self.vm_writer._xmlOutput("<letStatement>", indent)
-        self.vm_writer._xmlOutput(self._parseKeyword(["let"])[0], indent + 1)
-        self.vm_writer._xmlOutput(self._parseIdentifier()[0], indent + 1)
+        self._parseKeyword(["let"], indent + 1)
+        self._parseIdentifier(indent + 1)
 
         if self.tokenizer.nextToken == "[":
-            self.vm_writer._xmlOutput(self._parseSymbol(["["])[0], indent + 1)
+            self._parseSymbol(["["], indent + 1)
             self.compileExpression(indent + 1)
-            self.vm_writer._xmlOutput(self._parseSymbol(["]"])[0], indent + 1)
+            self._parseSymbol(["]"], indent + 1)
 
-        self.vm_writer._xmlOutput(self._parseSymbol(["="])[0], indent + 1)
+        self._parseSymbol(["="], indent + 1)
 
         self.compileExpression(indent + 1)
 
-        self.vm_writer._xmlOutput(self._parseSymbol([";"])[0], indent + 1)
+        self._parseSymbol([";"], indent + 1)
         self.vm_writer._xmlOutput("</letStatement>", indent)
 
     def compileIf(self, indent):
         self.vm_writer._xmlOutput("<ifStatement>", indent)
 
-        self.vm_writer._xmlOutput(self._parseKeyword(["if"])[0], indent + 1)
+        self._parseKeyword(["if"], indent + 1)
 
-        self.vm_writer._xmlOutput(self._parseSymbol(["("])[0], indent + 1)
+        self._parseSymbol(["("], indent + 1)
         self.compileExpression(indent + 1)
-        self.vm_writer._xmlOutput(self._parseSymbol([")"])[0], indent + 1)
+        self._parseSymbol([")"], indent + 1)
 
-        self.vm_writer._xmlOutput(self._parseSymbol(["{"])[0], indent + 1)
+        self._parseSymbol(["{"], indent + 1)
         self.compileStatements(indent + 1)
-        self.vm_writer._xmlOutput(self._parseSymbol(["}"])[0], indent + 1)
+        self._parseSymbol(["}"], indent + 1)
 
         if (
             self.tokenizer.nextTokenType == "keyword"
             and self.tokenizer.nextToken == "else"
         ):
-            self.vm_writer._xmlOutput(self._parseKeyword(["else"])[0], indent + 1)
-            self.vm_writer._xmlOutput(self._parseSymbol(["{"])[0], indent + 1)
+            self._parseKeyword(["else"], indent + 1)
+            self._parseSymbol(["{"], indent + 1)
             self.compileStatements(indent + 1)
-            self.vm_writer._xmlOutput(self._parseSymbol(["}"])[0], indent + 1)
+            self._parseSymbol(["}"], indent + 1)
 
         self.vm_writer._xmlOutput("</ifStatement>", indent)
 
     def compileWhile(self, indent):
         self.vm_writer._xmlOutput("<whileStatement>", indent)
-        self.vm_writer._xmlOutput(self._parseKeyword(["while"])[0], indent + 1)
+        self._parseKeyword(["while"], indent + 1)
 
-        self.vm_writer._xmlOutput(self._parseSymbol(["("])[0], indent + 1)
+        self._parseSymbol(["("], indent + 1)
         self.compileExpression(indent + 1)
-        self.vm_writer._xmlOutput(self._parseSymbol([")"])[0], indent + 1)
+        self._parseSymbol([")"], indent + 1)
 
-        self.vm_writer._xmlOutput(self._parseSymbol(["{"])[0], indent + 1)
+        self._parseSymbol(["{"], indent + 1)
         self.compileStatements(indent + 1)
-        self.vm_writer._xmlOutput(self._parseSymbol(["}"])[0], indent + 1)
+        self._parseSymbol(["}"], indent + 1)
 
         self.vm_writer._xmlOutput("</whileStatement>", indent)
 
     def compileDo(self, indent):
         self.vm_writer._xmlOutput("<doStatement>", indent)
-        self.vm_writer._xmlOutput(self._parseKeyword(["do"])[0], indent + 1)
+        self._parseKeyword(["do"], indent + 1)
         self.compileExpression(indent + 1)
-        self.vm_writer._xmlOutput(self._parseSymbol([";"])[0], indent + 1)
+        self._parseSymbol([";"], indent + 1)
         self.vm_writer._xmlOutput("</doStatement>", indent)
 
         self.vm_writer.writePop("temp", 0)
 
     def compileReturn(self, indent):
         self.vm_writer._xmlOutput("<returnStatement>", indent)
-        self.vm_writer._xmlOutput(self._parseKeyword(["return"])[0], indent + 1)
+        self._parseKeyword(["return"], indent + 1)
         if not (
             self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ";"
         ):
             self.compileExpression(indent + 1)
-        self.vm_writer._xmlOutput(self._parseSymbol([";"])[0], indent + 1)
+        self._parseSymbol([";"], indent + 1)
         self.vm_writer._xmlOutput("</returnStatement>", indent)
 
         self.vm_writer.writePush("constant", 0)
@@ -294,8 +296,7 @@ class CompilationEngine:
         self.vm_writer._xmlOutput("<expression>", indent)
         self.compileTerm(indent + 1)
         if self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken in OPS:
-            symbol_xml, operator_symbol = self._parseSymbol(OPS)
-            self.vm_writer._xmlOutput(symbol_xml, indent + 1)
+            operator_symbol = self._parseSymbol(OPS, indent + 1)
             self.compileTerm(indent + 1)
             if operator_symbol == "+":
                 self.vm_writer.writeArithmetic("add")
@@ -304,7 +305,7 @@ class CompilationEngine:
             elif operator_symbol == "*":
                 self.vm_writer.writeCall("Math.multiply", 2)
             elif operator_symbol == "/":
-                self.vm_writer.writeArithmetic("Math.divide", 2)
+                self.vm_writer.writeCall("Math.divide", 2)
             elif operator_symbol == "&amp;":
                 self.vm_writer.writeArithmetic("and")
             elif operator_symbol == "|":
@@ -322,41 +323,37 @@ class CompilationEngine:
     def compileTerm(self, indent):
         self.vm_writer._xmlOutput("<term>", indent)
         if self.tokenizer.nextTokenType == "integerConstant":
-            integer_xml, integer_value = self._parseIntegerConstant()
-            self.vm_writer._xmlOutput(integer_xml, indent + 1)
+            integer_value = self._parseIntegerConstant(indent + 1)
             self.vm_writer.writePush("constant", integer_value)
         if self.tokenizer.nextTokenType == "stringConstant":
-            self.vm_writer._xmlOutput(self._parseStringConstant(), indent + 1)
+            self._parseStringConstant(indent + 1)
         elif self.tokenizer.nextTokenType == "identifier":
-            identifier_xml, identifier_name = self._parseIdentifier()
-            self.vm_writer._xmlOutput(identifier_xml, indent + 1)
+            identifier_name = self._parseIdentifier(indent + 1)
             if self.tokenizer.nextTokenType == "symbol":
                 if self.tokenizer.nextToken in [".", "("]:
                     callee_name = identifier_name
                     if self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ".":
-                        self.vm_writer._xmlOutput(self._parseSymbol(["."])[0], indent + 1)
-                        identifier_xml, method_name = self._parseIdentifier()
+                        self._parseSymbol(["."], indent + 1)
+                        method_name = self._parseIdentifier(indent + 1)
                         callee_name += f".{method_name}"
-                        self.vm_writer._xmlOutput(identifier_xml, indent + 1)
 
-                    self.vm_writer._xmlOutput(self._parseSymbol(["("])[0], indent + 1)
+                    self._parseSymbol(["("], indent + 1)
                     num_arguments = self.compileExpressionList(indent + 1)
-                    self.vm_writer._xmlOutput(self._parseSymbol([")"])[0], indent + 1)
+                    self._parseSymbol([")"], indent + 1)
                     self.vm_writer.writeCall(callee_name, num_arguments)
                 elif self.tokenizer.nextToken == "[":
-                    self.vm_writer._xmlOutput(self._parseSymbol(["["])[0], indent + 1)
+                    self._parseSymbol(["["], indent + 1)
                     self.compileExpression(indent + 1)
-                    self.vm_writer._xmlOutput(self._parseSymbol(["]"])[0], indent + 1)
+                    self._parseSymbol(["]"], indent + 1)
         elif self.tokenizer.nextTokenType == "keyword":
-            self.vm_writer._xmlOutput(self._parseKeyword(KEYWORD_CONSTANTS)[0], indent + 1)
+            self._parseKeyword(KEYWORD_CONSTANTS, indent + 1)
         elif self.tokenizer.nextTokenType == "symbol":
             if self.tokenizer.nextToken == "(":
-                self.vm_writer._xmlOutput(self._parseSymbol(["("])[0], indent + 1)
+                self._parseSymbol(["("], indent + 1)
                 self.compileExpression(indent + 1)
-                self.vm_writer._xmlOutput(self._parseSymbol([")"])[0], indent + 1)
+                self._parseSymbol([")"], indent + 1)
             elif self.tokenizer.nextToken in UNARY_OPS:
-                symbol_xml, operator_symbol = self._parseSymbol(UNARY_OPS)
-                self.vm_writer._xmlOutput(symbol_xml, indent + 1)
+                operator_symbol = self._parseSymbol(UNARY_OPS, indent + 1)
                 self.compileTerm(indent + 1)
                 if operator_symbol == "-":
                     self.vm_writer.writeArithmetic("neg")
@@ -378,7 +375,7 @@ class CompilationEngine:
                 self.tokenizer.nextTokenType == "symbol"
                 and self.tokenizer.nextToken == ","
             ):
-                self.vm_writer._xmlOutput(self._parseSymbol([","])[0], indent + 1)
+                self._parseSymbol([","], indent + 1)
                 self.compileExpression(indent + 1)
                 num_arguments += 1
 
