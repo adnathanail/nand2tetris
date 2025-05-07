@@ -14,6 +14,9 @@ class VMWriter:
     def _xmlOutput(self, line: str, indent: int):
         self.xml_out_file.write(make_indent(indent) + line + "\n")
 
+    def _writeVMLine(self, line):
+        self.vm_out_file.write(line + "\n")
+
     def writePush(self, segment: SEGMENTS, index: int):
         pass
 
@@ -36,7 +39,7 @@ class VMWriter:
         pass
 
     def writeFunction(self, name: str, nVars: int):
-        pass
+        self._writeVMLine(f"function {name} {nVars}")
 
     def writeReturn(self):
         pass
