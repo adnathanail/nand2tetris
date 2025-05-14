@@ -17,6 +17,7 @@ class CompilationEngine:
         self.output = ""
         # Counter used to generate unique labels for while loops
         self._num_whiles = 0
+        self._num_ifs = 0
 
     def _symbol_tables_lookup(self, variable_identifier) -> tuple[str, int]:
         if variable_identifier in self.method_symbol_table._entries:
@@ -252,16 +253,23 @@ class CompilationEngine:
         self.vm_writer.writeComment("if")
 
         self.vm_writer._xmlOutput("<ifStatement>", indent)
-
         self._parseKeyword(["if"], indent + 1)
 
         self._parseSymbol(["("], indent + 1)
         self.compileExpression(indent + 1)
         self._parseSymbol([")"], indent + 1)
 
+        if_label = f"IF{self._num_ifs}"
+        self._num_ifs += 1
+        self.vm_writer.writeArithmetic("not")
+        self.vm_writer.writeIf(f"{if_label}L1")
+
         self._parseSymbol(["{"], indent + 1)
         self.compileStatements(indent + 1)
         self._parseSymbol(["}"], indent + 1)
+
+        self.vm_writer.writeGoto(f"{if_label}L2")
+        self.vm_writer.writeLabel(f"{if_label}L1")
 
         if (
             self.tokenizer.nextTokenType == "keyword"
@@ -272,6 +280,8 @@ class CompilationEngine:
             self.compileStatements(indent + 1)
             self._parseSymbol(["}"], indent + 1)
 
+        self.vm_writer.writeLabel(f"{if_label}L2")
+
         self.vm_writer._xmlOutput("</ifStatement>", indent)
 
     def compileWhile(self, indent):
@@ -281,8 +291,8 @@ class CompilationEngine:
         self._parseKeyword(["while"], indent + 1)
 
         while_label = f"WHILE{self._num_whiles}"
-        self.vm_writer.writeLabel(f"{while_label}L1")
         self._num_whiles += 1
+        self.vm_writer.writeLabel(f"{while_label}L1")
 
         self._parseSymbol(["("], indent + 1)
         self.compileExpression(indent + 1)

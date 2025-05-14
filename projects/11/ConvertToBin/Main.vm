@@ -41,6 +41,8 @@ function Main.convert 1
   push constant 16
   gt
   not
+  not
+  if-goto IF0L1
   // if
   push local 0
   push local 1
@@ -48,6 +50,8 @@ function Main.convert 1
   push constant 0
   eq
   not
+  not
+  if-goto IF1L1
   // do
   push constant 8000
   push local 2
@@ -55,6 +59,8 @@ function Main.convert 1
   push constant 1
   call Memory.poke 2
   pop temp 0
+  goto IF1L2
+  label IF1L1
   // do
   push constant 8000
   push local 2
@@ -62,9 +68,13 @@ function Main.convert 1
   push constant 0
   call Memory.poke 2
   pop temp 0
+  label IF1L2
+  goto IF0L2
+  label IF0L1
   // let
   push constant 0
   pop local 3
+  label IF0L2
   goto WHILE0L1
   label WHILE0L2
   // return
