@@ -142,6 +142,7 @@ class CompilationEngine:
         self.vm_writer._xmlOutput("</classVarDec>", indent)
 
     def compileSubroutine(self, indent, class_name):
+        self.method_symbol_table.reset()
         self.vm_writer._xmlOutput("<subroutineDec>", indent)
         self._parseKeyword(["constructor", "function", "method"], indent + 1)
         self._parseType(indent + 1, include_void=True)
@@ -163,16 +164,18 @@ class CompilationEngine:
         num_parameters = 0
 
         if self.tokenizer.nextTokenType in ["keyword", "identifier"]:
-            self._parseType(indent + 1)
-            self._parseIdentifier(indent + 1)
+            param_type = self._parseType(indent + 1)
+            param_name = self._parseIdentifier(indent + 1)
+            self.method_symbol_table.define(param_name, param_type, "argument")
             num_parameters += 1
 
         while (
             self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ","
         ):
             self._parseSymbol([","], indent + 1)
-            self._parseType(indent + 1)
-            self._parseIdentifier(indent + 1)
+            param_type = self._parseType(indent + 1)
+            param_name = self._parseIdentifier(indent + 1)
+            self.method_symbol_table.define(param_name, param_type, "argument")
             num_parameters += 1
 
         self.vm_writer._xmlOutput("</parameterList>", indent)
