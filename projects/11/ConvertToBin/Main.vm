@@ -80,3 +80,21 @@ function Main.convert 1
   // return
   push constant 0
   return
+function Main.nextMask 1
+  // if
+  push argument 0
+  push constant 0
+  eq
+  not
+  if-goto IF2L1
+  // return
+  push constant 1
+  return
+  goto IF2L2
+  label IF2L1
+  // return
+  push argument 0
+  push constant 2
+  call Math.multiply 2
+  return
+  label IF2L2

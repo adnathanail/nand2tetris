@@ -333,10 +333,13 @@ class CompilationEngine:
             self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ";"
         ):
             self.compileExpression(indent + 1)
+        else:
+            # Return 0 if no expression
+            self.vm_writer.writePush("constant", 0)
+
         self._parseSymbol([";"], indent + 1)
         self.vm_writer._xmlOutput("</returnStatement>", indent)
 
-        self.vm_writer.writePush("constant", 0)
         self.vm_writer.writeReturn()
 
     def compileExpression(self, indent):
