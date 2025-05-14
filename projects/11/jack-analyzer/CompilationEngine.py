@@ -142,32 +142,28 @@ class CompilationEngine:
         self.vm_writer._xmlOutput("</classVarDec>", indent)
 
     def compileSubroutine(self, indent, class_name):
-        self.method_symbol_table.reset()
         self.vm_writer._xmlOutput("<subroutineDec>", indent)
         self._parseKeyword(["constructor", "function", "method"], indent + 1)
         self._parseType(indent + 1, include_void=True)
         subroutine_name = self._parseIdentifier(indent + 1)
 
         self._parseSymbol(["("], indent + 1)
-        num_parameters = self.compileParameterList(indent + 1)
+        self.compileParameterList(indent + 1)
         self._parseSymbol([")"], indent + 1)
 
-        self.vm_writer.writeFunction(f"{class_name}.{subroutine_name}", num_parameters)
-
-        self.compileSubroutineBody(indent + 1)
+        self.compileSubroutineBody(f"{class_name}.{subroutine_name}", indent + 1)
 
         self.vm_writer._xmlOutput("</subroutineDec>", indent)
+        self.method_symbol_table.reset()
+        
 
-    def compileParameterList(self, indent) -> int:
+    def compileParameterList(self, indent):
         self.vm_writer._xmlOutput("<parameterList>", indent)
-
-        num_parameters = 0
 
         if self.tokenizer.nextTokenType in ["keyword", "identifier"]:
             param_type = self._parseType(indent + 1)
             param_name = self._parseIdentifier(indent + 1)
             self.method_symbol_table.define(param_name, param_type, "argument")
-            num_parameters += 1
 
         while (
             self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ","
@@ -176,32 +172,37 @@ class CompilationEngine:
             param_type = self._parseType(indent + 1)
             param_name = self._parseIdentifier(indent + 1)
             self.method_symbol_table.define(param_name, param_type, "argument")
-            num_parameters += 1
 
         self.vm_writer._xmlOutput("</parameterList>", indent)
-        return num_parameters
 
-    def compileSubroutineBody(self, indent):
+    def compileSubroutineBody(self, subroutine_name, indent):
         self.vm_writer._xmlOutput("<subroutineBody>", indent)
 
         self._parseSymbol(["{"], indent + 1)
+        num_locals = 0
         while (
             self.tokenizer.nextTokenType == "keyword"
             and self.tokenizer.nextToken == "var"
         ):
-            self.compileVarDec(indent + 1)
+            num_locals += self.compileVarDec(indent + 1)
+
+        self.vm_writer.writeFunction(subroutine_name, num_locals)
+
         self.compileStatements(indent + 1)
         self._parseSymbol(["}"], indent + 1)
 
         self.vm_writer._xmlOutput("</subroutineBody>", indent)
 
     def compileVarDec(self, indent):
+        num_locals = 0
+
         self.vm_writer._xmlOutput("<varDec>", indent)
 
         self._parseKeyword(["var"], indent + 1)
         var_type = self._parseType(indent + 1)
         var_identifier = self._parseIdentifier(indent + 1)
         self.method_symbol_table.define(var_identifier, var_type, "local")
+        num_locals += 1
 
         while (
             self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ","
@@ -209,9 +210,11 @@ class CompilationEngine:
             self._parseSymbol([","], indent + 1)
             var_identifier = self._parseIdentifier(indent + 1)
             self.method_symbol_table.define(var_identifier, var_type, "local")
+            num_locals += 1
 
         self._parseSymbol([";"], indent + 1)
         self.vm_writer._xmlOutput("</varDec>", indent)
+        return num_locals
 
     def compileStatements(self, indent):
         self.vm_writer._xmlOutput("<statements>", indent)

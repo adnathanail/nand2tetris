@@ -1,4 +1,4 @@
-function Main.main 0
+function Main.main 1
   // do
   push constant 8001
   push constant 16
@@ -17,13 +17,13 @@ function Main.main 0
   // return
   push constant 0
   return
-function Main.convert 1
+function Main.convert 3
   // let
   push constant 1
   neg
   pop local 2
   // while
-  label WHILE0L1
+label WHILE0L1
   push local 2
   not
   if-goto WHILE0L2
@@ -60,7 +60,7 @@ function Main.convert 1
   call Memory.poke 2
   pop temp 0
   goto IF1L2
-  label IF1L1
+label IF1L1
   // do
   push constant 8000
   push local 1
@@ -68,19 +68,19 @@ function Main.convert 1
   push constant 0
   call Memory.poke 2
   pop temp 0
-  label IF1L2
+label IF1L2
   goto IF0L2
-  label IF0L1
+label IF0L1
   // let
   push constant 0
   pop local 2
-  label IF0L2
+label IF0L2
   goto WHILE0L1
-  label WHILE0L2
+label WHILE0L2
   // return
   push constant 0
   return
-function Main.nextMask 1
+function Main.nextMask 0
   // if
   push argument 0
   push constant 0
@@ -91,10 +91,38 @@ function Main.nextMask 1
   push constant 1
   return
   goto IF2L2
-  label IF2L1
+label IF2L1
   // return
   push argument 0
   push constant 2
   call Math.multiply 2
   return
-  label IF2L2
+label IF2L2
+function Main.fillMemory 0
+  // while
+label WHILE1L1
+  push argument 1
+  push constant 0
+  gt
+  not
+  if-goto WHILE1L2
+  // do
+  push argument 0
+  push argument 2
+  call Memory.poke 2
+  pop temp 0
+  // let
+  push argument 1
+  push constant 1
+  sub
+  pop argument 1
+  // let
+  push argument 0
+  push constant 1
+  add
+  pop argument 0
+  goto WHILE1L1
+label WHILE1L2
+  // return
+  push constant 0
+  return

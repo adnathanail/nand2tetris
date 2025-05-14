@@ -34,7 +34,7 @@ class VMWriter:
         self._writeVMLine(f"  {command}")
 
     def writeLabel(self, label: str):
-        self._writeVMLine(f"  label {label}")
+        self._writeVMLine(f"label {label}")
 
     def writeGoto(self, label: str):
         self._writeVMLine(f"  goto {label}")

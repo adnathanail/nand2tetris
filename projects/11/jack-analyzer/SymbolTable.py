@@ -67,4 +67,3 @@ class SymbolTable:
 
     def indexOf(self, name: str):
         return self._entries[name]["index"]
-
