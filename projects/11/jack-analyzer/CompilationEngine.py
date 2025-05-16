@@ -1,4 +1,4 @@
-from constants import PRIMITIVE_TYPES, KEYWORD_CONSTANTS, OPS, UNARY_OPS
+from constants import PRIMITIVE_TYPES, KEYWORD_CONSTANTS, OPS, UNARY_OPS, SEGMENTS
 from JackTokenizer import JackTokenizer
 from SymbolTable import SymbolTable
 from VMWriter import VMWriter
@@ -19,7 +19,7 @@ class CompilationEngine:
         self._num_whiles = 0
         self._num_ifs = 0
 
-    def _symbol_tables_lookup(self, variable_identifier) -> tuple[str, int]:
+    def _symbol_tables_lookup(self, variable_identifier: str) -> tuple[SEGMENTS, int]:
         if variable_identifier in self.method_symbol_table._entries:
             return self.method_symbol_table.kindOf(variable_identifier), self.method_symbol_table.indexOf(variable_identifier)
         elif variable_identifier in self.class_symbol_table._entries:
@@ -31,6 +31,7 @@ class CompilationEngine:
         self.tokenizer.advance()
         if (
             self.tokenizer.tokenType == "keyword"
+            and type(self.tokenizer.token) is str
             and self.tokenizer.token in expectedKeywords
         ):
             self.vm_writer._xmlOutput(f"<keyword> {self.tokenizer.token} </keyword>", indent)
@@ -44,6 +45,7 @@ class CompilationEngine:
         self.tokenizer.advance()
         if (
             self.tokenizer.tokenType == "symbol"
+            and type(self.tokenizer.token) is str
             and self.tokenizer.token in expectedSymbols
         ):
             self.vm_writer._xmlOutput(f"<symbol> {self.tokenizer.token} </symbol>", indent)
@@ -55,9 +57,9 @@ class CompilationEngine:
 
     def _parseIntegerConstant(self, indent) -> int:
         self.tokenizer.advance()
-        if self.tokenizer.tokenType == "integerConstant":
+        if self.tokenizer.tokenType == "integerConstant" and type(self.tokenizer.token) is int:
             self.vm_writer._xmlOutput(f"<integerConstant> {self.tokenizer.token} </integerConstant>", indent)
-            return int(self.tokenizer.token)
+            return self.tokenizer.token
         else:
             raise CompilationError(
                 f"Expected integer constant, got {self.tokenizer.tokenType} {self.tokenizer.token}"
@@ -65,7 +67,7 @@ class CompilationEngine:
 
     def _parseStringConstant(self, indent) -> str:
         self.tokenizer.advance()
-        if self.tokenizer.tokenType == "stringConstant":
+        if self.tokenizer.tokenType == "stringConstant" and type(self.tokenizer.token) is str:
             self.vm_writer._xmlOutput(f"<stringConstant> {self.tokenizer.token} </stringConstant>", indent)
             return self.tokenizer.token
         else:
@@ -75,7 +77,7 @@ class CompilationEngine:
 
     def _parseIdentifier(self, indent) -> str:
         self.tokenizer.advance()
-        if self.tokenizer.tokenType == "identifier":
+        if self.tokenizer.tokenType == "identifier" and type(self.tokenizer.token) is str:
             self.vm_writer._xmlOutput(f"<identifier> {self.tokenizer.token} </identifier>", indent)
             return self.tokenizer.token
         else:

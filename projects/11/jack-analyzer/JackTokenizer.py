@@ -1,33 +1,37 @@
+from typing import Literal
 from constants import KEYWORDS, SYMBOLS, SYMBOL_LOOKUP
 from utils import strip_comments_and_whitespace
+
+
+TOKEN_TYPES = Literal["keyword", "symbol", "integerConstant", "stringConstant", "identifier"]
 
 
 class JackTokenizer:
     def __init__(self, jack_code):
         self._text = strip_comments_and_whitespace(jack_code)
-        self._tokenStart = 0
-        self._tokenEnd = 0
-        self.tokenType = None
-        self.token = None
-        self.nextToken = None
-        self.nextTokenType = None
+        self._tokenStart: int = 0
+        self._tokenEnd: int = 0
+        self.tokenType: None | TOKEN_TYPES = None
+        self.token: None | int | str = None
+        self.nextTokenType: None | TOKEN_TYPES = None
+        self.nextToken: None | int | str = None
         self.advance()
 
     def hasMoreTokens(self) -> bool:
         return self.nextToken is not None
 
-    def _lexKeyWord(self):
+    def _lexKeyWord(self) -> int | bool:
         for kw in KEYWORDS:
             if kw == self._text[self._tokenStart : self._tokenStart + len(kw)]:
                 return self._tokenStart + len(kw)
         return False
 
-    def _lexSymbol(self) -> str:
+    def _lexSymbol(self) -> int | bool:
         if self._text[self._tokenStart] in SYMBOLS:
             return self._tokenStart + 1
         return False
 
-    def _lexIntegerConstant(self) -> str:
+    def _lexIntegerConstant(self) -> int | bool:
         if not self._text[self._tokenStart].isdigit():
             return False
         endInd = self._tokenStart + 1
@@ -40,7 +44,7 @@ class JackTokenizer:
             endInd += 1
         return endInd
 
-    def _lexStringConstant(self) -> str:
+    def _lexStringConstant(self) -> int | bool:
         if self._text[self._tokenStart] != '"':
             return False
         endInd = self._tokenStart + 1
@@ -50,7 +54,7 @@ class JackTokenizer:
             return endInd + 1
         return False
 
-    def _lexIdentifier(self) -> str:
+    def _lexIdentifier(self) -> int | bool:
         endInd = self._tokenStart
         if not self._text[endInd].isalpha() and self._text[endInd] != "_":
             return False
@@ -68,13 +72,13 @@ class JackTokenizer:
         ):
             self._tokenStart += 1
 
-    def keyWord(self):
+    def keyWord(self) -> str:
         return self._text[self._tokenStart : self._tokenEnd]
 
     def intVal(self) -> int:
-        return self._text[self._tokenStart : self._tokenEnd]
+        return int(self._text[self._tokenStart : self._tokenEnd])
 
-    def stringVal(self) -> int:
+    def stringVal(self) -> str:
         return self._text[self._tokenStart + 1 : self._tokenEnd - 1]
 
     def symbol(self) -> str:

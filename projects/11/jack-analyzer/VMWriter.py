@@ -1,8 +1,8 @@
 from utils import make_indent
 from typing import Literal
+from constants import SEGMENTS
 
 
-SEGMENTS = Literal["constant", "argument", "local", "static", "this", "that", "pointer", "temp"]
 ARITHMETIC_OPS = Literal["add", "sub", "neg", "eq", "gt", "lt", "and", "or", "not"]
 
 

@@ -1,3 +1,6 @@
+from typing import Literal
+
+
 KEYWORDS = (
     "class",
     "constructor",
@@ -64,3 +67,5 @@ SYMBOL_LOOKUP = {
 OPS = ("+", "-", "*", "/", "&amp;", "|", "&lt;", "&gt;", "=")
 
 UNARY_OPS = ("-", "~")
+
+SEGMENTS = Literal["constant", "argument", "local", "static", "this", "that", "pointer", "temp"]
