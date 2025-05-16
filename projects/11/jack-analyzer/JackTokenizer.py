@@ -7,7 +7,7 @@ TOKEN_TYPES = Literal["keyword", "symbol", "integerConstant", "stringConstant", 
 
 
 class JackTokenizer:
-    def __init__(self, jack_code):
+    def __init__(self, jack_code: str):
         self._text = strip_comments_and_whitespace(jack_code)
         self._tokenStart: int = 0
         self._tokenEnd: int = 0

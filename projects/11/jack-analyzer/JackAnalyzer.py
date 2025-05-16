@@ -11,7 +11,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     input_path = Path(sys.argv[1])
-    file_paths = []
+    file_paths: list[Path] = []
 
     # Single file translation
     if input_path.is_file():

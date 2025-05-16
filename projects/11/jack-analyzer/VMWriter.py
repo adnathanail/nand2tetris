@@ -1,3 +1,4 @@
+from pathlib import Path
 from utils import make_indent
 from typing import Literal
 from constants import SEGMENTS
@@ -11,14 +12,14 @@ class VMWriteError(Exception):
 
 
 class VMWriter:
-    def __init__(self, xml_out_file_path, vm_out_file_path):
+    def __init__(self, xml_out_file_path: Path, vm_out_file_path: Path):
         self.xml_out_file = open(xml_out_file_path, "w")
         self.vm_out_file = open(vm_out_file_path, "w")
 
-    def _xmlOutput(self, line: str, indent: int):
+    def xmlOutput(self, line: str, indent: int):
         self.xml_out_file.write(make_indent(indent) + line + "\n")
 
-    def _writeVMLine(self, line):
+    def _writeVMLine(self, line: str):
         self.vm_out_file.write(line + "\n")
 
     def writeComment(self, comment: str):

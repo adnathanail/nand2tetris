@@ -30,6 +30,9 @@ class SymbolTable:
             rows.append([name, entry["type"], entry["kind"], str(entry["index"])])
         return rows_to_table(rows)
 
+    def hasEntry(self, identifier: str):
+        return identifier in self._entries
+
     def reset(self):
         self._entries = {}
         self._static_counter = self._this_counter = self._argument_counter = self._local_counter = 0
