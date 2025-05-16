@@ -31,7 +31,10 @@ if __name__ == "__main__":
             os.mkdir(out_dir)
 
         in_file_name_no_ext = ".".join(fp.name.split(".")[:-1])
-        vm_writer = VMWriter(out_dir/f"{in_file_name_no_ext}.xml", out_dir/f"{in_file_name_no_ext}.vm")
+        vm_writer = VMWriter(
+            out_dir / f"{in_file_name_no_ext}.xml",
+            out_dir / f"{in_file_name_no_ext}.vm",
+        )
 
         with open(fp) as f:
             engine = CompilationEngine(f, vm_writer)

@@ -1,8 +1,6 @@
-from typing import Literal, TypedDict
+from typing import TypedDict
 from utils import rows_to_table
-
-
-SYMBOL_KINDS = Literal["static", "this", "argument", "local"]
+from constants import SYMBOL_SEGMENTS
 
 
 class SymbolTableError(Exception):
@@ -11,13 +9,13 @@ class SymbolTableError(Exception):
 
 class SymbolTableEntry(TypedDict):
     type: str
-    kind: SYMBOL_KINDS
+    kind: SYMBOL_SEGMENTS
     index: int
 
 
 class SymbolTable:
     def __init__(self):
-        self._entries: dict[str,SymbolTableEntry] = {}
+        self._entries: dict[str, SymbolTableEntry] = {}
         self._static_counter: int = 0
         self._this_counter: int = 0
         self._argument_counter: int = 0
@@ -35,10 +33,17 @@ class SymbolTable:
 
     def reset(self):
         self._entries = {}
-        self._static_counter = self._this_counter = self._argument_counter = self._local_counter = 0
+        self._static_counter = 0
+        self._this_counter = 0
+        self._argument_counter = 0
+        self._local_counter = 0
 
-    def define(self, name: str, ttype: str, kind: SYMBOL_KINDS):
-        self._entries[name] = {"type": ttype, "kind": kind, "index": self.varCount(kind)}
+    def define(self, name: str, ttype: str, kind: SYMBOL_SEGMENTS):
+        self._entries[name] = {
+            "type": ttype,
+            "kind": kind,
+            "index": self.varCount(kind),
+        }
         if kind == "static":
             self._static_counter += 1
         elif kind == "this":
@@ -50,7 +55,7 @@ class SymbolTable:
         else:
             raise SymbolTableError(f"define: invalid kind '{kind}'")
 
-    def varCount(self, kind: SYMBOL_KINDS):
+    def varCount(self, kind: SYMBOL_SEGMENTS):
         if kind == "static":
             return self._static_counter
         elif kind == "this":

@@ -52,14 +52,16 @@ def rows_to_table(rows: list[list[str]]):
             raise RowsToTableError("All rows must be same length")
         for i in range(len(row)):
             col_maxs[i] = max(col_maxs[i], len(row[i]))
- 
+
     out = ""
 
-    rows_with_header = [rows[0]] + [["-"*col_maxs[i] for i in range(row_len)]] + rows[1:]
+    rows_with_header = (
+        [rows[0]] + [["-" * col_maxs[i] for i in range(row_len)]] + rows[1:]
+    )
     for row in rows_with_header:
         for i in range(len(row)):
             out += row[i]
-            out += " "*(col_maxs[i] - len(row[i]))
+            out += " " * (col_maxs[i] - len(row[i]))
             out += " | "
         out += "\n"
     return out

@@ -1,9 +1,5 @@
-from typing import Literal
-from constants import KEYWORDS, SYMBOLS, SYMBOL_LOOKUP
+from constants import KEYWORDS, SYMBOLS, SYMBOL_LOOKUP, TOKEN_TYPES
 from utils import strip_comments_and_whitespace
-
-
-TOKEN_TYPES = Literal["keyword", "symbol", "integerConstant", "stringConstant", "identifier"]
 
 
 class JackTokenizer:

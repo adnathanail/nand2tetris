@@ -1,10 +1,6 @@
 from pathlib import Path
 from utils import make_indent
-from typing import Literal
-from constants import SEGMENTS
-
-
-ARITHMETIC_OPS = Literal["add", "sub", "neg", "eq", "gt", "lt", "and", "or", "not"]
+from constants import SEGMENTS, ARITHMETIC_OPS
 
 
 class VMWriteError(Exception):
