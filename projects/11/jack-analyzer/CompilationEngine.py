@@ -174,7 +174,7 @@ class CompilationEngine:
 
     def compileSubroutine(self, indent: int, class_name: str):
         self.vm_writer.xmlOutput("<subroutineDec>", indent)
-        self._parseKeyword(["constructor", "function", "method"], indent + 1)
+        subroutine_type = self._parseKeyword(["constructor", "function", "method"], indent + 1)
         self._parseType(indent + 1, include_void=True)
         subroutine_name = self._parseIdentifier(indent + 1)
 
@@ -182,7 +182,7 @@ class CompilationEngine:
         self.compileParameterList(indent + 1)
         self._parseSymbol([")"], indent + 1)
 
-        self.compileSubroutineBody(f"{class_name}.{subroutine_name}", indent + 1)
+        self.compileSubroutineBody(subroutine_type, f"{class_name}.{subroutine_name}", indent + 1)
 
         self.vm_writer.xmlOutput("</subroutineDec>", indent)
         self.method_symbol_table.reset()
@@ -205,7 +205,7 @@ class CompilationEngine:
 
         self.vm_writer.xmlOutput("</parameterList>", indent)
 
-    def compileSubroutineBody(self, subroutine_name: str, indent: int):
+    def compileSubroutineBody(self, subroutine_type: str, subroutine_name: str, indent: int):
         self.vm_writer.xmlOutput("<subroutineBody>", indent)
 
         self._parseSymbol(["{"], indent + 1)
@@ -217,6 +217,11 @@ class CompilationEngine:
             num_locals += self.compileVarDec(indent + 1)
 
         self.vm_writer.writeFunction(subroutine_name, num_locals)
+
+        if subroutine_type == "constructor":
+            self.vm_writer.writePush("constant", self.class_symbol_table.varCount("this"))
+            self.vm_writer.writeCall("Memory.alloc", 1)
+            self.vm_writer.writePop("pointer", 0)
 
         self.compileStatements(indent + 1)
         self._parseSymbol(["}"], indent + 1)
@@ -448,7 +453,7 @@ class CompilationEngine:
             elif keyword_constant == "null":
                 self.vm_writer.writePush("constant", 0)
             elif keyword_constant == "this":
-                self.vm_writer.writePush("pointer", 1)
+                self.vm_writer.writePush("pointer", 0)
         elif self.tokenizer.nextTokenType == "symbol":
             if self.tokenizer.nextToken == "(":
                 self._parseSymbol(["("], indent + 1)
