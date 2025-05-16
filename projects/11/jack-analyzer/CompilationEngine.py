@@ -154,15 +154,20 @@ class CompilationEngine:
     def compileClassVarDec(self, indent: int):
         self.vm_writer.xmlOutput("<classVarDec>", indent)
 
-        self._parseKeyword(["static", "field"], indent + 1)
-        self._parseType(indent + 1)
-        self._parseIdentifier(indent + 1)
+        if self._parseKeyword(["static", "field"], indent + 1) == "static":
+            var_kind = "static"
+        else:
+            var_kind = "this"
+        var_type = self._parseType(indent + 1)
+        var_name = self._parseIdentifier(indent + 1)
+        self.class_symbol_table.define(var_name, var_type, var_kind)
 
         while (
             self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ","
         ):
             self._parseSymbol([","], indent + 1)
-            self._parseIdentifier(indent + 1)
+            var_name = self._parseIdentifier(indent + 1)
+            self.class_symbol_table.define(var_name, var_type, var_kind)
 
         self._parseSymbol([";"], indent + 1)
         self.vm_writer.xmlOutput("</classVarDec>", indent)

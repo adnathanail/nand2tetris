@@ -1,0 +1,13 @@
+function Main.main 1
+  // let
+  call SquareGame.new 0
+  pop local 0
+  // do
+  call game.run 0
+  pop temp 0
+  // do
+  call game.dispose 0
+  pop temp 0
+  // return
+  push constant 0
+  return
