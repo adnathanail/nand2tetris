@@ -287,16 +287,25 @@ class CompilationEngine:
         self._parseKeyword(["let"], indent + 1)
         variable_identifier = self._parseIdentifier(indent + 1)
 
+        segment, index, _type = self._symbol_tables_lookup(variable_identifier)
+
         if self.tokenizer.nextToken == "[":
+            self.vm_writer.writePush(segment, index)
             self._parseSymbol(["["], indent + 1)
             self.compileExpression(indent + 1)
             self._parseSymbol(["]"], indent + 1)
+            self.vm_writer.writeArithmetic("add")
+            self.vm_writer.writePop("pointer", 1)
+            output_segment = "that"
+            output_index = 0
+        else:
+            output_segment = segment
+            output_index = index
 
         self._parseSymbol(["="], indent + 1)
 
         self.compileExpression(indent + 1)
-        segment, index, _type = self._symbol_tables_lookup(variable_identifier)
-        self.vm_writer.writePop(segment, index)
+        self.vm_writer.writePop(output_segment, output_index)
 
         self._parseSymbol([";"], indent + 1)
         self.vm_writer.xmlOutput("</letStatement>", indent)
@@ -469,10 +478,15 @@ class CompilationEngine:
                     self._parseSymbol([")"], indent + 1)
                     self.vm_writer.writeCall(callee_name, num_arguments)
                 else:
+                    identifier_kind, identifier_index, identifier_type = self._symbol_tables_lookup(identifier_name)
+                    self.vm_writer.writePush(identifier_kind, identifier_index)
                     # Array access
                     self._parseSymbol(["["], indent + 1)
                     self.compileExpression(indent + 1)
                     self._parseSymbol(["]"], indent + 1)
+                    self.vm_writer.writeArithmetic("add")
+                    self.vm_writer.writePop("pointer", 1)
+                    self.vm_writer.writePush("that", 0)
             else:
                 segment, index, _type = self._symbol_tables_lookup(identifier_name)
                 self.vm_writer.writePush(segment, index)
