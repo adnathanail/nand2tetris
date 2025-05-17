@@ -1,0 +1,229 @@
+function SquareGame.new 0
+  push constant 2
+  call Memory.alloc 1
+  pop pointer 0
+  // let
+  push constant 0
+  push constant 0
+  push constant 30
+  call Square.new 3
+  pop this 0
+  // let
+  push constant 0
+  pop this 1
+  // return
+  push pointer 0
+  return
+function SquareGame.dispose 0
+  push argument 0
+  pop pointer 0
+  // do
+  push this 0
+  call Square.dispose 1
+  pop temp 0
+  // do
+  push pointer 0
+  call Memory.deAlloc 1
+  pop temp 0
+  // return
+  push constant 0
+  return
+function SquareGame.moveSquare 0
+  push argument 0
+  pop pointer 0
+  // if
+  push this 1
+  push constant 1
+  eq
+  not
+  if-goto IF0L1
+  // do
+  push this 0
+  call Square.moveUp 1
+  pop temp 0
+  goto IF0L2
+label IF0L1
+label IF0L2
+  // if
+  push this 1
+  push constant 2
+  eq
+  not
+  if-goto IF1L1
+  // do
+  push this 0
+  call Square.moveDown 1
+  pop temp 0
+  goto IF1L2
+label IF1L1
+label IF1L2
+  // if
+  push this 1
+  push constant 3
+  eq
+  not
+  if-goto IF2L1
+  // do
+  push this 0
+  call Square.moveLeft 1
+  pop temp 0
+  goto IF2L2
+label IF2L1
+label IF2L2
+  // if
+  push this 1
+  push constant 4
+  eq
+  not
+  if-goto IF3L1
+  // do
+  push this 0
+  call Square.moveRight 1
+  pop temp 0
+  goto IF3L2
+label IF3L1
+label IF3L2
+  // do
+  push constant 5
+  call Sys.wait 1
+  pop temp 0
+  // return
+  push constant 0
+  return
+function SquareGame.run 2
+  push argument 0
+  pop pointer 0
+  // let
+  push constant 0
+  pop local 1
+  // while
+label WHILE0L1
+  push local 1
+  not
+  not
+  if-goto WHILE0L2
+  // while
+label WHILE1L1
+  push local 0
+  push constant 0
+  eq
+  not
+  if-goto WHILE1L2
+  // let
+  call Keyboard.keyPressed 0
+  pop local 0
+  // do
+  push pointer 0
+  call SquareGame.moveSquare 1
+  pop temp 0
+  goto WHILE1L1
+label WHILE1L2
+  // if
+  push local 0
+  push constant 81
+  eq
+  not
+  if-goto IF4L1
+  // let
+  push constant 1
+  neg
+  pop local 1
+  goto IF4L2
+label IF4L1
+label IF4L2
+  // if
+  push local 0
+  push constant 90
+  eq
+  not
+  if-goto IF5L1
+  // do
+  push this 0
+  call Square.decSize 1
+  pop temp 0
+  goto IF5L2
+label IF5L1
+label IF5L2
+  // if
+  push local 0
+  push constant 88
+  eq
+  not
+  if-goto IF6L1
+  // do
+  push this 0
+  call Square.incSize 1
+  pop temp 0
+  goto IF6L2
+label IF6L1
+label IF6L2
+  // if
+  push local 0
+  push constant 131
+  eq
+  not
+  if-goto IF7L1
+  // let
+  push constant 1
+  pop this 1
+  goto IF7L2
+label IF7L1
+label IF7L2
+  // if
+  push local 0
+  push constant 133
+  eq
+  not
+  if-goto IF8L1
+  // let
+  push constant 2
+  pop this 1
+  goto IF8L2
+label IF8L1
+label IF8L2
+  // if
+  push local 0
+  push constant 130
+  eq
+  not
+  if-goto IF9L1
+  // let
+  push constant 3
+  pop this 1
+  goto IF9L2
+label IF9L1
+label IF9L2
+  // if
+  push local 0
+  push constant 132
+  eq
+  not
+  if-goto IF10L1
+  // let
+  push constant 4
+  pop this 1
+  goto IF10L2
+label IF10L1
+label IF10L2
+  // while
+label WHILE2L1
+  push local 0
+  push constant 0
+  eq
+  not
+  not
+  if-goto WHILE2L2
+  // let
+  call Keyboard.keyPressed 0
+  pop local 0
+  // do
+  push pointer 0
+  call SquareGame.moveSquare 1
+  pop temp 0
+  goto WHILE2L1
+label WHILE2L2
+  goto WHILE0L1
+label WHILE0L2
+  // return
+  push constant 0
+  return

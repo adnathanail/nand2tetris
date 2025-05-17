@@ -67,11 +67,11 @@ class SymbolTable:
         else:
             raise SymbolTableError(f"varCount: invalid kind '{kind}'")
 
-    def kindOf(self, name: str):
+    def kindOf(self, name: str) -> SYMBOL_SEGMENTS:
         return self._entries[name]["kind"]
 
-    def typeOf(self, name: str):
+    def typeOf(self, name: str) -> str:
         return self._entries[name]["type"]
 
-    def indexOf(self, name: str):
+    def indexOf(self, name: str) -> int:
         return self._entries[name]["index"]

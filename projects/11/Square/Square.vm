@@ -12,8 +12,350 @@ function Square.new 0
   push argument 2
   pop this 2
   // do
-  call draw 0
+  push pointer 0
+  call Square.draw 1
   pop temp 0
   // return
   push pointer 0
+  return
+function Square.dispose 0
+  push argument 0
+  pop pointer 0
+  // do
+  push pointer 0
+  call Memory.deAlloc 1
+  pop temp 0
+  // return
+  push constant 0
+  return
+function Square.draw 0
+  push argument 0
+  pop pointer 0
+  // do
+  push constant 1
+  neg
+  call Screen.setColor 1
+  pop temp 0
+  // do
+  push this 0
+  push this 1
+  push this 0
+  push this 2
+  add
+  push this 1
+  push this 2
+  add
+  call Screen.drawRectangle 4
+  pop temp 0
+  // return
+  push constant 0
+  return
+function Square.erase 0
+  push argument 0
+  pop pointer 0
+  // do
+  push constant 0
+  call Screen.setColor 1
+  pop temp 0
+  // do
+  push this 0
+  push this 1
+  push this 0
+  push this 2
+  add
+  push this 1
+  push this 2
+  add
+  call Screen.drawRectangle 4
+  pop temp 0
+  // return
+  push constant 0
+  return
+function Square.incSize 0
+  push argument 0
+  pop pointer 0
+  // if
+  push this 1
+  push this 2
+  add
+  push constant 254
+  lt
+  push this 0
+  push this 2
+  add
+  push constant 510
+  lt
+  and
+  not
+  if-goto IF0L1
+  // do
+  push pointer 0
+  call Square.erase 1
+  pop temp 0
+  // let
+  push this 2
+  push constant 2
+  add
+  pop this 2
+  // do
+  push pointer 0
+  call Square.draw 1
+  pop temp 0
+  goto IF0L2
+label IF0L1
+label IF0L2
+  // return
+  push constant 0
+  return
+function Square.decSize 0
+  push argument 0
+  pop pointer 0
+  // if
+  push this 2
+  push constant 2
+  gt
+  not
+  if-goto IF1L1
+  // do
+  push pointer 0
+  call Square.erase 1
+  pop temp 0
+  // let
+  push this 2
+  push constant 2
+  sub
+  pop this 2
+  // do
+  push pointer 0
+  call Square.draw 1
+  pop temp 0
+  goto IF1L2
+label IF1L1
+label IF1L2
+  // return
+  push constant 0
+  return
+function Square.moveUp 0
+  push argument 0
+  pop pointer 0
+  // if
+  push this 1
+  push constant 1
+  gt
+  not
+  if-goto IF2L1
+  // do
+  push constant 0
+  call Screen.setColor 1
+  pop temp 0
+  // do
+  push this 0
+  push this 1
+  push this 2
+  add
+  push constant 1
+  sub
+  push this 0
+  push this 2
+  add
+  push this 1
+  push this 2
+  add
+  call Screen.drawRectangle 4
+  pop temp 0
+  // let
+  push this 1
+  push constant 2
+  sub
+  pop this 1
+  // do
+  push constant 1
+  neg
+  call Screen.setColor 1
+  pop temp 0
+  // do
+  push this 0
+  push this 1
+  push this 0
+  push this 2
+  add
+  push this 1
+  push constant 1
+  add
+  call Screen.drawRectangle 4
+  pop temp 0
+  goto IF2L2
+label IF2L1
+label IF2L2
+  // return
+  push constant 0
+  return
+function Square.moveDown 0
+  push argument 0
+  pop pointer 0
+  // if
+  push this 1
+  push this 2
+  add
+  push constant 254
+  lt
+  not
+  if-goto IF3L1
+  // do
+  push constant 0
+  call Screen.setColor 1
+  pop temp 0
+  // do
+  push this 0
+  push this 1
+  push this 0
+  push this 2
+  add
+  push this 1
+  push constant 1
+  add
+  call Screen.drawRectangle 4
+  pop temp 0
+  // let
+  push this 1
+  push constant 2
+  add
+  pop this 1
+  // do
+  push constant 1
+  neg
+  call Screen.setColor 1
+  pop temp 0
+  // do
+  push this 0
+  push this 1
+  push this 2
+  add
+  push constant 1
+  sub
+  push this 0
+  push this 2
+  add
+  push this 1
+  push this 2
+  add
+  call Screen.drawRectangle 4
+  pop temp 0
+  goto IF3L2
+label IF3L1
+label IF3L2
+  // return
+  push constant 0
+  return
+function Square.moveLeft 0
+  push argument 0
+  pop pointer 0
+  // if
+  push this 0
+  push constant 1
+  gt
+  not
+  if-goto IF4L1
+  // do
+  push constant 0
+  call Screen.setColor 1
+  pop temp 0
+  // do
+  push this 0
+  push this 2
+  add
+  push constant 1
+  sub
+  push this 1
+  push this 0
+  push this 2
+  add
+  push this 1
+  push this 2
+  add
+  call Screen.drawRectangle 4
+  pop temp 0
+  // let
+  push this 0
+  push constant 2
+  sub
+  pop this 0
+  // do
+  push constant 1
+  neg
+  call Screen.setColor 1
+  pop temp 0
+  // do
+  push this 0
+  push this 1
+  push this 0
+  push constant 1
+  add
+  push this 1
+  push this 2
+  add
+  call Screen.drawRectangle 4
+  pop temp 0
+  goto IF4L2
+label IF4L1
+label IF4L2
+  // return
+  push constant 0
+  return
+function Square.moveRight 0
+  push argument 0
+  pop pointer 0
+  // if
+  push this 0
+  push this 2
+  add
+  push constant 510
+  lt
+  not
+  if-goto IF5L1
+  // do
+  push constant 0
+  call Screen.setColor 1
+  pop temp 0
+  // do
+  push this 0
+  push this 1
+  push this 0
+  push constant 1
+  add
+  push this 1
+  push this 2
+  add
+  call Screen.drawRectangle 4
+  pop temp 0
+  // let
+  push this 0
+  push constant 2
+  add
+  pop this 0
+  // do
+  push constant 1
+  neg
+  call Screen.setColor 1
+  pop temp 0
+  // do
+  push this 0
+  push this 2
+  add
+  push constant 1
+  sub
+  push this 1
+  push this 0
+  push this 2
+  add
+  push this 1
+  push this 2
+  add
+  call Screen.drawRectangle 4
+  pop temp 0
+  goto IF5L2
+label IF5L1
+label IF5L2
+  // return
+  push constant 0
   return

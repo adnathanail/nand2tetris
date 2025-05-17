@@ -1,6 +1,6 @@
 from io import TextIOWrapper
 from typing import Sequence
-from constants import PRIMITIVE_TYPES, KEYWORD_CONSTANTS, OPS, UNARY_OPS, SEGMENTS
+from constants import PRIMITIVE_TYPES, KEYWORD_CONSTANTS, OPS, UNARY_OPS, SYMBOL_SEGMENTS
 from JackTokenizer import JackTokenizer
 from SymbolTable import SymbolTable
 from VMWriter import VMWriter
@@ -18,20 +18,24 @@ class CompilationEngine:
         self.vm_writer = vm_writer
         self.output = ""
         # Counter used to generate unique labels for while loops
-        self._num_whiles = 0
-        self._num_ifs = 0
+        self._num_whiles: int = 0
+        self._num_ifs: int = 0
+        self._current_class_name: str = ""
 
-    def _symbol_tables_lookup(self, variable_identifier: str) -> tuple[SEGMENTS, int]:
+    def _symbol_tables_lookup(self, variable_identifier: str) -> tuple[SYMBOL_SEGMENTS, int, str]:
         if self.method_symbol_table.hasEntry(variable_identifier):
             return self.method_symbol_table.kindOf(
                 variable_identifier
-            ), self.method_symbol_table.indexOf(variable_identifier)
+            ), self.method_symbol_table.indexOf(variable_identifier), self.method_symbol_table.typeOf(variable_identifier)
         elif self.class_symbol_table.hasEntry(variable_identifier):
             return self.class_symbol_table.kindOf(
                 variable_identifier
-            ), self.class_symbol_table.indexOf(variable_identifier)
+            ), self.class_symbol_table.indexOf(variable_identifier), self.class_symbol_table.typeOf(variable_identifier)
         else:
             raise CompilationError(f"Couldn't find identifier {variable_identifier}")
+
+    def _symbol_tables_have_entry(self, variable_identifier: str) -> bool:
+        return self.method_symbol_table.hasEntry(variable_identifier) or self.class_symbol_table.hasEntry(variable_identifier)
 
     def _parseKeyword(self, expectedKeywords: Sequence[str], indent: int) -> str:
         self.tokenizer.advance()
@@ -114,7 +118,7 @@ class CompilationEngine:
         self.vm_writer.xmlOutput("<class>", indent)
 
         self._parseKeyword(["class"], indent + 1)
-        class_name = self._parseIdentifier(indent + 1)
+        self._current_class_name = self._parseIdentifier(indent + 1)
 
         self._parseSymbol(["{"], indent + 1)
 
@@ -128,7 +132,7 @@ class CompilationEngine:
             self.tokenizer.nextTokenType == "keyword"
             and self.tokenizer.nextToken in ("constructor", "function", "method")
         ):
-            self.compileSubroutine(indent + 1, class_name)
+            self.compileSubroutine(indent + 1)
 
         self._parseSymbol(["}"], indent + 1)
 
@@ -172,7 +176,7 @@ class CompilationEngine:
         self._parseSymbol([";"], indent + 1)
         self.vm_writer.xmlOutput("</classVarDec>", indent)
 
-    def compileSubroutine(self, indent: int, class_name: str):
+    def compileSubroutine(self, indent: int):
         self.vm_writer.xmlOutput("<subroutineDec>", indent)
         subroutine_type = self._parseKeyword(["constructor", "function", "method"], indent + 1)
         self._parseType(indent + 1, include_void=True)
@@ -182,7 +186,7 @@ class CompilationEngine:
         self.compileParameterList(indent + 1)
         self._parseSymbol([")"], indent + 1)
 
-        self.compileSubroutineBody(subroutine_type, f"{class_name}.{subroutine_name}", indent + 1)
+        self.compileSubroutineBody(subroutine_type, subroutine_name, indent + 1)
 
         self.vm_writer.xmlOutput("</subroutineDec>", indent)
         self.method_symbol_table.reset()
@@ -216,9 +220,16 @@ class CompilationEngine:
         ):
             num_locals += self.compileVarDec(indent + 1)
 
-        self.vm_writer.writeFunction(subroutine_name, num_locals)
+        self.vm_writer.writeFunction(f"{self._current_class_name}.{subroutine_name}", num_locals)
 
-        if subroutine_type == "constructor":
+        if subroutine_type == "method":
+            # The object that the method is called on is automatically added as the first argument
+            #   this code then copies it into the pointer segment, so that field references work properly
+            self.method_symbol_table.define("this", self._current_class_name, "argument")
+            self.vm_writer.writePush("argument", 0)
+            self.vm_writer.writePop("pointer", 0)
+        elif subroutine_type == "constructor":
+            # Add memory allocation for the objects fields to the start of the constructor
             self.vm_writer.writePush("constant", self.class_symbol_table.varCount("this"))
             self.vm_writer.writeCall("Memory.alloc", 1)
             self.vm_writer.writePop("pointer", 0)
@@ -284,7 +295,7 @@ class CompilationEngine:
         self._parseSymbol(["="], indent + 1)
 
         self.compileExpression(indent + 1)
-        segment, index = self._symbol_tables_lookup(variable_identifier)
+        segment, index, _type = self._symbol_tables_lookup(variable_identifier)
         self.vm_writer.writePop(segment, index)
 
         self._parseSymbol([";"], indent + 1)
@@ -418,21 +429,38 @@ class CompilationEngine:
         if self.tokenizer.nextTokenType == "stringConstant":
             self._parseStringConstant(indent + 1)
         elif self.tokenizer.nextTokenType == "identifier":
+            # Could be:
+            #   a simple variable 'x'
+            #   an object variable 'x' in 'x.blah'
+            #   an object method 'x' in 'x.run()'
+            #   a class function 'X' in 'X.parse()'
             identifier_name = self._parseIdentifier(indent + 1)
             if self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken in [".", "(", "["]:  # type: ignore
                 if self.tokenizer.nextToken in [".", "("]:
                     # Function/Method call
-                    callee_name = identifier_name
                     if (
                         self.tokenizer.nextTokenType == "symbol"
                         and self.tokenizer.nextToken == "."
                     ):
                         self._parseSymbol(["."], indent + 1)
                         method_name = self._parseIdentifier(indent + 1)
-                        callee_name += f".{method_name}"
+                        # If it's a defined variable, then we are calling a method on an object
+                        if self._symbol_tables_have_entry(identifier_name):
+                            identifier_kind, identifier_index, identifier_type = self._symbol_tables_lookup(identifier_name)
+                            self.vm_writer.writePush(identifier_kind, identifier_index)
+                            callee_name = f"{identifier_type}.{method_name}"
+                            num_arguments = 1
+                        # Otherwise we are calling a funtion on a class
+                        else:
+                            callee_name = f"{identifier_name}.{method_name}"
+                            num_arguments = 0
+                    else:
+                        callee_name = f"{self._current_class_name}.{identifier_name}"
+                        num_arguments = 1
+                        self.vm_writer.writePush("pointer", 0)
 
                     self._parseSymbol(["("], indent + 1)
-                    num_arguments = self.compileExpressionList(indent + 1)
+                    num_arguments += self.compileExpressionList(indent + 1)
                     self._parseSymbol([")"], indent + 1)
                     self.vm_writer.writeCall(callee_name, num_arguments)
                 else:
@@ -441,7 +469,7 @@ class CompilationEngine:
                     self.compileExpression(indent + 1)
                     self._parseSymbol(["]"], indent + 1)
             else:
-                segment, index = self._symbol_tables_lookup(identifier_name)
+                segment, index, _type = self._symbol_tables_lookup(identifier_name)
                 self.vm_writer.writePush(segment, index)
         elif self.tokenizer.nextTokenType == "keyword":
             keyword_constant = self._parseKeyword(KEYWORD_CONSTANTS, indent + 1)
