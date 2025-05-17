@@ -427,7 +427,12 @@ class CompilationEngine:
             integer_value = self._parseIntegerConstant(indent + 1)
             self.vm_writer.writePush("constant", integer_value)
         if self.tokenizer.nextTokenType == "stringConstant":
-            self._parseStringConstant(indent + 1)
+            string_value = self._parseStringConstant(indent + 1)
+            self.vm_writer.writePush("constant", len(string_value))
+            self.vm_writer.writeCall("String.new", 1)
+            for c in string_value:
+                self.vm_writer.writePush("constant", ord(c))
+                self.vm_writer.writeCall("String.appendChar", 2)
         elif self.tokenizer.nextTokenType == "identifier":
             # Could be:
             #   a simple variable 'x'
