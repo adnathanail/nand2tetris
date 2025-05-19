@@ -58,7 +58,6 @@ label WHILE0L1
   push local 0
   push local 2
   add
-  pop pointer 1
   push constant 16
   call String.new 1
   push constant 69
@@ -94,6 +93,9 @@ label WHILE0L1
   push constant 32
   call String.appendChar 2
   call Keyboard.readInt 1
+  pop temp 0
+  pop pointer 1
+  push temp 0
   pop that 0
   // let
   push local 3

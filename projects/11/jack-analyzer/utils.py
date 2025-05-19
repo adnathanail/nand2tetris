@@ -36,10 +36,6 @@ def strip_comments_and_whitespace(in_text: str) -> str:
     return out
 
 
-def make_indent(indent: int) -> str:
-    return "  " * indent
-
-
 class RowsToTableError(Exception):
     pass
 

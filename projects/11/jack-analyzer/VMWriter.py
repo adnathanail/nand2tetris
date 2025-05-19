@@ -1,5 +1,4 @@
 from pathlib import Path
-from utils import make_indent
 from constants import SEGMENTS, ARITHMETIC_OPS
 
 
@@ -8,12 +7,8 @@ class VMWriteError(Exception):
 
 
 class VMWriter:
-    def __init__(self, xml_out_file_path: Path, vm_out_file_path: Path):
-        self.xml_out_file = open(xml_out_file_path, "w")
+    def __init__(self, vm_out_file_path: Path):
         self.vm_out_file = open(vm_out_file_path, "w")
-
-    def xmlOutput(self, line: str, indent: int):
-        self.xml_out_file.write(make_indent(indent) + line + "\n")
 
     def _writeVMLine(self, line: str):
         self.vm_out_file.write(line + "\n")
@@ -49,5 +44,4 @@ class VMWriter:
         self._writeVMLine("  return")
 
     def close(self):
-        self.xml_out_file.close()
         self.vm_out_file.close()
