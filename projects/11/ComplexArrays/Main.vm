@@ -15,22 +15,28 @@ function Main.main 3
   push local 0
   push constant 3
   add
-  pop pointer 1
   push constant 2
+  pop temp 0
+  pop pointer 1
+  push temp 0
   pop that 0
   // let
   push local 0
   push constant 4
   add
-  pop pointer 1
   push constant 8
+  pop temp 0
+  pop pointer 1
+  push temp 0
   pop that 0
   // let
   push local 0
   push constant 5
   add
-  pop pointer 1
   push constant 4
+  pop temp 0
+  pop pointer 1
+  push temp 0
   pop that 0
   // let
   push local 1
@@ -40,7 +46,6 @@ function Main.main 3
   pop pointer 1
   push that 0
   add
-  pop pointer 1
   push local 0
   push constant 3
   add
@@ -48,6 +53,9 @@ function Main.main 3
   push that 0
   push constant 3
   add
+  pop temp 0
+  pop pointer 1
+  push temp 0
   pop that 0
   // let
   push local 0
@@ -61,7 +69,6 @@ function Main.main 3
   pop pointer 1
   push that 0
   add
-  pop pointer 1
   push local 0
   push local 0
   push constant 5
@@ -88,13 +95,18 @@ function Main.main 3
   pop pointer 1
   push that 0
   call Math.multiply 2
+  pop temp 0
+  pop pointer 1
+  push temp 0
   pop that 0
   // let
   push local 2
   push constant 0
   add
-  pop pointer 1
   push constant 0
+  pop temp 0
+  pop pointer 1
+  push temp 0
   pop that 0
   // let
   push local 2
@@ -432,8 +444,10 @@ function Main.main 3
   push local 2
   push constant 1
   add
-  pop pointer 1
   push constant 33
+  pop temp 0
+  pop pointer 1
+  push temp 0
   pop that 0
   // let
   push local 0
@@ -446,8 +460,10 @@ function Main.main 3
   push local 2
   push constant 1
   add
-  pop pointer 1
   push constant 77
+  pop temp 0
+  pop pointer 1
+  push temp 0
   pop that 0
   // let
   push local 0
@@ -460,7 +476,6 @@ function Main.main 3
   push local 1
   push constant 1
   add
-  pop pointer 1
   push local 1
   push constant 1
   add
@@ -472,6 +487,9 @@ function Main.main 3
   pop pointer 1
   push that 0
   add
+  pop temp 0
+  pop pointer 1
+  push temp 0
   pop that 0
   goto IF0L2
 label IF0L1
@@ -712,9 +730,11 @@ label WHILE0L1
   push argument 0
   push argument 1
   add
-  pop pointer 1
   push constant 3
   call Array.new 1
+  pop temp 0
+  pop pointer 1
+  push temp 0
   pop that 0
   goto WHILE0L1
 label WHILE0L2

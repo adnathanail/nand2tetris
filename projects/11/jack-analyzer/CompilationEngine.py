@@ -292,23 +292,28 @@ class CompilationEngine:
 
         segment, index, _type = self._symbol_tables_lookup(variable_identifier)
 
+        # Whether the address to save the result in is sitting just below the expression result in the stack
+        #   i.e. we are storing the output in an array
+        output_address_in_stack = False
+
         if self.tokenizer.nextToken == "[":
             self.vm_writer.writePush(segment, index)
             self._parseSymbol(["["], indent + 1)
             self.compileExpression(indent + 1)
             self._parseSymbol(["]"], indent + 1)
             self.vm_writer.writeArithmetic("add")
-            self.vm_writer.writePop("pointer", 1)
-            output_segment = "that"
-            output_index = 0
-        else:
-            output_segment = segment
-            output_index = index
+            output_address_in_stack = True
 
         self._parseSymbol(["="], indent + 1)
 
         self.compileExpression(indent + 1)
-        self.vm_writer.writePop(output_segment, output_index)
+        if output_address_in_stack:
+            self.vm_writer.writePop("temp", 0)
+            self.vm_writer.writePop("pointer", 1)
+            self.vm_writer.writePush("temp", 0)
+            self.vm_writer.writePop("that", 0)
+        else:
+            self.vm_writer.writePop(segment, index)
 
         self._parseSymbol([";"], indent + 1)
         self.vm_writer.xmlOutput("</letStatement>", indent)
