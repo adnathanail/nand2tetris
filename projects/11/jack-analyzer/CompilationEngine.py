@@ -1,5 +1,5 @@
 from io import TextIOWrapper
-from typing import Sequence
+from typing import Sequence, Tuple
 from constants import PRIMITIVE_TYPES, KEYWORD_CONSTANTS, OPS, UNARY_OPS, SYMBOL_SEGMENTS
 from JackTokenizer import JackTokenizer
 from SymbolTable import SymbolTable
@@ -22,7 +22,7 @@ class CompilationEngine:
         self._num_ifs: int = 0
         self._current_class_name: str = ""
 
-    def _symbol_tables_lookup(self, variable_identifier: str) -> tuple[SYMBOL_SEGMENTS, int, str]:
+    def _symbol_tables_lookup(self, variable_identifier: str) -> Tuple[SYMBOL_SEGMENTS, int, str]:
         if self.method_symbol_table.hasEntry(variable_identifier):
             return (
                 self.method_symbol_table.kindOf(variable_identifier),

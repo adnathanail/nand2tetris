@@ -1,6 +1,7 @@
 import os
 import sys
 from pathlib import Path
+from typing import List
 from CompilationEngine import CompilationEngine
 from VMWriter import VMWriter
 
@@ -11,7 +12,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     input_path = Path(sys.argv[1])
-    file_paths: list[Path] = []
+    file_paths: List[Path] = []
 
     # Single file translation
     if input_path.is_file():

@@ -1,3 +1,4 @@
+from typing import Union
 from constants import KEYWORDS, SYMBOLS, SYMBOL_LOOKUP, TOKEN_TYPES
 from utils import strip_comments_and_whitespace
 
@@ -16,18 +17,18 @@ class JackTokenizer:
     def hasMoreTokens(self) -> bool:
         return self.nextToken is not None
 
-    def _lexKeyWord(self) -> int | bool:
+    def _lexKeyWord(self) -> Union[int, bool]:
         for kw in KEYWORDS:
             if kw == self._text[self._tokenStart : self._tokenStart + len(kw)] and not self._text[self._tokenStart + len(kw)].isalpha():
                 return self._tokenStart + len(kw)
         return False
 
-    def _lexSymbol(self) -> int | bool:
+    def _lexSymbol(self) -> Union[int, bool]:
         if self._text[self._tokenStart] in SYMBOLS:
             return self._tokenStart + 1
         return False
 
-    def _lexIntegerConstant(self) -> int | bool:
+    def _lexIntegerConstant(self) -> Union[int, bool]:
         if not self._text[self._tokenStart].isdigit():
             return False
         endInd = self._tokenStart + 1
@@ -38,7 +39,7 @@ class JackTokenizer:
             endInd += 1
         return endInd
 
-    def _lexStringConstant(self) -> int | bool:
+    def _lexStringConstant(self) -> Union[int, bool]:
         if self._text[self._tokenStart] != '"':
             return False
         endInd = self._tokenStart + 1
@@ -48,7 +49,7 @@ class JackTokenizer:
             return endInd + 1
         return False
 
-    def _lexIdentifier(self) -> int | bool:
+    def _lexIdentifier(self) -> Union[int, bool]:
         endInd = self._tokenStart
         if not self._text[endInd].isalpha() and self._text[endInd] != "_":
             return False

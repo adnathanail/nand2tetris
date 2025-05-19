@@ -1,12 +1,12 @@
 [project]
 name = "jack-analyzer"
 version = "1.0.0"
-requires-python = ">=3.12"
+requires-python = ">=3.8,<3.9"
 dependencies = []
 
 [dependency-groups]
 dev = [
-    "black>=25.1.0",
+    "black>=24.8.0",
     "ruff>=0.11.8",
 ]
 

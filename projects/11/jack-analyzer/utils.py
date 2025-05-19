@@ -1,3 +1,6 @@
+from typing import List
+
+
 def strip_comments_and_whitespace(in_text: str) -> str:
     lines = in_text.splitlines()
     i = 0
@@ -40,7 +43,7 @@ class RowsToTableError(Exception):
     pass
 
 
-def rows_to_table(rows: list[list[str]]):
+def rows_to_table(rows: List[List[str]]):
     row_len = len(rows[0])
     col_maxs = [0 for _ in range(row_len)]
     for row in rows:
