@@ -18,7 +18,7 @@ class JackTokenizer:
 
     def _lexKeyWord(self) -> int | bool:
         for kw in KEYWORDS:
-            if kw == self._text[self._tokenStart : self._tokenStart + len(kw)]:
+            if kw == self._text[self._tokenStart : self._tokenStart + len(kw)] and not self._text[self._tokenStart + len(kw)].isalpha():
                 return self._tokenStart + len(kw)
         return False
 
