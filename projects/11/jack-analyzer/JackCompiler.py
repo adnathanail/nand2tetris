@@ -7,7 +7,7 @@ from VMWriter import VMWriter
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python3 JackAnalyzer.py <path>")
+        print("Usage: python3 JackCompiler.py <path>")
         sys.exit(1)
 
     input_path = Path(sys.argv[1])
