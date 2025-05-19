@@ -182,6 +182,10 @@ class CompilationEngine:
         self._parseType(indent + 1, include_void=True)
         subroutine_name = self._parseIdentifier(indent + 1)
 
+        if subroutine_type == "method":
+            # Add this to the argument list for a method automatically
+            self.method_symbol_table.define("this", self._current_class_name, "argument")
+
         self._parseSymbol(["("], indent + 1)
         self.compileParameterList(indent + 1)
         self._parseSymbol([")"], indent + 1)
@@ -225,7 +229,6 @@ class CompilationEngine:
         if subroutine_type == "method":
             # The object that the method is called on is automatically added as the first argument
             #   this code then copies it into the pointer segment, so that field references work properly
-            self.method_symbol_table.define("this", self._current_class_name, "argument")
             self.vm_writer.writePush("argument", 0)
             self.vm_writer.writePop("pointer", 0)
         elif subroutine_type == "constructor":
