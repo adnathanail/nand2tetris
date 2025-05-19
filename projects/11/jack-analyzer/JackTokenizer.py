@@ -32,9 +32,7 @@ class JackTokenizer:
             return False
         endInd = self._tokenStart + 1
         decimal_used = False
-        while self._text[endInd].isdigit() or (
-            not decimal_used and self._text[endInd] == "."
-        ):
+        while self._text[endInd].isdigit() or (not decimal_used and self._text[endInd] == "."):
             if self._text[endInd] == ".":
                 decimal_used = True
             endInd += 1
@@ -54,18 +52,12 @@ class JackTokenizer:
         endInd = self._tokenStart
         if not self._text[endInd].isalpha() and self._text[endInd] != "_":
             return False
-        while (
-            self._text[endInd].isalpha()
-            or self._text[endInd].isdigit()
-            or self._text[endInd] == "_"
-        ):
+        while self._text[endInd].isalpha() or self._text[endInd].isdigit() or self._text[endInd] == "_":
             endInd += 1
         return endInd
 
     def _chew(self):
-        while (
-            self._tokenStart < len(self._text) and self._text[self._tokenStart] == " "
-        ):
+        while self._tokenStart < len(self._text) and self._text[self._tokenStart] == " ":
             self._tokenStart += 1
 
     def keyWord(self) -> str:
@@ -115,9 +107,7 @@ class JackTokenizer:
                 self.nextTokenType = "identifier"
                 self.nextToken = self.identifier()
             else:
-                raise Exception(
-                    f"Couldn't tokenize from '{self._text[self._tokenStart : self._tokenStart + 5]}'"
-                )
+                raise Exception(f"Couldn't tokenize from '{self._text[self._tokenStart : self._tokenStart + 5]}'")
         elif self.nextToken is None:
             raise Exception("No more tokens")
         else:

@@ -51,9 +51,7 @@ def rows_to_table(rows: list[list[str]]):
 
     out = ""
 
-    rows_with_header = (
-        [rows[0]] + [["-" * col_maxs[i] for i in range(row_len)]] + rows[1:]
-    )
+    rows_with_header = [rows[0]] + [["-" * col_maxs[i] for i in range(row_len)]] + rows[1:]
     for row in rows_with_header:
         for i in range(len(row)):
             out += row[i]

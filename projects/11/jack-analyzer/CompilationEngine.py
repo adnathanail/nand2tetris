@@ -24,13 +24,17 @@ class CompilationEngine:
 
     def _symbol_tables_lookup(self, variable_identifier: str) -> tuple[SYMBOL_SEGMENTS, int, str]:
         if self.method_symbol_table.hasEntry(variable_identifier):
-            return self.method_symbol_table.kindOf(
-                variable_identifier
-            ), self.method_symbol_table.indexOf(variable_identifier), self.method_symbol_table.typeOf(variable_identifier)
+            return (
+                self.method_symbol_table.kindOf(variable_identifier),
+                self.method_symbol_table.indexOf(variable_identifier),
+                self.method_symbol_table.typeOf(variable_identifier),
+            )
         elif self.class_symbol_table.hasEntry(variable_identifier):
-            return self.class_symbol_table.kindOf(
-                variable_identifier
-            ), self.class_symbol_table.indexOf(variable_identifier), self.class_symbol_table.typeOf(variable_identifier)
+            return (
+                self.class_symbol_table.kindOf(variable_identifier),
+                self.class_symbol_table.indexOf(variable_identifier),
+                self.class_symbol_table.typeOf(variable_identifier),
+            )
         else:
             raise CompilationError(f"Couldn't find identifier {variable_identifier}")
 
@@ -39,65 +43,38 @@ class CompilationEngine:
 
     def _parseKeyword(self, expectedKeywords: Sequence[str], indent: int) -> str:
         self.tokenizer.advance()
-        if (
-            self.tokenizer.tokenType == "keyword"
-            and type(self.tokenizer.token) is str
-            and self.tokenizer.token in expectedKeywords
-        ):
+        if self.tokenizer.tokenType == "keyword" and type(self.tokenizer.token) is str and self.tokenizer.token in expectedKeywords:
             return self.tokenizer.token
         else:
-            raise CompilationError(
-                f"Expected keyword(s) {expectedKeywords}, got {self.tokenizer.tokenType} {self.tokenizer.token}"
-            )
+            raise CompilationError(f"Expected keyword(s) {expectedKeywords}, got {self.tokenizer.tokenType} {self.tokenizer.token}")
 
     def _parseSymbol(self, expectedSymbols: Sequence[str], indent: int) -> str:
         self.tokenizer.advance()
-        if (
-            self.tokenizer.tokenType == "symbol"
-            and type(self.tokenizer.token) is str
-            and self.tokenizer.token in expectedSymbols
-        ):
+        if self.tokenizer.tokenType == "symbol" and type(self.tokenizer.token) is str and self.tokenizer.token in expectedSymbols:
             return self.tokenizer.token
         else:
-            raise CompilationError(
-                f"Expected symbol(s) {expectedSymbols}, got {self.tokenizer.tokenType} {self.tokenizer.token}"
-            )
+            raise CompilationError(f"Expected symbol(s) {expectedSymbols}, got {self.tokenizer.tokenType} {self.tokenizer.token}")
 
     def _parseIntegerConstant(self, indent: int) -> int:
         self.tokenizer.advance()
-        if (
-            self.tokenizer.tokenType == "integerConstant"
-            and type(self.tokenizer.token) is int
-        ):
+        if self.tokenizer.tokenType == "integerConstant" and type(self.tokenizer.token) is int:
             return self.tokenizer.token
         else:
-            raise CompilationError(
-                f"Expected integer constant, got {self.tokenizer.tokenType} {self.tokenizer.token}"
-            )
+            raise CompilationError(f"Expected integer constant, got {self.tokenizer.tokenType} {self.tokenizer.token}")
 
     def _parseStringConstant(self, indent: int) -> str:
         self.tokenizer.advance()
-        if (
-            self.tokenizer.tokenType == "stringConstant"
-            and type(self.tokenizer.token) is str
-        ):
+        if self.tokenizer.tokenType == "stringConstant" and type(self.tokenizer.token) is str:
             return self.tokenizer.token
         else:
-            raise CompilationError(
-                f"Expected string constant, got {self.tokenizer.tokenType} {self.tokenizer.token}"
-            )
+            raise CompilationError(f"Expected string constant, got {self.tokenizer.tokenType} {self.tokenizer.token}")
 
     def _parseIdentifier(self, indent: int) -> str:
         self.tokenizer.advance()
-        if (
-            self.tokenizer.tokenType == "identifier"
-            and type(self.tokenizer.token) is str
-        ):
+        if self.tokenizer.tokenType == "identifier" and type(self.tokenizer.token) is str:
             return self.tokenizer.token
         else:
-            raise CompilationError(
-                f"Expected identifier, got {self.tokenizer.tokenType} {self.tokenizer.token}"
-            )
+            raise CompilationError(f"Expected identifier, got {self.tokenizer.tokenType} {self.tokenizer.token}")
 
     def compileClass(self, indent: int = 0):
         self._parseKeyword(["class"], indent + 1)
@@ -105,34 +82,23 @@ class CompilationEngine:
 
         self._parseSymbol(["{"], indent + 1)
 
-        while (
-            self.tokenizer.nextTokenType == "keyword"
-            and self.tokenizer.nextToken in ("static", "field")
-        ):
+        while self.tokenizer.nextTokenType == "keyword" and self.tokenizer.nextToken in ("static", "field"):
             self.compileClassVarDec(indent + 1)
 
-        while (
-            self.tokenizer.nextTokenType == "keyword"
-            and self.tokenizer.nextToken in ("constructor", "function", "method")
-        ):
+        while self.tokenizer.nextTokenType == "keyword" and self.tokenizer.nextToken in ("constructor", "function", "method"):
             self.compileSubroutine(indent + 1)
 
         self._parseSymbol(["}"], indent + 1)
 
         if self.tokenizer.hasMoreTokens():
             self.tokenizer.advance()
-            raise CompilationError(
-                f"Nothing expected after class definition, got {self.tokenizer.tokenType} {self.tokenizer.token}"
-            )
+            raise CompilationError(f"Nothing expected after class definition, got {self.tokenizer.tokenType} {self.tokenizer.token}")
 
     def _parseType(self, indent: int, *, include_void: bool = False):
         if self.tokenizer.nextTokenType == "keyword" and (
-            self.tokenizer.nextToken in PRIMITIVE_TYPES
-            or (include_void and self.tokenizer.nextToken == "void")
+            self.tokenizer.nextToken in PRIMITIVE_TYPES or (include_void and self.tokenizer.nextToken == "void")
         ):
-            return self._parseKeyword(
-                PRIMITIVE_TYPES + (("void",) if include_void else ()), indent
-            )
+            return self._parseKeyword(PRIMITIVE_TYPES + (("void",) if include_void else ()), indent)
         else:
             return self._parseIdentifier(indent)
 
@@ -145,9 +111,7 @@ class CompilationEngine:
         var_name = self._parseIdentifier(indent + 1)
         self.class_symbol_table.define(var_name, var_type, var_kind)
 
-        while (
-            self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ","
-        ):
+        while self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ",":
             self._parseSymbol([","], indent + 1)
             var_name = self._parseIdentifier(indent + 1)
             self.class_symbol_table.define(var_name, var_type, var_kind)
@@ -177,9 +141,7 @@ class CompilationEngine:
             param_name = self._parseIdentifier(indent + 1)
             self.method_symbol_table.define(param_name, param_type, "argument")
 
-        while (
-            self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ","
-        ):
+        while self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ",":
             self._parseSymbol([","], indent + 1)
             param_type = self._parseType(indent + 1)
             param_name = self._parseIdentifier(indent + 1)
@@ -188,10 +150,7 @@ class CompilationEngine:
     def compileSubroutineBody(self, subroutine_type: str, subroutine_name: str, indent: int):
         self._parseSymbol(["{"], indent + 1)
         num_locals = 0
-        while (
-            self.tokenizer.nextTokenType == "keyword"
-            and self.tokenizer.nextToken == "var"
-        ):
+        while self.tokenizer.nextTokenType == "keyword" and self.tokenizer.nextToken == "var":
             num_locals += self.compileVarDec(indent + 1)
 
         self.vm_writer.writeFunction(f"{self._current_class_name}.{subroutine_name}", num_locals)
@@ -219,9 +178,7 @@ class CompilationEngine:
         self.method_symbol_table.define(var_identifier, var_type, "local")
         num_locals += 1
 
-        while (
-            self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ","
-        ):
+        while self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ",":
             self._parseSymbol([","], indent + 1)
             var_identifier = self._parseIdentifier(indent + 1)
             self.method_symbol_table.define(var_identifier, var_type, "local")
@@ -231,10 +188,7 @@ class CompilationEngine:
         return num_locals
 
     def compileStatements(self, indent: int):
-        while (
-            self.tokenizer.nextTokenType == "keyword"
-            and self.tokenizer.nextToken in ["let", "if", "while", "do", "return"]
-        ):
+        while self.tokenizer.nextTokenType == "keyword" and self.tokenizer.nextToken in ["let", "if", "while", "do", "return"]:
             if self.tokenizer.nextToken == "let":
                 self.compileLet(indent + 1)
             elif self.tokenizer.nextToken == "if":
@@ -300,10 +254,7 @@ class CompilationEngine:
         self.vm_writer.writeGoto(f"{if_label}L2")
         self.vm_writer.writeLabel(f"{if_label}L1")
 
-        if (
-            self.tokenizer.nextTokenType == "keyword"
-            and self.tokenizer.nextToken == "else"
-        ):
+        if self.tokenizer.nextTokenType == "keyword" and self.tokenizer.nextToken == "else":
             self._parseKeyword(["else"], indent + 1)
             self._parseSymbol(["{"], indent + 1)
             self.compileStatements(indent + 1)
@@ -347,9 +298,7 @@ class CompilationEngine:
         self.vm_writer.writeComment("return")
 
         self._parseKeyword(["return"], indent + 1)
-        if not (
-            self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ";"
-        ):
+        if not (self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ";"):
             self.compileExpression(indent + 1)
         else:
             # Return 0 if no expression
@@ -383,9 +332,7 @@ class CompilationEngine:
             elif operator_symbol == "=":
                 self.vm_writer.writeArithmetic("eq")
             else:
-                raise CompilationError(
-                    f"compileExpression: invalid operator '{operator_symbol}'"
-                )
+                raise CompilationError(f"compileExpression: invalid operator '{operator_symbol}'")
 
     def compileTerm(self, indent: int):
         if self.tokenizer.nextTokenType == "integerConstant":
@@ -408,10 +355,7 @@ class CompilationEngine:
             if self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken in [".", "(", "["]:  # type: ignore
                 if self.tokenizer.nextToken in [".", "("]:
                     # Function/Method call
-                    if (
-                        self.tokenizer.nextTokenType == "symbol"
-                        and self.tokenizer.nextToken == "."
-                    ):
+                    if self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ".":
                         self._parseSymbol(["."], indent + 1)
                         method_name = self._parseIdentifier(indent + 1)
                         # If it's a defined variable, then we are calling a method on an object
@@ -473,15 +417,10 @@ class CompilationEngine:
     def compileExpressionList(self, indent: int) -> int:
         num_arguments = 0
 
-        if not (
-            self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ")"
-        ):
+        if not (self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ")"):
             self.compileExpression(indent + 1)
             num_arguments += 1
-            while (
-                self.tokenizer.nextTokenType == "symbol"
-                and self.tokenizer.nextToken == ","
-            ):
+            while self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ",":
                 self._parseSymbol([","], indent + 1)
                 self.compileExpression(indent + 1)
                 num_arguments += 1

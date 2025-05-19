@@ -55,9 +55,7 @@ SYMBOL_LOOKUP = {
     "&": "&amp;",
 }
 
-TOKEN_TYPES = Literal[
-    "keyword", "symbol", "integerConstant", "stringConstant", "identifier"
-]
+TOKEN_TYPES = Literal["keyword", "symbol", "integerConstant", "stringConstant", "identifier"]
 
 # Parser
 KEYWORD_CONSTANTS = (
@@ -73,9 +71,7 @@ OPS = ("+", "-", "*", "/", "&amp;", "|", "&lt;", "&gt;", "=")
 
 UNARY_OPS = ("-", "~")
 
-SEGMENTS = Literal[
-    "constant", "argument", "local", "static", "this", "that", "pointer", "temp"
-]
+SEGMENTS = Literal["constant", "argument", "local", "static", "this", "that", "pointer", "temp"]
 
 # VM writer
 ARITHMETIC_OPS = Literal["add", "sub", "neg", "eq", "gt", "lt", "and", "or", "not"]
