@@ -201,7 +201,7 @@ label IF0L1
   // let
   push constant 511
   push this 2
-  neg
+  sub
   pop this 0
   goto IF2L2
 label IF2L1

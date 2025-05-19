@@ -438,7 +438,7 @@ class CompilationEngine:
         if self.tokenizer.nextTokenType == "integerConstant":
             integer_value = self._parseIntegerConstant(indent + 1)
             self.vm_writer.writePush("constant", integer_value)
-        if self.tokenizer.nextTokenType == "stringConstant":
+        elif self.tokenizer.nextTokenType == "stringConstant":
             string_value = self._parseStringConstant(indent + 1)
             self.vm_writer.writePush("constant", len(string_value))
             self.vm_writer.writeCall("String.new", 1)

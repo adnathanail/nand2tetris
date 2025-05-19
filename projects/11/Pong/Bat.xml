@@ -755,10 +755,10 @@
                   <expression>
                     <term>
                       <integerConstant> 511 </integerConstant>
-                      <symbol> - </symbol>
-                      <term>
-                        <identifier> width </identifier>
-                      </term>
+                    </term>
+                    <symbol> - </symbol>
+                    <term>
+                      <identifier> width </identifier>
                     </term>
                   </expression>
                   <symbol> ; </symbol>
