@@ -11,10 +11,16 @@ class Math {
 
     /** Initializes the library. */
     function void init() {
+        return;
     }
 
     /** Returns the absolute value of x. */
     function int abs(int x) {
+        if (x < 0) {
+            return -x;
+        } else {
+            return x;
+        }
     }
 
     /** Returns the product of x and y. 
@@ -23,6 +29,25 @@ class Math {
      *  the Jack expressions x*y and multiply(x,y) return the same value.
      */
     function int multiply(int x, int y) {
+        var int out;
+        var boolean y_negative;
+
+        if (y < 0) {
+            let y = -y;
+            let y_negative = true;
+        }
+
+        let out = 0;
+        while(y > 0) {
+            let out = out + x;
+            let y = y - 1;
+        }
+
+        if (y_negative) {
+            let out = - out;
+        }
+
+        return out;
     }
 
     /** Returns the integer part of x/y.
@@ -31,17 +56,76 @@ class Math {
      *  the Jack expressions x/y and divide(x,y) return the same value.
      */
     function int divide(int x, int y) {
+        var int out;
+        var boolean negate_output;
+
+        let negate_output = false;
+
+        if (x < 0) {
+            let x = -x;
+            let negate_output = true;
+        }
+        if (y < 0) {
+            let y = -y;
+            let negate_output = ~negate_output;
+        }
+
+        let out = 0;
+        while((y < x) | (y = x)) {
+            let out = out + 1;
+            let x = x - y;
+        }
+
+        if (negate_output) {
+            let out = -out;
+        }
+
+        return out;
     }
 
     /** Returns the integer part of the square root of x. */
     function int sqrt(int x) {
+        var int min, max, mdpt;
+
+        let min = 1;
+        // TODO is this needed?
+        if (x < 10) {
+            let max = x;
+        } else {
+            let max = x / 2;
+        }
+        let mdpt = (max + min) / 2;
+
+        while(~((max - min) = -1)) {
+            if ((mdpt * mdpt) = x) {
+                return mdpt;
+            }
+            if ((mdpt * mdpt) < x) {
+                let min = mdpt;
+            } else {
+                let max = mdpt;
+            }
+            let mdpt = (max + min)/2;
+        }
+
+        return min;
     }
 
     /** Returns the greater number. */
     function int max(int a, int b) {
+        if (a > b) {
+            return a;
+        } else {
+            return b;
+        }
     }
 
     /** Returns the smaller number. */
     function int min(int a, int b) {
+        if (a < b) {
+            return a;
+        } else {
+            return b;
+        }
     }
 }
