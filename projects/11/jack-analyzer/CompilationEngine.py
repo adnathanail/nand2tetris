@@ -23,12 +23,15 @@ class CompilationEngine:
         self._num_ifs: int = 0
         self._current_class_name: str = ""
         self._current_subroutine_name: str = ""
+        # Boolean used to keep track of if we've seen a return in a subroutine yet
+        self._return_seen_this_sub = False
 
-    def _get_error_prefix(self) -> str:
+    def _raise_compilation_error(self, msg) -> str:
         out = f"\nFile: {self.file_path}:{self.tokenizer._lineNumber + 1}"
         if self._current_class_name:
             out += f"\nSubroutine: {self._current_class_name}.{self._current_subroutine_name}"
-        return f"{out}\n"
+        out += f"\n{msg}"
+        raise CompilationError(out)
 
     def _symbol_tables_lookup(self, variable_identifier: str) -> Tuple[SYMBOL_SEGMENTS, int, str]:
         if self.method_symbol_table.hasEntry(variable_identifier):
@@ -44,7 +47,7 @@ class CompilationEngine:
                 self.class_symbol_table.typeOf(variable_identifier),
             )
         else:
-            raise CompilationError(f"{self._get_error_prefix()}Couldn't find identifier {variable_identifier}")
+            self._raise_compilation_error(f"Couldn't find identifier {variable_identifier}")
 
     def _symbol_tables_have_entry(self, variable_identifier: str) -> bool:
         return self.method_symbol_table.hasEntry(variable_identifier) or self.class_symbol_table.hasEntry(variable_identifier)
@@ -54,35 +57,35 @@ class CompilationEngine:
         if self.tokenizer.tokenType == "keyword" and type(self.tokenizer.token) is str and self.tokenizer.token in expectedKeywords:
             return self.tokenizer.token
         else:
-            raise CompilationError(f"{self._get_error_prefix()}Expected keyword(s) {expectedKeywords}, got {self.tokenizer.tokenType} {self.tokenizer.token}")
+            self._raise_compilation_error(f"Expected keyword(s) {expectedKeywords}, got {self.tokenizer.tokenType} {self.tokenizer.token}")
 
     def _parseSymbol(self, expectedSymbols: Sequence[str], indent: int) -> str:
         self.tokenizer.advance()
         if self.tokenizer.tokenType == "symbol" and type(self.tokenizer.token) is str and self.tokenizer.token in expectedSymbols:
             return self.tokenizer.token
         else:
-            raise CompilationError(f"{self._get_error_prefix()}Expected symbol(s) {expectedSymbols}, got {self.tokenizer.tokenType} {self.tokenizer.token}")
+            self._raise_compilation_error(f"Expected symbol(s) {expectedSymbols}, got {self.tokenizer.tokenType} {self.tokenizer.token}")
 
     def _parseIntegerConstant(self, indent: int) -> int:
         self.tokenizer.advance()
         if self.tokenizer.tokenType == "integerConstant" and type(self.tokenizer.token) is int:
             return self.tokenizer.token
         else:
-            raise CompilationError(f"E{self._get_error_prefix()}xpected integer constant, got {self.tokenizer.tokenType} {self.tokenizer.token}")
+            self._raise_compilation_error(f"Expected integer constant, got {self.tokenizer.tokenType} {self.tokenizer.token}")
 
     def _parseStringConstant(self, indent: int) -> str:
         self.tokenizer.advance()
         if self.tokenizer.tokenType == "stringConstant" and type(self.tokenizer.token) is str:
             return self.tokenizer.token
         else:
-            raise CompilationError(f"{self._get_error_prefix()}Expected string constant, got {self.tokenizer.tokenType} {self.tokenizer.token}")
+            self._raise_compilation_error(f"Expected string constant, got {self.tokenizer.tokenType} {self.tokenizer.token}")
 
     def _parseIdentifier(self, indent: int) -> str:
         self.tokenizer.advance()
         if self.tokenizer.tokenType == "identifier" and type(self.tokenizer.token) is str:
             return self.tokenizer.token
         else:
-            raise CompilationError(f"{self._get_error_prefix()}Expected identifier, got {self.tokenizer.tokenType} {self.tokenizer.token}")
+            self._raise_compilation_error(f"Expected identifier, got {self.tokenizer.tokenType} {self.tokenizer.token}")
 
     def compileClass(self, indent: int = 0):
         self._parseKeyword(["class"], indent + 1)
@@ -100,7 +103,7 @@ class CompilationEngine:
 
         if self.tokenizer.hasMoreTokens():
             self.tokenizer.advance()
-            raise CompilationError(f"{self._get_error_prefix()}Nothing expected after class definition, got {self.tokenizer.tokenType} {self.tokenizer.token}")
+            self._raise_compilation_error(f"Nothing expected after class definition, got {self.tokenizer.tokenType} {self.tokenizer.token}")
 
     def _parseType(self, indent: int, *, include_void: bool = False):
         if self.tokenizer.nextTokenType == "keyword" and (
@@ -142,6 +145,7 @@ class CompilationEngine:
         self.compileSubroutineBody(subroutine_type, self._current_subroutine_name, indent + 1)
 
         self.method_symbol_table.reset()
+        self._return_seen_this_sub = False
 
     def compileParameterList(self, indent: int):
         if self.tokenizer.nextTokenType in ["keyword", "identifier"]:
@@ -176,6 +180,8 @@ class CompilationEngine:
 
         self.compileStatements(indent + 1)
         self._parseSymbol(["}"], indent + 1)
+        if not self._return_seen_this_sub:
+            self._raise_compilation_error(f"return must be called at least once per function")
 
     def compileVarDec(self, indent: int):
         num_locals = 0
@@ -306,6 +312,7 @@ class CompilationEngine:
         self.vm_writer.writeComment("return")
 
         self._parseKeyword(["return"], indent + 1)
+        self._return_seen_this_sub = True
         if not (self.tokenizer.nextTokenType == "symbol" and self.tokenizer.nextToken == ";"):
             self.compileExpression(indent + 1)
         else:
@@ -340,7 +347,7 @@ class CompilationEngine:
             elif operator_symbol == "=":
                 self.vm_writer.writeArithmetic("eq")
             else:
-                raise CompilationError(f"{self._get_error_prefix()}compileExpression: invalid operator '{operator_symbol}'")
+                self._raise_compilation_error(f"compileExpression: invalid operator '{operator_symbol}'")
 
     def compileTerm(self, indent: int):
         if self.tokenizer.nextTokenType == "integerConstant":
