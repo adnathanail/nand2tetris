@@ -172,34 +172,10 @@ label WHILE1L2
   // return
   push constant 0
   return
-function Memory.defrag 2
+function Memory.printFreeList 1
   // let
   push static 2
   pop local 0
-  // if
-  push local 0
-  push constant 0
-  add
-  pop pointer 1
-  push that 0
-  push constant 1
-  neg
-  eq
-  not
-  if-goto IF0L1
-  // return
-  push constant 0
-  return
-  goto IF0L2
-label IF0L1
-label IF0L2
-  // let
-  push local 0
-  push constant 0
-  add
-  pop pointer 1
-  push that 0
-  pop local 1
   // while
 label WHILE2L1
   push local 0
@@ -213,6 +189,117 @@ label WHILE2L1
   not
   not
   if-goto WHILE2L2
+  // do
+  push local 0
+  call Output.printInt 1
+  pop temp 0
+  // do
+  push constant 1
+  call String.new 1
+  push constant 32
+  call String.appendChar 2
+  call Output.printString 1
+  pop temp 0
+  // do
+  push local 0
+  push constant 1
+  add
+  pop pointer 1
+  push that 0
+  call Output.printInt 1
+  pop temp 0
+  // do
+  push constant 3
+  call String.new 1
+  push constant 32
+  call String.appendChar 2
+  push constant 32
+  call String.appendChar 2
+  push constant 32
+  call String.appendChar 2
+  call Output.printString 1
+  pop temp 0
+  // let
+  push local 0
+  push constant 0
+  add
+  pop pointer 1
+  push that 0
+  pop local 0
+  goto WHILE2L1
+label WHILE2L2
+  // do
+  push local 0
+  call Output.printInt 1
+  pop temp 0
+  // do
+  push constant 1
+  call String.new 1
+  push constant 32
+  call String.appendChar 2
+  call Output.printString 1
+  pop temp 0
+  // do
+  push local 0
+  push constant 1
+  add
+  pop pointer 1
+  push that 0
+  call Output.printInt 1
+  pop temp 0
+  // do
+  push constant 3
+  call String.new 1
+  push constant 32
+  call String.appendChar 2
+  push constant 32
+  call String.appendChar 2
+  push constant 32
+  call String.appendChar 2
+  call Output.printString 1
+  pop temp 0
+  // return
+  push constant 0
+  return
+function Memory.defrag 3
+  // let
+  push static 2
+  pop local 0
+  // while
+label WHILE3L1
+  push local 0
+  push constant 0
+  add
+  pop pointer 1
+  push that 0
+  push constant 1
+  neg
+  eq
+  not
+  not
+  if-goto WHILE3L2
+  // let
+  push static 2
+  pop local 1
+  // let
+  push constant 1
+  neg
+  pop local 2
+  // while
+label WHILE4L1
+  push local 1
+  push constant 0
+  add
+  pop pointer 1
+  push that 0
+  push constant 1
+  neg
+  eq
+  not
+  push local 2
+  and
+  not
+  if-goto WHILE4L2
   // if
   push local 0
   push local 1
@@ -226,7 +313,7 @@ label WHILE2L1
   add
   eq
   not
-  if-goto IF1L1
+  if-goto IF0L1
   // let
   push local 0
   push constant 1
@@ -261,9 +348,21 @@ label WHILE2L1
   pop pointer 1
   push temp 0
   pop that 0
-  goto IF1L2
-label IF1L1
-label IF1L2
+  // let
+  push constant 0
+  pop local 2
+  goto IF0L2
+label IF0L1
+label IF0L2
+  // let
+  push local 1
+  push constant 0
+  add
+  pop pointer 1
+  push that 0
+  pop local 1
+  goto WHILE4L1
+label WHILE4L2
   // let
   push local 0
   push constant 0
@@ -271,15 +370,8 @@ label IF1L2
   pop pointer 1
   push that 0
   pop local 0
-  // let
-  push local 0
-  push constant 0
-  add
-  pop pointer 1
-  push that 0
-  pop local 1
-  goto WHILE2L1
-label WHILE2L2
+  goto WHILE3L1
+label WHILE3L2
   // return
   push constant 0
   return
