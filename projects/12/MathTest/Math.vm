@@ -67,26 +67,10 @@ function Math.bit 0
   push argument 0
   and
   push constant 0
-  gt
-  return
-function Math.multiply 4
-  // if
-  push argument 1
-  push constant 0
-  lt
+  eq
   not
-  if-goto IF1L1
-  // let
-  push argument 1
-  neg
-  pop argument 1
-  // let
-  push constant 1
-  neg
-  pop local 3
-  goto IF1L2
-label IF1L1
-label IF1L2
+  return
+function Math.multiply 3
   // let
   push constant 0
   pop local 0
@@ -108,15 +92,15 @@ label WHILE1L1
   push local 2
   call Math.bit 2
   not
-  if-goto IF2L1
+  if-goto IF1L1
   // let
   push local 0
   push local 1
   add
   pop local 0
-  goto IF2L2
-label IF2L1
-label IF2L2
+  goto IF1L2
+label IF1L1
+label IF1L2
   // let
   push local 1
   push local 1
@@ -129,17 +113,6 @@ label IF2L2
   pop local 2
   goto WHILE1L1
 label WHILE1L2
-  // if
-  push local 3
-  not
-  if-goto IF3L1
-  // let
-  push local 0
-  neg
-  pop local 0
-  goto IF3L2
-label IF3L1
-label IF3L2
   // return
   push local 0
   return
@@ -178,7 +151,7 @@ function Math.divide 6
   push constant 0
   lt
   not
-  if-goto IF4L1
+  if-goto IF2L1
   // let
   push argument 0
   neg
@@ -187,15 +160,15 @@ function Math.divide 6
   push constant 1
   neg
   pop local 5
-  goto IF4L2
-label IF4L1
-label IF4L2
+  goto IF2L2
+label IF2L1
+label IF2L2
   // if
   push argument 1
   push constant 0
   lt
   not
-  if-goto IF5L1
+  if-goto IF3L1
   // let
   push argument 1
   neg
@@ -204,60 +177,60 @@ label IF4L2
   push local 5
   not
   pop local 5
-  goto IF5L2
-label IF5L1
-label IF5L2
+  goto IF3L2
+label IF3L1
+label IF3L2
   // if
   push argument 0
   push constant 10
   lt
   not
-  if-goto IF6L1
+  if-goto IF4L1
   // let
   push constant 0
   pop local 0
-  goto IF6L2
-label IF6L1
+  goto IF4L2
+label IF4L1
   // if
   push argument 0
   push constant 100
   lt
   not
-  if-goto IF7L1
+  if-goto IF5L1
   // let
   push constant 1
   pop local 0
-  goto IF7L2
-label IF7L1
+  goto IF5L2
+label IF5L1
   // if
   push argument 0
   push constant 1000
   lt
   not
-  if-goto IF8L1
+  if-goto IF6L1
   // let
   push constant 2
   pop local 0
-  goto IF8L2
-label IF8L1
+  goto IF6L2
+label IF6L1
   // if
   push argument 0
   push constant 10000
   lt
   not
-  if-goto IF9L1
+  if-goto IF7L1
   // let
   push constant 3
   pop local 0
-  goto IF9L2
-label IF9L1
+  goto IF7L2
+label IF7L1
   // let
   push constant 4
   pop local 0
-label IF9L2
-label IF8L2
 label IF7L2
 label IF6L2
+label IF5L2
+label IF4L2
   // let
   push constant 0
   pop local 4
@@ -344,14 +317,14 @@ label WHILE3L2
   // if
   push local 5
   not
-  if-goto IF10L1
+  if-goto IF8L1
   // let
   push local 4
   neg
   pop local 4
-  goto IF10L2
-label IF10L1
-label IF10L2
+  goto IF8L2
+label IF8L1
+label IF8L2
   // return
   push local 4
   return
@@ -364,18 +337,18 @@ function Math.sqrt 3
   push constant 10
   lt
   not
-  if-goto IF11L1
+  if-goto IF9L1
   // let
   push argument 0
   pop local 1
-  goto IF11L2
-label IF11L1
+  goto IF9L2
+label IF9L1
   // let
   push argument 0
   push constant 2
   call Math.divide 2
   pop local 1
-label IF11L2
+label IF9L2
   // let
   push local 1
   push local 0
@@ -401,13 +374,13 @@ label WHILE5L1
   push argument 0
   eq
   not
-  if-goto IF12L1
+  if-goto IF10L1
   // return
   push local 2
   return
-  goto IF12L2
-label IF12L1
-label IF12L2
+  goto IF10L2
+label IF10L1
+label IF10L2
   // if
   push local 2
   push local 2
@@ -415,16 +388,16 @@ label IF12L2
   push argument 0
   lt
   not
-  if-goto IF13L1
+  if-goto IF11L1
   // let
   push local 2
   pop local 0
-  goto IF13L2
-label IF13L1
+  goto IF11L2
+label IF11L1
   // let
   push local 2
   pop local 1
-label IF13L2
+label IF11L2
   // let
   push local 1
   push local 0
@@ -443,29 +416,29 @@ function Math.max 0
   push argument 1
   gt
   not
-  if-goto IF14L1
+  if-goto IF12L1
   // return
   push argument 0
   return
-  goto IF14L2
-label IF14L1
+  goto IF12L2
+label IF12L1
   // return
   push argument 1
   return
-label IF14L2
+label IF12L2
 function Math.min 0
   // if
   push argument 0
   push argument 1
   lt
   not
-  if-goto IF15L1
+  if-goto IF13L1
   // return
   push argument 0
   return
-  goto IF15L2
-label IF15L1
+  goto IF13L2
+label IF13L1
   // return
   push argument 1
   return
-label IF15L2
+label IF13L2
