@@ -96,31 +96,4 @@ class Memory {
         do Output.printString("   ");
         return;
     }
-    function void defrag() {
-        // Naive defrag that only consolidates adjacent memory sections
-        var int pointer, inner_pointer, inner_loop_running;
-        let pointer = freeList;
-
-        // Go through each item in the freeList
-        while (~(pointer[0] = (-1))) {
-            let inner_pointer = freeList;
-            let inner_loop_running = true;
-
-            while (~(inner_pointer[0] = (-1)) & inner_loop_running) {
-                // If the end of the inner free segment, equals the start of this one
-                if (pointer = ((inner_pointer + inner_pointer[1]) + 2)) {
-                    // Add the length from the next segment to the current segment
-                    let pointer[1] = pointer[1] + (inner_pointer[1] + 2);
-                    // Point the next of the current segment at the next of the old next segment
-                    let pointer[0] = inner_pointer[0];
-                    let inner_loop_running = false;
-                }
-                // Move to the next segment
-                let inner_pointer = inner_pointer[0];
-            }
-            // Move to the next segment
-            let pointer = pointer[0];
-        }
-        return;
-    }
 }
