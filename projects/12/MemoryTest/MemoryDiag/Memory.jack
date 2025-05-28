@@ -9,13 +9,20 @@
  * consists of 32,768 words, each holding a 16-bit binary number.
  */ 
 class Memory {
-    static Array ram;
-    static int free;
+    static int ram, heap, freeList;
 
     /** Initializes the class. */
     function void init() {
-        let ram = 0;
-        let free = 2048;
+        let ram = 0;  // Pointer used to allow direct access to read/write RAM
+        let heap = 2048;  // Address of the start of the heap
+
+        // "pseudo" linked list where for a given pointer into a list item,
+        //    the first value is the address of the next item
+        //    the second value is the length of the current item
+        // used to contain all of the available memory segments
+        let freeList = heap;
+        let freeList[0] = -1;  // next
+        let freeList[1] = 14336;  // length: 2^14 - 2048
         return;
     }
 
@@ -33,15 +40,39 @@ class Memory {
     /** Finds an available RAM block of the given size and returns
      *  a reference to its base address. */
     function int alloc(int size) {
-        var int pointer;
-        let pointer = free;
-        let free = free + size;
-        return pointer;
+        var int pointer, out;
+
+        let pointer = freeList;
+        // iterate through the free list until we find a large enough segment for the allocation size
+        while ((size + 2) > pointer[1]) {
+            let pointer = pointer[0];
+        }
+
+        // take a portion from the end of this segment, with space for the allocation size
+        //   (plus 2, for the next pointer, and segment size)
+        let out = (pointer + pointer[1]) - (size + 2);
+        // set the size of the segment
+        let out[1] = size;
+        // reduce the available length of the memory segment
+        let pointer[1] = pointer[1] - (size + 2);
+
+        // return the newly allocated segment (plus 2, as the user shouldn't overwrite our memory allocation info)
+        return out + 2;
     }
 
     /** De-allocates the given object (cast as an array) by making
      *  it available for future allocations. */
     function void deAlloc(Array o) {
+        var int pointer;
+
+        let pointer = freeList;
+        // follow the freeList until we find the last value
+        while (~(pointer[0] = (-1))) {
+            let pointer = pointer[0];
+        }
+        let pointer[0] = o - 2;
+        // set the next segment to be -1, to mark the new end of the list
+        let o[-2] = -1;
         return;
     }    
 }
