@@ -5,7 +5,8 @@ from utils import strip_comments_and_whitespace
 
 class JackTokenizer:
     def __init__(self, jack_code: str):
-        self._text = strip_comments_and_whitespace(jack_code)
+        self._lines = strip_comments_and_whitespace(jack_code)
+        self._lineNumber = 0
         self._tokenStart: int = 0
         self._tokenEnd: int = 0
         self.tokenType: None | TOKEN_TYPES = None
@@ -17,67 +18,70 @@ class JackTokenizer:
     def hasMoreTokens(self) -> bool:
         return self.nextToken is not None
 
+    def _getCurrentLine(self) -> str:
+        return self._lines[self._lineNumber]
+
     def _lexKeyWord(self) -> Union[int, bool]:
         for kw in KEYWORDS:
-            if kw == self._text[self._tokenStart : self._tokenStart + len(kw)] and not self._text[self._tokenStart + len(kw)].isalpha():
+            if kw == self._getCurrentLine()[self._tokenStart : self._tokenStart + len(kw)] and not self._getCurrentLine()[self._tokenStart + len(kw)].isalpha():
                 return self._tokenStart + len(kw)
         return False
 
     def _lexSymbol(self) -> Union[int, bool]:
-        if self._text[self._tokenStart] in SYMBOLS:
+        if self._getCurrentLine()[self._tokenStart] in SYMBOLS:
             return self._tokenStart + 1
         return False
 
     def _lexIntegerConstant(self) -> Union[int, bool]:
-        if not self._text[self._tokenStart].isdigit():
+        if not self._getCurrentLine()[self._tokenStart].isdigit():
             return False
         endInd = self._tokenStart + 1
         decimal_used = False
-        while self._text[endInd].isdigit() or (not decimal_used and self._text[endInd] == "."):
-            if self._text[endInd] == ".":
+        while self._getCurrentLine()[endInd].isdigit() or (not decimal_used and self._getCurrentLine()[endInd] == "."):
+            if self._getCurrentLine()[endInd] == ".":
                 decimal_used = True
             endInd += 1
         return endInd
 
     def _lexStringConstant(self) -> Union[int, bool]:
-        if self._text[self._tokenStart] != '"':
+        if self._getCurrentLine()[self._tokenStart] != '"':
             return False
-        endInd = self._tokenStart + 1
-        while self._text[endInd] not in ['"', "\n"]:
+        endInd: int = self._tokenStart + 1
+        while self._getCurrentLine()[endInd] not in ['"', "\n"]:
             endInd += 1
-        if self._text[endInd] == '"':
+        if self._getCurrentLine()[endInd] == '"':
             return endInd + 1
         return False
 
     def _lexIdentifier(self) -> Union[int, bool]:
         endInd = self._tokenStart
-        if not self._text[endInd].isalpha() and self._text[endInd] != "_":
+        if not self._getCurrentLine()[endInd].isalpha() and self._getCurrentLine()[endInd] != "_":
             return False
-        while self._text[endInd].isalpha() or self._text[endInd].isdigit() or self._text[endInd] == "_":
+        while self._getCurrentLine()[endInd].isalpha() or self._getCurrentLine()[endInd].isdigit() or self._getCurrentLine()[endInd] == "_":
             endInd += 1
         return endInd
 
     def _chew(self):
-        while self._tokenStart < len(self._text) and self._text[self._tokenStart] == " ":
+        while self._tokenStart < len(self._getCurrentLine()) and self._getCurrentLine()[self._tokenStart] == " ":
             self._tokenStart += 1
 
     def keyWord(self) -> str:
-        return self._text[self._tokenStart : self._tokenEnd]
+        return self._getCurrentLine()[self._tokenStart : self._tokenEnd]
 
     def intVal(self) -> int:
-        return int(self._text[self._tokenStart : self._tokenEnd])
+        return int(self._getCurrentLine()[self._tokenStart : self._tokenEnd])
 
     def stringVal(self) -> str:
-        return self._text[self._tokenStart + 1 : self._tokenEnd - 1]
+        return self._getCurrentLine()[self._tokenStart + 1 : self._tokenEnd - 1]
 
     def symbol(self) -> str:
-        symb = self._text[self._tokenStart : self._tokenEnd]
+        symb = self._getCurrentLine()[self._tokenStart : self._tokenEnd]
         if symb in SYMBOL_LOOKUP:
             return SYMBOL_LOOKUP[symb]
         return symb
 
     def identifier(self) -> str:
-        return self._text[self._tokenStart : self._tokenEnd]
+        return self._getCurrentLine()[self._tokenStart : self._tokenEnd]
 
     def advance(self):
         self._tokenStart = self._tokenEnd
@@ -86,7 +90,7 @@ class JackTokenizer:
         self.token = self.nextToken
         self.tokenType = self.nextTokenType
 
-        if self._tokenStart < len(self._text):
+        if self._tokenStart < len(self._getCurrentLine()):
             if nextInd := self._lexKeyWord():
                 self._tokenEnd = nextInd
                 self.nextTokenType = "keyword"
@@ -108,7 +112,13 @@ class JackTokenizer:
                 self.nextTokenType = "identifier"
                 self.nextToken = self.identifier()
             else:
-                raise Exception(f"Couldn't tokenize from '{self._text[self._tokenStart : self._tokenStart + 5]}'")
+                raise Exception(f"Couldn't tokenize from '{self._getCurrentLine()[self._tokenStart : self._tokenStart + 5]}'")
+            # print(self.nextToken)
+        elif self._lineNumber < (len(self._lines) - 1):
+            self._lineNumber += 1
+            self._tokenStart = 0
+            self._tokenEnd = 0
+            self.advance()
         elif self.nextToken is None:
             raise Exception("No more tokens")
         else:

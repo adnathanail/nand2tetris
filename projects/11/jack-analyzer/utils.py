@@ -1,12 +1,12 @@
 from typing import List
 
 
-def strip_comments_and_whitespace(in_text: str) -> str:
+def strip_comments_and_whitespace(in_text: str) -> list[str]:
     lines = in_text.splitlines()
     i = 0
     in_comment = False
 
-    out = ""
+    out = []
     while i < len(lines):
         line = lines[i]
         # Currently inside multiline comment
@@ -17,6 +17,7 @@ def strip_comments_and_whitespace(in_text: str) -> str:
                 in_comment = False
             # If no closing */, skip the line
             else:
+                out.append("")
                 i += 1
                 continue
         # Remove all /* XXX */ sections, and enter multiline comment mode if we see a /* without a */
@@ -32,9 +33,8 @@ def strip_comments_and_whitespace(in_text: str) -> str:
             line = line[: line.index("//")]
         # Remove whitespace
         line = line.strip()
-        # Output next line of code (no comments no spaces)
-        if line:
-            out += line
+        # Add line to output (even if it's empty, so line numbers align)
+        out.append(line)
         i += 1
     return out
 
