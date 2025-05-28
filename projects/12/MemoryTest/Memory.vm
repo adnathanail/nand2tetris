@@ -2,6 +2,9 @@ function Memory.init 0
   // let
   push constant 0
   pop static 0
+  // let
+  push constant 2048
+  pop static 1
   // return
   push constant 0
   return
@@ -26,5 +29,19 @@ function Memory.poke 0
   // return
   push constant 0
   return
-function Memory.alloc 0
+function Memory.alloc 1
+  // let
+  push static 1
+  pop local 0
+  // let
+  push static 1
+  push argument 0
+  add
+  pop static 1
+  // return
+  push local 0
+  return
 function Memory.deAlloc 0
+  // return
+  push constant 0
+  return

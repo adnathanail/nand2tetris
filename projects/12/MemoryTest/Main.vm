@@ -15,6 +15,197 @@ function Main.main 5
   add
   call Memory.poke 2
   pop temp 0
+  // let
+  push constant 3
+  call Array.new 1
+  pop local 2
+  // let
+  push local 2
+  push constant 2
+  add
+  push constant 222
+  pop temp 0
+  pop pointer 1
+  push temp 0
+  pop that 0
+  // do
+  push constant 8002
+  push local 2
+  push constant 2
+  add
+  pop pointer 1
+  push that 0
+  call Memory.poke 2
+  pop temp 0
+  // let
+  push constant 0
+  pop local 1
+  // let
+  push constant 3
+  call Array.new 1
+  pop local 3
+  // let
+  push local 3
+  push constant 1
+  add
+  push local 2
+  push constant 2
+  add
+  pop pointer 1
+  push that 0
+  push constant 100
+  sub
+  pop temp 0
+  pop pointer 1
+  push temp 0
+  pop that 0
+  // if
+  push local 3
+  push local 2
+  eq
+  not
+  if-goto IF0L1
+  // let
+  push constant 1
+  pop local 1
+  goto IF0L2
+label IF0L1
+label IF0L2
+  // do
+  push constant 8003
+  push local 3
+  push constant 1
+  add
+  pop pointer 1
+  push that 0
+  push local 1
+  add
+  call Memory.poke 2
+  pop temp 0
+  // let
+  push constant 0
+  pop local 1
+  // let
+  push constant 500
+  call Array.new 1
+  pop local 4
+  // let
+  push local 4
+  push constant 499
+  add
+  push local 2
+  push constant 2
+  add
+  pop pointer 1
+  push that 0
+  push local 3
+  push constant 1
+  add
+  pop pointer 1
+  push that 0
+  sub
+  pop temp 0
+  pop pointer 1
+  push temp 0
+  pop that 0
+  // if
+  push local 4
+  push local 2
+  eq
+  not
+  if-goto IF1L1
+  // let
+  push constant 1
+  pop local 1
+  goto IF1L2
+label IF1L1
+label IF1L2
+  // if
+  push local 4
+  push local 3
+  eq
+  not
+  if-goto IF2L1
+  // let
+  push local 1
+  push constant 10
+  add
+  pop local 1
+  goto IF2L2
+label IF2L1
+label IF2L2
+  // do
+  push constant 8004
+  push local 4
+  push constant 499
+  add
+  pop pointer 1
+  push that 0
+  push local 1
+  add
+  call Memory.poke 2
+  pop temp 0
+  // do
+  push local 2
+  call Array.dispose 1
+  pop temp 0
+  // do
+  push local 3
+  call Array.dispose 1
+  pop temp 0
+  // let
+  push constant 0
+  pop local 1
+  // let
+  push constant 3
+  call Array.new 1
+  pop local 3
+  // let
+  push local 3
+  push constant 0
+  add
+  push local 4
+  push constant 499
+  add
+  pop pointer 1
+  push that 0
+  push constant 90
+  sub
+  pop temp 0
+  pop pointer 1
+  push temp 0
+  pop that 0
+  // if
+  push local 3
+  push local 4
+  eq
+  not
+  if-goto IF3L1
+  // let
+  push constant 1
+  pop local 1
+  goto IF3L2
+label IF3L1
+label IF3L2
+  // do
+  push constant 8005
+  push local 3
+  push constant 0
+  add
+  pop pointer 1
+  push that 0
+  push local 1
+  add
+  call Memory.poke 2
+  pop temp 0
+  // do
+  push local 4
+  call Array.dispose 1
+  pop temp 0
+  // do
+  push local 3
+  call Array.dispose 1
+  pop temp 0
   // return
   push constant 0
   return
