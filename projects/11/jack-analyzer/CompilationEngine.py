@@ -1,5 +1,5 @@
 from io import TextIOWrapper
-from typing import Sequence, Tuple
+from typing import Sequence, Tuple, NoReturn
 from constants import PRIMITIVE_TYPES, KEYWORD_CONSTANTS, OPS, UNARY_OPS, SYMBOL_SEGMENTS
 from JackTokenizer import JackTokenizer
 from SymbolTable import SymbolTable
@@ -26,8 +26,8 @@ class CompilationEngine:
         # Boolean used to keep track of if we've seen a return in a subroutine yet
         self._return_seen_this_sub = False
 
-    def _raise_compilation_error(self, msg) -> str:
-        out = f"\nFile: {self.file_path}:{self.tokenizer._lineNumber + 1}"
+    def _raise_compilation_error(self, msg) -> NoReturn:
+        out = f"\nFile: {self.file_path}:{self.tokenizer.tokenLineNumber + 1}"
         if self._current_class_name:
             out += f"\nSubroutine: {self._current_class_name}.{self._current_subroutine_name}"
         out += f"\n{msg}"
@@ -47,7 +47,7 @@ class CompilationEngine:
                 self.class_symbol_table.typeOf(variable_identifier),
             )
         else:
-            self._raise_compilation_error(f"Couldn't find identifier {variable_identifier}")
+            return self._raise_compilation_error(f"Couldn't find identifier {variable_identifier}")
 
     def _symbol_tables_have_entry(self, variable_identifier: str) -> bool:
         return self.method_symbol_table.hasEntry(variable_identifier) or self.class_symbol_table.hasEntry(variable_identifier)

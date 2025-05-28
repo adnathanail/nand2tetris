@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Optional
 from constants import KEYWORDS, SYMBOLS, SYMBOL_LOOKUP, TOKEN_TYPES
 from utils import strip_comments_and_whitespace
 
@@ -9,6 +9,8 @@ class JackTokenizer:
         self._lineNumber = 0
         self._tokenStart: int = 0
         self._tokenEnd: int = 0
+        self.tokenLineNumber: int = 0
+        self.nextTokenLineNumber: int = 0
         self.tokenType: None | TOKEN_TYPES = None
         self.token: None | int | str = None
         self.nextTokenType: None | TOKEN_TYPES = None
@@ -89,6 +91,7 @@ class JackTokenizer:
 
         self.token = self.nextToken
         self.tokenType = self.nextTokenType
+        self.tokenLineNumber = self.nextTokenLineNumber
 
         if self._tokenStart < len(self._getCurrentLine()):
             if nextInd := self._lexKeyWord():
@@ -113,6 +116,7 @@ class JackTokenizer:
                 self.nextToken = self.identifier()
             else:
                 raise Exception(f"Couldn't tokenize from '{self._getCurrentLine()[self._tokenStart : self._tokenStart + 5]}'")
+            self.nextTokenLineNumber = self._lineNumber
             # print(self.nextToken)
         elif self._lineNumber < (len(self._lines) - 1):
             self._lineNumber += 1
