@@ -54,38 +54,38 @@ class CompilationEngine:
 
     def _parseKeyword(self, expectedKeywords: Sequence[str], indent: int) -> str:
         self.tokenizer.advance()
-        if self.tokenizer.tokenType == "keyword" and type(self.tokenizer.token) is str and self.tokenizer.token in expectedKeywords:
+        if self.tokenizer.tokenType == "keyword" and self.tokenizer.token is not None and self.tokenizer.token in expectedKeywords:
             return self.tokenizer.token
         else:
-            self._raise_compilation_error(f"Expected keyword(s) {expectedKeywords}, got {self.tokenizer.tokenType} {self.tokenizer.token}")
+            return self._raise_compilation_error(f"Expected keyword(s) {expectedKeywords}, got {self.tokenizer.tokenType} {self.tokenizer.token}")
 
     def _parseSymbol(self, expectedSymbols: Sequence[str], indent: int) -> str:
         self.tokenizer.advance()
-        if self.tokenizer.tokenType == "symbol" and type(self.tokenizer.token) is str and self.tokenizer.token in expectedSymbols:
+        if self.tokenizer.tokenType == "symbol" and self.tokenizer.token is not None and self.tokenizer.token in expectedSymbols:
             return self.tokenizer.token
         else:
-            self._raise_compilation_error(f"Expected symbol(s) {expectedSymbols}, got {self.tokenizer.tokenType} {self.tokenizer.token}")
+            return self._raise_compilation_error(f"Expected symbol(s) {expectedSymbols}, got {self.tokenizer.tokenType} {self.tokenizer.token}")
 
     def _parseIntegerConstant(self, indent: int) -> int:
         self.tokenizer.advance()
-        if self.tokenizer.tokenType == "integerConstant" and type(self.tokenizer.token) is int:
-            return self.tokenizer.token
+        if self.tokenizer.tokenType == "integerConstant" and self.tokenizer.token is not None:
+            return int(self.tokenizer.token)
         else:
-            self._raise_compilation_error(f"Expected integer constant, got {self.tokenizer.tokenType} {self.tokenizer.token}")
+            return self._raise_compilation_error(f"Expected integer constant, got {self.tokenizer.tokenType} {self.tokenizer.token}")
 
     def _parseStringConstant(self, indent: int) -> str:
         self.tokenizer.advance()
-        if self.tokenizer.tokenType == "stringConstant" and type(self.tokenizer.token) is str:
-            return self.tokenizer.token
+        if self.tokenizer.tokenType == "stringConstant" and self.tokenizer.token is not None:
+            return self.tokenizer.token[1:-1]
         else:
-            self._raise_compilation_error(f"Expected string constant, got {self.tokenizer.tokenType} {self.tokenizer.token}")
+            return self._raise_compilation_error(f"Expected string constant, got {self.tokenizer.tokenType} {self.tokenizer.token}")
 
     def _parseIdentifier(self, indent: int) -> str:
         self.tokenizer.advance()
-        if self.tokenizer.tokenType == "identifier" and type(self.tokenizer.token) is str:
+        if self.tokenizer.tokenType == "identifier" and self.tokenizer.token is not None:
             return self.tokenizer.token
         else:
-            self._raise_compilation_error(f"Expected identifier, got {self.tokenizer.tokenType} {self.tokenizer.token}")
+            return self._raise_compilation_error(f"Expected identifier, got {self.tokenizer.tokenType} {self.tokenizer.token}")
 
     def compileClass(self, indent: int = 0):
         self._parseKeyword(["class"], indent + 1)
@@ -336,13 +336,13 @@ class CompilationEngine:
                 self.vm_writer.writeCall("Math.multiply", 2)
             elif operator_symbol == "/":
                 self.vm_writer.writeCall("Math.divide", 2)
-            elif operator_symbol == "&amp;":
+            elif operator_symbol == "&":
                 self.vm_writer.writeArithmetic("and")
             elif operator_symbol == "|":
                 self.vm_writer.writeArithmetic("or")
-            elif operator_symbol == "&lt;":
+            elif operator_symbol == "<":
                 self.vm_writer.writeArithmetic("lt")
-            elif operator_symbol == "&gt;":
+            elif operator_symbol == ">":
                 self.vm_writer.writeArithmetic("gt")
             elif operator_symbol == "=":
                 self.vm_writer.writeArithmetic("eq")

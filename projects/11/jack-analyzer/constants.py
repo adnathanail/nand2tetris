@@ -48,13 +48,6 @@ SYMBOLS = (
     "~",
 )
 
-SYMBOL_LOOKUP = {
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "&": "&amp;",
-}
-
 TOKEN_TYPES = Literal["keyword", "symbol", "integerConstant", "stringConstant", "identifier"]
 
 # Parser
@@ -67,7 +60,7 @@ KEYWORD_CONSTANTS = (
 
 PRIMITIVE_TYPES = ("int", "char", "boolean")
 
-OPS = ("+", "-", "*", "/", "&amp;", "|", "&lt;", "&gt;", "=")
+OPS = ("+", "-", "*", "/", "&", "|", "<", ">", "=")
 
 UNARY_OPS = ("-", "~")
 
