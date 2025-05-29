@@ -10,34 +10,68 @@
  * the screen is indexed (0,0).
  */
 class Screen {
+    static boolean color;
 
     /** Initializes the Screen. */
     function void init() {
+        let color = true;
+        return;
     }
 
     /** Erases the entire screen. */
     function void clearScreen() {
+        return;
     }
 
     /** Sets the current color, to be used for all subsequent drawXXX commands.
      *  Black is represented by true, white by false. */
     function void setColor(boolean b) {
+        let color = b;
+        return;
     }
 
     /** Draws the (x,y) pixel, using the current color. */
     function void drawPixel(int x, int y) {
+        var int address, value, x_over_16, modifier;
+        let x_over_16 = x / 16;
+        // Screen memory starts at 16384
+        //   with 32 bytes per row
+        //   16 bits per byte
+        let address = ((y * 32) + x_over_16) + 16384;
+
+        // Get current value of byte holding the desired pixel
+        let value = Memory.peek(address);
+        // Create a modifier from x % 16
+        // E.g. if x % 16 = 5, we want all zeroes except the 5th bit is 1: 0000000000010000
+        let modifier = Math.pow(2, x - (x_over_16 * 16));
+        if (color) {
+            // For black we or the current value with the modifier, as all existing values will be kept,
+            //   and the pixel's bit will either already be 1, or the modifier will provide the 1
+            //   to make the or true
+            let value = value | modifier;
+        } else {
+            // For white, the result of -modifier - 1 flips all the bits e.g. for 5 1111111111101111
+            //   then anding with this, does a similar process, keeping all our existing bits,
+            //   and flipping the pixel's bit
+            let value = value & (-modifier - 1);
+        }
+        do Memory.poke(address, value);
+        return;
     }
 
     /** Draws a line from pixel (x1,y1) to pixel (x2,y2), using the current color. */
     function void drawLine(int x1, int y1, int x2, int y2) {
+        return;
     }
 
     /** Draws a filled rectangle whose top left corner is (x1, y1)
      * and bottom right corner is (x2,y2), using the current color. */
     function void drawRectangle(int x1, int y1, int x2, int y2) {
+        return;
     }
 
     /** Draws a filled circle of radius r<=181 around (x,y), using the current color. */
     function void drawCircle(int x, int y, int r) {
+        return;
     }
 }

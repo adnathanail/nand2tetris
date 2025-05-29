@@ -1,0 +1,87 @@
+function Screen.init 0
+  // let
+  push constant 1
+  neg
+  pop static 0
+  // return
+  push constant 0
+  return
+function Screen.clearScreen 0
+  // return
+  push constant 0
+  return
+function Screen.setColor 0
+  // let
+  push argument 0
+  pop static 0
+  // return
+  push constant 0
+  return
+function Screen.drawPixel 4
+  // let
+  push argument 0
+  push constant 16
+  call Math.divide 2
+  pop local 2
+  // let
+  push argument 1
+  push constant 32
+  call Math.multiply 2
+  push local 2
+  add
+  push constant 16384
+  add
+  pop local 0
+  // let
+  push local 0
+  call Memory.peek 1
+  pop local 1
+  // let
+  push constant 2
+  push argument 0
+  push local 2
+  push constant 16
+  call Math.multiply 2
+  sub
+  call Math.pow 2
+  pop local 3
+  // if
+  push static 0
+  not
+  if-goto IF0L1
+  // let
+  push local 1
+  push local 3
+  or
+  pop local 1
+  goto IF0L2
+label IF0L1
+  // let
+  push local 1
+  push local 3
+  neg
+  push constant 1
+  sub
+  and
+  pop local 1
+label IF0L2
+  // do
+  push local 0
+  push local 1
+  call Memory.poke 2
+  pop temp 0
+  // return
+  push constant 0
+  return
+function Screen.drawLine 0
+  // return
+  push constant 0
+  return
+function Screen.drawRectangle 0
+  // return
+  push constant 0
+  return
+function Screen.drawCircle 0
+  // return
+  push constant 0
+  return
