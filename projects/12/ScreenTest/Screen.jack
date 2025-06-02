@@ -59,8 +59,108 @@ class Screen {
         return;
     }
 
+    // TODO optimise writing full black blocks
+    // function int _getPixelBlock(int x, int y) {
+    //     let address = ((y * 32) + (x / 16)) + 16384;
+    // }
+
+    function void drawHorizontalLine(int x1, int x2, int y) {
+        var int swap;
+        if (x2 < x1) {
+            let swap = x2;
+            let x2 = x1;
+            let x1 = swap;
+        }
+        while ((x1 < x2) | (x1 = x2)) {
+            do Screen.drawPixel(x1, y);
+            let x1 = x1 + 1;
+        }
+        return;
+    }
+
+    function void drawVerticalLine(int x, int y1, int y2) {
+        var int swap;
+        if (y2 < y1) {
+            let swap = y2;
+            let y2 = y1;
+            let y1 = swap;
+        }
+        while ((y1 < y2) | (y1 = y2)) {
+            do Screen.drawPixel(x, y1);
+            let y1 = y1 + 1;
+        }
+        return;
+    }
+
+    function void drawDiagonalLineUp(int x1, int y1, int x2, int y2) {
+        var int a, b, dx, dy, adxMinusbdy;
+        let a = 0;
+        let b = 0;
+        let adxMinusbdy = 0;
+        let dx = x2 - x1;
+        let dy = y2 - y1;
+        while (((a < dx) | (a = dx)) & ((b > dy) | (b = dy))) {
+            do Screen.drawPixel(x1 + a, y1 + b);
+            if (adxMinusbdy < 0) {
+                let a = a + 1;
+                let adxMinusbdy = adxMinusbdy - dy;
+            } else {
+                let b = b - 1;
+                let adxMinusbdy = adxMinusbdy - dx;
+            }
+        }
+        return;
+    }
+
+    function void drawDiagonalLineDown(int x1, int y1, int x2, int y2) {
+        var int a, b, dx, dy, adxMinusbdy;
+        let a = 0;
+        let b = 0;
+        let adxMinusbdy = 0;
+        let dx = x2 - x1;
+        let dy = y2 - y1;
+        while ((dx > a) & (dy > b)) {
+            do Screen.drawPixel(x1 + a, y1 + b);
+            if (adxMinusbdy < 0) {
+                let a = a + 1;
+                let adxMinusbdy = adxMinusbdy + dy;
+            } else {
+                let b = b + 1;
+                let adxMinusbdy = adxMinusbdy - dx;
+            }
+        }
+        return;
+    }
+
+    function void drawDiagonalLine(int x1, int y1, int x2, int y2) {
+        var int swap;
+        if (x2 < x1) {
+            let swap = x2;
+            let x2 = x1;
+            let x1 = swap;
+            let swap = y2;
+            let y2 = y1;
+            let y1 = swap;
+        }
+        if (y1 < y2) {
+            do Screen.drawDiagonalLineDown(x1, y1, x2, y2);
+        } else {
+            do Screen.drawDiagonalLineUp(x1, y1, x2, y2);
+        }
+        return;
+    }
+
     /** Draws a line from pixel (x1,y1) to pixel (x2,y2), using the current color. */
     function void drawLine(int x1, int y1, int x2, int y2) {
+        if (y1 = y2) {
+            do Screen.drawHorizontalLine(x1, x2, y1);
+            return;
+        }
+        if (x1 = x2) {
+            do Screen.drawVerticalLine(x1, y1, y2);
+            return;
+        }
+        do Screen.drawDiagonalLine(x1, y1, x2, y2);
         return;
     }
 

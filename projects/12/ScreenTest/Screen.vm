@@ -73,7 +73,350 @@ label IF0L2
   // return
   push constant 0
   return
+function Screen.drawHorizontalLine 1
+  // if
+  push argument 1
+  push argument 0
+  lt
+  not
+  if-goto IF1L1
+  // let
+  push argument 1
+  pop local 0
+  // let
+  push argument 0
+  pop argument 1
+  // let
+  push local 0
+  pop argument 0
+  goto IF1L2
+label IF1L1
+label IF1L2
+  // while
+label WHILE0L1
+  push argument 0
+  push argument 1
+  lt
+  push argument 0
+  push argument 1
+  eq
+  or
+  not
+  if-goto WHILE0L2
+  // do
+  push argument 0
+  push argument 2
+  call Screen.drawPixel 2
+  pop temp 0
+  // let
+  push argument 0
+  push constant 1
+  add
+  pop argument 0
+  goto WHILE0L1
+label WHILE0L2
+  // return
+  push constant 0
+  return
+function Screen.drawVerticalLine 1
+  // if
+  push argument 2
+  push argument 1
+  lt
+  not
+  if-goto IF2L1
+  // let
+  push argument 2
+  pop local 0
+  // let
+  push argument 1
+  pop argument 2
+  // let
+  push local 0
+  pop argument 1
+  goto IF2L2
+label IF2L1
+label IF2L2
+  // while
+label WHILE1L1
+  push argument 1
+  push argument 2
+  lt
+  push argument 1
+  push argument 2
+  eq
+  or
+  not
+  if-goto WHILE1L2
+  // do
+  push argument 0
+  push argument 1
+  call Screen.drawPixel 2
+  pop temp 0
+  // let
+  push argument 1
+  push constant 1
+  add
+  pop argument 1
+  goto WHILE1L1
+label WHILE1L2
+  // return
+  push constant 0
+  return
+function Screen.drawDiagonalLineUp 5
+  // let
+  push constant 0
+  pop local 0
+  // let
+  push constant 0
+  pop local 1
+  // let
+  push constant 0
+  pop local 4
+  // let
+  push argument 2
+  push argument 0
+  sub
+  pop local 2
+  // let
+  push argument 3
+  push argument 1
+  sub
+  pop local 3
+  // while
+label WHILE2L1
+  push local 0
+  push local 2
+  lt
+  push local 0
+  push local 2
+  eq
+  or
+  push local 1
+  push local 3
+  gt
+  push local 1
+  push local 3
+  eq
+  or
+  and
+  not
+  if-goto WHILE2L2
+  // do
+  push argument 0
+  push local 0
+  add
+  push argument 1
+  push local 1
+  add
+  call Screen.drawPixel 2
+  pop temp 0
+  // if
+  push local 4
+  push constant 0
+  lt
+  not
+  if-goto IF3L1
+  // let
+  push local 0
+  push constant 1
+  add
+  pop local 0
+  // let
+  push local 4
+  push local 3
+  sub
+  pop local 4
+  goto IF3L2
+label IF3L1
+  // let
+  push local 1
+  push constant 1
+  sub
+  pop local 1
+  // let
+  push local 4
+  push local 2
+  sub
+  pop local 4
+label IF3L2
+  goto WHILE2L1
+label WHILE2L2
+  // return
+  push constant 0
+  return
+function Screen.drawDiagonalLineDown 5
+  // let
+  push constant 0
+  pop local 0
+  // let
+  push constant 0
+  pop local 1
+  // let
+  push constant 0
+  pop local 4
+  // let
+  push argument 2
+  push argument 0
+  sub
+  pop local 2
+  // let
+  push argument 3
+  push argument 1
+  sub
+  pop local 3
+  // while
+label WHILE3L1
+  push local 2
+  push local 0
+  gt
+  push local 3
+  push local 1
+  gt
+  and
+  not
+  if-goto WHILE3L2
+  // do
+  push argument 0
+  push local 0
+  add
+  push argument 1
+  push local 1
+  add
+  call Screen.drawPixel 2
+  pop temp 0
+  // if
+  push local 4
+  push constant 0
+  lt
+  not
+  if-goto IF4L1
+  // let
+  push local 0
+  push constant 1
+  add
+  pop local 0
+  // let
+  push local 4
+  push local 3
+  add
+  pop local 4
+  goto IF4L2
+label IF4L1
+  // let
+  push local 1
+  push constant 1
+  add
+  pop local 1
+  // let
+  push local 4
+  push local 2
+  sub
+  pop local 4
+label IF4L2
+  goto WHILE3L1
+label WHILE3L2
+  // return
+  push constant 0
+  return
+function Screen.drawDiagonalLine 1
+  // if
+  push argument 2
+  push argument 0
+  lt
+  not
+  if-goto IF5L1
+  // let
+  push argument 2
+  pop local 0
+  // let
+  push argument 0
+  pop argument 2
+  // let
+  push local 0
+  pop argument 0
+  // let
+  push argument 3
+  pop local 0
+  // let
+  push argument 1
+  pop argument 3
+  // let
+  push local 0
+  pop argument 1
+  goto IF5L2
+label IF5L1
+label IF5L2
+  // if
+  push argument 1
+  push argument 3
+  lt
+  not
+  if-goto IF6L1
+  // do
+  push argument 0
+  push argument 1
+  push argument 2
+  push argument 3
+  call Screen.drawDiagonalLineDown 4
+  pop temp 0
+  goto IF6L2
+label IF6L1
+  // do
+  push argument 0
+  push argument 1
+  push argument 2
+  push argument 3
+  call Screen.drawDiagonalLineUp 4
+  pop temp 0
+label IF6L2
+  // return
+  push constant 0
+  return
 function Screen.drawLine 0
+  // if
+  push argument 1
+  push argument 3
+  eq
+  not
+  if-goto IF7L1
+  // do
+  push argument 0
+  push argument 2
+  push argument 1
+  call Screen.drawHorizontalLine 3
+  pop temp 0
+  // return
+  push constant 0
+  return
+  goto IF7L2
+label IF7L1
+label IF7L2
+  // if
+  push argument 0
+  push argument 2
+  eq
+  not
+  if-goto IF8L1
+  // do
+  push argument 0
+  push argument 1
+  push argument 3
+  call Screen.drawVerticalLine 3
+  pop temp 0
+  // return
+  push constant 0
+  return
+  goto IF8L2
+label IF8L1
+label IF8L2
+  // do
+  push argument 0
+  push argument 1
+  push argument 2
+  push argument 3
+  call Screen.drawDiagonalLine 4
+  pop temp 0
   // return
   push constant 0
   return
