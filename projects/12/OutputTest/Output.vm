@@ -1,4 +1,12 @@
 function Output.init 0
+  // do
+  push constant 0
+  push constant 0
+  call Output.moveCursor 2
+  pop temp 0
+  // do
+  call Output.initMap 0
+  pop temp 0
   // return
   push constant 0
   return
@@ -519,15 +527,15 @@ function Output.initMap 1
   pop temp 0
   // do
   push constant 65
-  push constant 0
-  push constant 0
-  push constant 0
-  push constant 0
-  push constant 0
-  push constant 0
-  push constant 0
-  push constant 0
-  push constant 0
+  push constant 48
+  push constant 120
+  push constant 204
+  push constant 204
+  push constant 252
+  push constant 204
+  push constant 204
+  push constant 204
+  push constant 204
   push constant 0
   push constant 0
   call Output.create 12
@@ -1591,10 +1599,121 @@ label IF0L2
   push that 0
   return
 function Output.moveCursor 0
+  // let
+  push argument 1
+  pop static 1
+  // let
+  push argument 0
+  pop static 2
   // return
   push constant 0
   return
-function Output.printChar 0
+function Output.printChar 4
+  // let
+  push argument 0
+  call Output.getMap 1
+  pop local 0
+  // let
+  push constant 0
+  pop local 3
+  // while
+label WHILE0L1
+  push local 3
+  push constant 12
+  lt
+  not
+  if-goto WHILE0L2
+  // let
+  push local 0
+  push local 3
+  add
+  pop pointer 1
+  push that 0
+  pop local 1
+  // let
+  push constant 0
+  pop local 2
+  // while
+label WHILE1L1
+  push local 2
+  push constant 9
+  lt
+  not
+  if-goto WHILE1L2
+  // if
+  push local 1
+  push local 2
+  call Math.bit 2
+  not
+  if-goto IF1L1
+  // do
+  push static 1
+  push constant 8
+  call Math.multiply 2
+  push constant 1
+  add
+  push local 2
+  add
+  push static 2
+  push constant 11
+  call Math.multiply 2
+  push constant 1
+  add
+  push local 3
+  add
+  call Screen.drawPixel 2
+  pop temp 0
+  goto IF1L2
+label IF1L1
+label IF1L2
+  // let
+  push local 2
+  push constant 1
+  add
+  pop local 2
+  goto WHILE1L1
+label WHILE1L2
+  // let
+  push local 3
+  push constant 1
+  add
+  pop local 3
+  goto WHILE0L1
+label WHILE0L2
+  // let
+  push static 1
+  push constant 1
+  add
+  pop static 1
+  // if
+  push static 1
+  push constant 63
+  gt
+  not
+  if-goto IF2L1
+  // let
+  push constant 0
+  pop static 1
+  // let
+  push static 2
+  push constant 1
+  add
+  pop static 2
+  // if
+  push static 2
+  push constant 22
+  gt
+  not
+  if-goto IF3L1
+  // let
+  push constant 0
+  pop static 2
+  goto IF3L2
+label IF3L1
+label IF3L2
+  goto IF2L2
+label IF2L1
+label IF2L2
   // return
   push constant 0
   return
