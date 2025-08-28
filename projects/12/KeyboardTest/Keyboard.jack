@@ -67,9 +67,9 @@ class Keyboard {
         var String out;
         do Output.printString(message);
         let c = Keyboard.readChar();
-        let out = String.new(10);
-        while (~(c = 128)) {
-            if (c = 129) {
+        let out = String.new(63); // Max length of a line
+        while (~(c = String.newline())) {
+            if (c = String.backspace()) {
                 do out.eraseLastChar();
             } else {
                 do out.appendChar(c);
