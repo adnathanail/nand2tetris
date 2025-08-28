@@ -527,15 +527,15 @@ function Output.initMap 1
   pop temp 0
   // do
   push constant 65
-  push constant 48
-  push constant 120
-  push constant 204
-  push constant 204
-  push constant 252
-  push constant 204
-  push constant 204
-  push constant 204
-  push constant 204
+  push constant 12
+  push constant 30
+  push constant 51
+  push constant 51
+  push constant 63
+  push constant 51
+  push constant 51
+  push constant 51
+  push constant 51
   push constant 0
   push constant 0
   call Output.create 12
@@ -1619,7 +1619,7 @@ function Output.printChar 4
   // while
 label WHILE0L1
   push local 3
-  push constant 12
+  push constant 11
   lt
   not
   if-goto WHILE0L2
@@ -1636,7 +1636,7 @@ label WHILE0L1
   // while
 label WHILE1L1
   push local 2
-  push constant 9
+  push constant 8
   lt
   not
   if-goto WHILE1L2
