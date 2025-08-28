@@ -62,14 +62,14 @@ function Keyboard.readLine 2
   // while
 label WHILE2L1
   push local 0
-  call String.newline 0
+  call String.newLine 0
   eq
   not
   not
   if-goto WHILE2L2
   // if
   push local 0
-  call String.backspace 0
+  call String.backSpace 0
   eq
   not
   if-goto IF0L1

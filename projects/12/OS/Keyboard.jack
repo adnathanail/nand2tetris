@@ -18,8 +18,8 @@ class Keyboard {
      * if no key is currently pressed, returns 0.
      *
      * Recognizes all ASCII characters, as well as the following keys:
-     * new line = 128 = String.newline()
-     * backspace = 129 = String.backspace()
+     * new line = 128 = String.newLine()
+     * backspace = 129 = String.backSpace()
      * left arrow = 130
      * up arrow = 131
      * right arrow = 132
@@ -68,8 +68,8 @@ class Keyboard {
         do Output.printString(message);
         let c = Keyboard.readChar();
         let out = String.new(63); // Max length of a line
-        while (~(c = String.newline())) {
-            if (c = String.backspace()) {
+        while (~(c = String.newLine())) {
+            if (c = String.backSpace()) {
                 do out.eraseLastChar();
             } else {
                 do out.appendChar(c);
