@@ -149,12 +149,105 @@ label IF4L2
   // return
   push constant 0
   return
+function String.intValueFromIndex 4
+  push argument 0
+  pop pointer 0
+  // let
+  push constant 0
+  pop local 0
+  // let
+  push argument 1
+  pop local 1
+  // let
+  push constant 1
+  neg
+  pop local 3
+  // while
+label WHILE0L1
+  push local 1
+  push this 1
+  lt
+  push local 3
+  and
+  not
+  if-goto WHILE0L2
+  // let
+  push this 0
+  push local 1
+  add
+  pop pointer 1
+  push that 0
+  pop local 2
+  // if
+  push local 2
+  push constant 48
+  lt
+  push local 2
+  push constant 57
+  gt
+  or
+  not
+  if-goto IF5L1
+  // let
+  push constant 0
+  pop local 3
+  goto IF5L2
+label IF5L1
+  // let
+  push local 0
+  push constant 10
+  call Math.multiply 2
+  push local 2
+  push constant 48
+  sub
+  add
+  pop local 0
+label IF5L2
+  // let
+  push local 1
+  push constant 1
+  add
+  pop local 1
+  goto WHILE0L1
+label WHILE0L2
+  // return
+  push local 0
+  return
 function String.intValue 0
   push argument 0
   pop pointer 0
+  // if
+  push this 1
+  push constant 0
+  gt
+  not
+  if-goto IF6L1
+  // if
+  push this 0
+  push constant 0
+  add
+  pop pointer 1
+  push that 0
+  push constant 45
+  eq
+  not
+  if-goto IF7L1
   // return
+  push pointer 0
   push constant 1
+  call String.intValueFromIndex 2
   neg
+  return
+  goto IF7L2
+label IF7L1
+label IF7L2
+  goto IF6L2
+label IF6L1
+label IF6L2
+  // return
+  push pointer 0
+  push constant 0
+  call String.intValueFromIndex 2
   return
 function String.doSetInt 2
   push argument 0
@@ -173,7 +266,7 @@ function String.doSetInt 2
   push constant 9
   gt
   not
-  if-goto IF5L1
+  if-goto IF8L1
   // do
   push pointer 0
   push argument 1
@@ -181,9 +274,9 @@ function String.doSetInt 2
   call Math.divide 2
   call String.doSetInt 2
   pop temp 0
-  goto IF5L2
-label IF5L1
-label IF5L2
+  goto IF8L2
+label IF8L1
+label IF8L2
   // do
   push pointer 0
   push local 0
@@ -205,7 +298,7 @@ function String.setInt 0
   push constant 0
   lt
   not
-  if-goto IF6L1
+  if-goto IF9L1
   // do
   push pointer 0
   push constant 45
@@ -220,9 +313,9 @@ function String.setInt 0
   // return
   push constant 0
   return
-  goto IF6L2
-label IF6L1
-label IF6L2
+  goto IF9L2
+label IF9L1
+label IF9L2
   // do
   push pointer 0
   push argument 1

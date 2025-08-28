@@ -69,10 +69,33 @@ class String {
         return;
     }
 
+    method int intValueFromIndex(int index) {
+        var int v, i, d;
+        var boolean running;
+        let v = 0;
+        let i = index;
+        let running = true;
+        while ((i < length) & running) {
+            let d = s[i];
+            if ((d < 48) | (d > 57)) {
+                let running = false;
+            } else {
+                let v = (v * 10) + (d - 48);
+            }
+            let i = i + 1;
+        }
+        return v;
+    }
+
     /** Returns the integer value of this string, 
      *  until a non-digit character is detected. */
     method int intValue() {
-        return -1;
+        if (length > 0) {
+            if (s[0] = 45) {
+                return - intValueFromIndex(1);
+            }
+        }
+        return intValueFromIndex(0);
     }
 
     method void doSetInt(int val) {
