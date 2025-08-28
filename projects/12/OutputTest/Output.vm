@@ -1608,7 +1608,7 @@ function Output.moveCursor 0
   // return
   push constant 0
   return
-function Output.printChar 4
+function Output.printCharNoAdvance 4
   // let
   push argument 0
   call Output.getMap 1
@@ -1640,12 +1640,12 @@ label WHILE1L1
   lt
   not
   if-goto WHILE1L2
-  // do
+  // if
   push local 1
   push local 2
   call Math.bit 2
-  call Screen.setColor 1
-  pop temp 0
+  not
+  if-goto IF1L1
   // do
   push static 1
   push constant 8
@@ -1663,6 +1663,9 @@ label WHILE1L1
   add
   call Screen.drawPixel 2
   pop temp 0
+  goto IF1L2
+label IF1L1
+label IF1L2
   // let
   push local 2
   push constant 1
@@ -1677,6 +1680,14 @@ label WHILE1L2
   pop local 3
   goto WHILE0L1
 label WHILE0L2
+  // return
+  push constant 0
+  return
+function Output.printChar 0
+  // do
+  push argument 0
+  call Output.printCharNoAdvance 1
+  pop temp 0
   // let
   push static 1
   push constant 1
@@ -1687,16 +1698,16 @@ label WHILE0L2
   push constant 63
   gt
   not
-  if-goto IF1L1
+  if-goto IF2L1
   // let
   push constant 0
   pop static 1
   // do
   call Output.println 0
   pop temp 0
-  goto IF1L2
-label IF1L1
-label IF1L2
+  goto IF2L2
+label IF2L1
+label IF2L2
   // return
   push constant 0
   return
@@ -1756,26 +1767,29 @@ function Output.println 0
   push constant 22
   gt
   not
-  if-goto IF2L1
+  if-goto IF3L1
   // let
   push constant 0
   pop static 2
-  goto IF2L2
-label IF2L1
-label IF2L2
+  goto IF3L2
+label IF3L1
+label IF3L2
   // let
   push constant 0
   pop static 1
   // return
   push constant 0
   return
-function Output.backSpace 0
+function Output.backSpace 1
+  // let
+  call Screen.getColor 0
+  pop local 0
   // if
   push static 1
   push constant 0
   eq
   not
-  if-goto IF3L1
+  if-goto IF4L1
   // let
   push constant 63
   pop static 1
@@ -1784,26 +1798,38 @@ function Output.backSpace 0
   push constant 0
   eq
   not
-  if-goto IF4L1
+  if-goto IF5L1
   // let
   push constant 22
   pop static 2
-  goto IF4L2
-label IF4L1
+  goto IF5L2
+label IF5L1
   // let
   push static 2
   push constant 1
   sub
   pop static 2
-label IF4L2
-  goto IF3L2
-label IF3L1
+label IF5L2
+  goto IF4L2
+label IF4L1
   // let
   push static 1
   push constant 1
   sub
   pop static 1
-label IF3L2
+label IF4L2
+  // do
+  push constant 0
+  call Screen.setColor 1
+  pop temp 0
+  // do
+  push constant 0
+  call Output.printCharNoAdvance 1
+  pop temp 0
+  // do
+  push local 0
+  call Screen.setColor 1
+  pop temp 0
   // return
   push constant 0
   return

@@ -17,6 +17,10 @@ function Screen.setColor 0
   // return
   push constant 0
   return
+function Screen.getColor 0
+  // return
+  push static 0
+  return
 function Screen.drawPixel 4
   // let
   push argument 0

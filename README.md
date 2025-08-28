@@ -8,3 +8,6 @@ Similar kind of interest to [Crafting interpreters](https://github.com/adnathana
 ```bash
 ./tools/HardwareSimulator.sh
 ```
+
+Improvements:
+- & binding (true & true & true)

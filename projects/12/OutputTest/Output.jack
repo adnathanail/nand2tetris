@@ -185,9 +185,7 @@ class Output {
         return;
     }
 
-    /** Displays the given character at the cursor location,
-     *  and advances the cursor one column forward. */
-    function void printChar(char c) {
+    function void printCharNoAdvance(char c) {
         var Array map;
         var int line, i, row;
         let map = Output.getMap(c);
@@ -196,12 +194,20 @@ class Output {
             let line = map[row];
             let i = 0;
             while (i < 8) {
-                do Screen.setColor(Math.bit(line, i));
-                do Screen.drawPixel(((cursorX * 8) + 1) + i, ((cursorY * 11) + 1) + row);
+                if (Math.bit(line, i)) {
+                    do Screen.drawPixel(((cursorX * 8) + 1) + i, ((cursorY * 11) + 1) + row);
+                }
                 let i = i + 1;
             }
             let row = row + 1;
         }
+        return;
+    }
+
+    /** Displays the given character at the cursor location,
+     *  and advances the cursor one column forward. */
+    function void printChar(char c) {
+        do Output.printCharNoAdvance(c);
         let cursorX = cursorX + 1;
         if (cursorX > 63) {
             let cursorX = 0;
@@ -244,6 +250,8 @@ class Output {
 
     /** Moves the cursor one column back. */
     function void backSpace() {
+        var boolean previousColor;
+        let previousColor = Screen.getColor();
         if (cursorX = 0) {
             let cursorX = 63;
             if (cursorY = 0) {
@@ -254,6 +262,9 @@ class Output {
         } else {
             let cursorX = cursorX - 1;
         }
+        do Screen.setColor(0);
+        do Output.printCharNoAdvance(0);
+        do Screen.setColor(previousColor);
         return;
     }
 }
