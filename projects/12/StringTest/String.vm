@@ -1,0 +1,176 @@
+function String.new 0
+  push constant 3
+  call Memory.alloc 1
+  pop pointer 0
+  // let
+  push argument 0
+  pop this 2
+  // let
+  push constant 0
+  pop this 1
+  // if
+  push this 2
+  push constant 0
+  gt
+  not
+  if-goto IF0L1
+  // let
+  push argument 0
+  call Array.new 1
+  pop this 0
+  goto IF0L2
+label IF0L1
+label IF0L2
+  // return
+  push pointer 0
+  return
+function String.dispose 0
+  push argument 0
+  pop pointer 0
+  // if
+  push this 2
+  push constant 0
+  gt
+  not
+  if-goto IF1L1
+  // do
+  push this 0
+  call Array.dispose 1
+  pop temp 0
+  goto IF1L2
+label IF1L1
+label IF1L2
+  // return
+  push constant 0
+  return
+function String.length 0
+  push argument 0
+  pop pointer 0
+  // return
+  push this 1
+  return
+function String.charAt 0
+  push argument 0
+  pop pointer 0
+  // return
+  push this 0
+  push argument 1
+  add
+  pop pointer 1
+  push that 0
+  return
+function String.setCharAt 0
+  push argument 0
+  pop pointer 0
+  // if
+  push argument 1
+  push constant 1
+  neg
+  gt
+  push argument 1
+  push this 1
+  lt
+  and
+  not
+  if-goto IF2L1
+  // let
+  push this 0
+  push argument 1
+  add
+  push argument 2
+  pop temp 0
+  pop pointer 1
+  push temp 0
+  pop that 0
+  goto IF2L2
+label IF2L1
+label IF2L2
+  // return
+  push constant 0
+  return
+function String.appendChar 0
+  push argument 0
+  pop pointer 0
+  // if
+  push this 1
+  push constant 1
+  add
+  push this 2
+  gt
+  not
+  not
+  if-goto IF3L1
+  // let
+  push this 0
+  push this 1
+  add
+  push argument 1
+  pop temp 0
+  pop pointer 1
+  push temp 0
+  pop that 0
+  // let
+  push this 1
+  push constant 1
+  add
+  pop this 1
+  goto IF3L2
+label IF3L1
+label IF3L2
+  // return
+  push pointer 0
+  return
+function String.eraseLastChar 0
+  push argument 0
+  pop pointer 0
+  // if
+  push this 1
+  push constant 0
+  gt
+  not
+  if-goto IF4L1
+  // let
+  push this 0
+  push this 1
+  add
+  push constant 0
+  pop temp 0
+  pop pointer 1
+  push temp 0
+  pop that 0
+  // let
+  push this 1
+  push constant 1
+  sub
+  pop this 1
+  goto IF4L2
+label IF4L1
+label IF4L2
+  // return
+  push constant 0
+  return
+function String.intValue 0
+  push argument 0
+  pop pointer 0
+  // return
+  push constant 1
+  neg
+  return
+function String.setInt 0
+  push argument 0
+  pop pointer 0
+  // return
+  push constant 0
+  return
+function String.newLine 0
+  // return
+  push constant 128
+  return
+function String.backSpace 0
+  // return
+  push constant 129
+  return
+function String.doubleQuote 0
+  // return
+  push constant 34
+  return
