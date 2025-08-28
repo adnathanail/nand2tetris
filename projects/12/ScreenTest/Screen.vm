@@ -409,11 +409,141 @@ label IF8L2
   // return
   push constant 0
   return
-function Screen.drawRectangle 0
+function Screen.drawRectangle 2
+  // if
+  push argument 3
+  push argument 1
+  lt
+  not
+  if-goto IF9L1
+  // let
+  push argument 3
+  pop local 1
+  // let
+  push argument 1
+  pop argument 3
+  // let
+  push local 1
+  pop argument 1
+  goto IF9L2
+label IF9L1
+label IF9L2
+  // if
+  push argument 2
+  push argument 2
+  lt
+  not
+  if-goto IF10L1
+  // let
+  push argument 2
+  pop local 1
+  // let
+  push argument 0
+  pop argument 2
+  // let
+  push local 1
+  pop argument 0
+  goto IF10L2
+label IF10L1
+label IF10L2
+  // let
+  push argument 1
+  pop local 0
+  // while
+label WHILE4L1
+  push local 0
+  push argument 3
+  lt
+  not
+  if-goto WHILE4L2
+  // do
+  push argument 0
+  push local 0
+  push argument 2
+  push local 0
+  call Screen.drawLine 4
+  pop temp 0
+  // let
+  push local 0
+  push constant 1
+  add
+  pop local 0
+  goto WHILE4L1
+label WHILE4L2
   // return
   push constant 0
   return
-function Screen.drawCircle 0
+function Screen.drawCircle 2
+  // do
+  push argument 0
+  push argument 2
+  sub
+  push argument 1
+  push argument 0
+  push argument 2
+  add
+  push argument 1
+  call Screen.drawLine 4
+  pop temp 0
+  // let
+  push constant 1
+  pop local 0
+  // while
+label WHILE5L1
+  push local 0
+  push argument 2
+  push constant 1
+  add
+  lt
+  not
+  if-goto WHILE5L2
+  // let
+  push argument 2
+  push constant 2
+  call Math.pow 2
+  push local 0
+  push constant 2
+  call Math.pow 2
+  sub
+  call Math.sqrt 1
+  pop local 1
+  // do
+  push argument 0
+  push local 1
+  sub
+  push argument 1
+  push local 0
+  add
+  push argument 0
+  push local 1
+  add
+  push argument 1
+  push local 0
+  add
+  call Screen.drawLine 4
+  pop temp 0
+  // do
+  push argument 0
+  push local 1
+  sub
+  push argument 1
+  push local 0
+  sub
+  push argument 0
+  push local 1
+  add
+  push argument 1
+  push local 0
+  sub
+  call Screen.drawLine 4
+  pop temp 0
+  // let
+  push local 0
+  push constant 1
+  add
+  pop local 0
+  goto WHILE5L1
+label WHILE5L2
   // return
   push constant 0
   return

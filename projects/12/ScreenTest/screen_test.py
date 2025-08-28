@@ -1,3 +1,5 @@
+import math
+
 # def drawLine(x1: int, y1: int, x2: int, y2: int):
 #     a = 0
 #     b = 0
@@ -46,6 +48,12 @@ def drawLineDown(x1: int, y1: int, x2: int, y2: int):
             adyMinusbdx -= dx
 
 
-drawLineDown(163,35,178,20)
+# drawLineDown(163,35,178,20)
 # print()
 # drawLineDown(10, 10, 14, 4)
+
+def drawCircle(x, y, r):
+    for dy in range(1, r + 1):
+        print(x - math.sqrt(r**2 - dy**2), y + dy)
+
+drawCircle(360,170,3)
