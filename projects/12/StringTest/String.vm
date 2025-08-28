@@ -156,9 +156,41 @@ function String.intValue 0
   push constant 1
   neg
   return
-function String.setInt 0
+function String.setInt 2
   push argument 0
   pop pointer 0
+  // let
+  push argument 1
+  push constant 10
+  push argument 1
+  push constant 10
+  call Math.divide 2
+  call Math.multiply 2
+  sub
+  pop local 0
+  // if
+  push argument 1
+  push constant 9
+  gt
+  not
+  if-goto IF5L1
+  // do
+  push pointer 0
+  push argument 1
+  push constant 10
+  call Math.divide 2
+  call String.setInt 2
+  pop temp 0
+  goto IF5L2
+label IF5L1
+label IF5L2
+  // do
+  push pointer 0
+  push local 0
+  push constant 48
+  add
+  call String.appendChar 2
+  pop temp 0
   // return
   push constant 0
   return
