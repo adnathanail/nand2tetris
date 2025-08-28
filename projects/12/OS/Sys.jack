@@ -17,6 +17,9 @@ class Sys {
         do Output.init();
 
         do Main.main();
+
+        do Sys.halt();
+
         return;
     }
 

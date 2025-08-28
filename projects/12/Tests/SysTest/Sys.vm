@@ -1,21 +1,24 @@
 function Sys.init 0
   // do
-  call Keyboard.init 0
+  call Memory.init 0
   pop temp 0
   // do
   call Math.init 0
   pop temp 0
   // do
-  call Memory.init 0
-  pop temp 0
-  // do
-  call Output.init 0
+  call Keyboard.init 0
   pop temp 0
   // do
   call Screen.init 0
   pop temp 0
   // do
+  call Output.init 0
+  pop temp 0
+  // do
   call Main.main 0
+  pop temp 0
+  // do
+  call Sys.halt 0
   pop temp 0
   // return
   push constant 0
