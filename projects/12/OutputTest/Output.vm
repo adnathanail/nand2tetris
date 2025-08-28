@@ -1694,6 +1694,48 @@ label WHILE0L2
   // let
   push constant 0
   pop static 1
+  // do
+  call Output.println 0
+  pop temp 0
+  goto IF2L2
+label IF2L1
+label IF2L2
+  // return
+  push constant 0
+  return
+function Output.printString 1
+  // let
+  push constant 0
+  pop local 0
+  // while
+label WHILE2L1
+  push local 0
+  push argument 0
+  call String.length 1
+  lt
+  not
+  if-goto WHILE2L2
+  // do
+  push argument 0
+  push local 0
+  call String.charAt 2
+  call Output.printChar 1
+  pop temp 0
+  // let
+  push local 0
+  push constant 1
+  add
+  pop local 0
+  goto WHILE2L1
+label WHILE2L2
+  // return
+  push constant 0
+  return
+function Output.printInt 0
+  // return
+  push constant 0
+  return
+function Output.println 0
   // let
   push static 2
   push constant 1
@@ -1711,21 +1753,9 @@ label WHILE0L2
   goto IF3L2
 label IF3L1
 label IF3L2
-  goto IF2L2
-label IF2L1
-label IF2L2
-  // return
+  // let
   push constant 0
-  return
-function Output.printString 0
-  // return
-  push constant 0
-  return
-function Output.printInt 0
-  // return
-  push constant 0
-  return
-function Output.println 0
+  pop static 1
   // return
   push constant 0
   return
