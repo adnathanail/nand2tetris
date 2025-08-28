@@ -196,9 +196,8 @@ class Output {
             let line = map[row];
             let i = 0;
             while (i < 8) {
-                if (Math.bit(line, i)) {
-                    do Screen.drawPixel(((cursorX * 8) + 1) + i, ((cursorY * 11) + 1) + row);
-                }
+                do Screen.setColor(Math.bit(line, i));
+                do Screen.drawPixel(((cursorX * 8) + 1) + i, ((cursorY * 11) + 1) + row);
                 let i = i + 1;
             }
             let row = row + 1;
@@ -226,6 +225,10 @@ class Output {
     /** Displays the given integer starting at the cursor location,
      *  and advances the cursor appropriately. */
     function void printInt(int i) {
+        var String s;
+        let s = String.new(6);  // Max digit is 2**15 which has 5 characters, plus a potential minus
+        do s.setInt(i);
+        do Output.printString(s);
         return;
     }
 
@@ -241,6 +244,16 @@ class Output {
 
     /** Moves the cursor one column back. */
     function void backSpace() {
+        if (cursorX = 0) {
+            let cursorX = 63;
+            if (cursorY = 0) {
+                let cursorY = 22;
+            } else {
+                let cursorY = cursorY - 1;
+            }
+        } else {
+            let cursorX = cursorX - 1;
+        }
         return;
     }
 }
