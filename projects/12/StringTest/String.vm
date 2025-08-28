@@ -156,7 +156,7 @@ function String.intValue 0
   push constant 1
   neg
   return
-function String.setInt 2
+function String.doSetInt 2
   push argument 0
   pop pointer 0
   // let
@@ -179,7 +179,7 @@ function String.setInt 2
   push argument 1
   push constant 10
   call Math.divide 2
-  call String.setInt 2
+  call String.doSetInt 2
   pop temp 0
   goto IF5L2
 label IF5L1
@@ -190,6 +190,43 @@ label IF5L2
   push constant 48
   add
   call String.appendChar 2
+  pop temp 0
+  // return
+  push constant 0
+  return
+function String.setInt 0
+  push argument 0
+  pop pointer 0
+  // let
+  push constant 0
+  pop this 1
+  // if
+  push argument 1
+  push constant 0
+  lt
+  not
+  if-goto IF6L1
+  // do
+  push pointer 0
+  push constant 45
+  call String.appendChar 2
+  pop temp 0
+  // do
+  push pointer 0
+  push argument 1
+  neg
+  call String.doSetInt 2
+  pop temp 0
+  // return
+  push constant 0
+  return
+  goto IF6L2
+label IF6L1
+label IF6L2
+  // do
+  push pointer 0
+  push argument 1
+  call String.doSetInt 2
   pop temp 0
   // return
   push constant 0
