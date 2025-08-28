@@ -1,0 +1,104 @@
+function Keyboard.init 0
+  // return
+  push constant 0
+  return
+function Keyboard.keyPressed 0
+  // return
+  push constant 24576
+  call Memory.peek 1
+  return
+function Keyboard.readChar 2
+  // let
+  push constant 0
+  pop local 0
+  // while
+label WHILE0L1
+  push local 0
+  push constant 0
+  eq
+  not
+  if-goto WHILE0L2
+  // let
+  call Keyboard.keyPressed 0
+  pop local 0
+  goto WHILE0L1
+label WHILE0L2
+  // let
+  push constant 1
+  neg
+  pop local 1
+  // while
+label WHILE1L1
+  push local 1
+  push constant 0
+  eq
+  not
+  not
+  if-goto WHILE1L2
+  // let
+  call Keyboard.keyPressed 0
+  pop local 1
+  goto WHILE1L1
+label WHILE1L2
+  // do
+  push local 0
+  call Output.printChar 1
+  pop temp 0
+  // return
+  push local 0
+  return
+function Keyboard.readLine 2
+  // do
+  push argument 0
+  call Output.printString 1
+  pop temp 0
+  // let
+  call Keyboard.readChar 0
+  pop local 0
+  // let
+  push constant 10
+  call String.new 1
+  pop local 1
+  // while
+label WHILE2L1
+  push local 0
+  push constant 128
+  eq
+  not
+  not
+  if-goto WHILE2L2
+  // if
+  push local 0
+  push constant 129
+  eq
+  not
+  if-goto IF0L1
+  // do
+  push local 1
+  call String.eraseLastChar 1
+  pop temp 0
+  goto IF0L2
+label IF0L1
+  // do
+  push local 1
+  push local 0
+  call String.appendChar 2
+  pop temp 0
+label IF0L2
+  // let
+  call Keyboard.readChar 0
+  pop local 0
+  goto WHILE2L1
+label WHILE2L2
+  // return
+  push local 1
+  return
+function Keyboard.readInt 1
+  // let
+  push argument 0
+  call Keyboard.readLine 1
+  pop local 0
+  // return
+  push local 0
+  call String.intValue 1
+  return
